@@ -9,7 +9,7 @@ public class Points : MonoBehaviour
 
     protected virtual void Collect()
     {
-        FindObjectOfType<GameManager>().PointCollected(this);
+        FindObjectOfType<GameManagerOnRun>().PointCollected(this);
     }
     private void OnTriggerEnter2D(Collider2D col)
     {

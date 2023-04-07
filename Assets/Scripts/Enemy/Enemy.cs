@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -13,7 +10,7 @@ public class Enemy : MonoBehaviour
     public EnemyFreightened freightened{ get; private set; }
     public EnemyBehaviour behaviour;
     public Transform target;
-    public GameManager manager{ get; private set; }
+    public GameManagerOnRun managerOnRun{ get; private set; }
 
     private void Awake()
     {
@@ -23,7 +20,8 @@ public class Enemy : MonoBehaviour
         chase = GetComponent<EnemyChase>();
         freightened = GetComponent<EnemyFreightened>();
         home = GetComponent<EnemyHome>();
-        manager = FindObjectOfType<GameManager>();
+        managerOnRun = FindObjectOfType<GameManagerOnRun>();
+      
     }
 
     private void Start()
@@ -33,20 +31,23 @@ public class Enemy : MonoBehaviour
 
     public void ResetState()
     {
-        gameObject.SetActive(true);
-        movement.ResetState();
-        
-        freightened.Disable();
-        chase.Disable();
-        scatter.Enable();
-        if (home != behaviour)
+        if (GameModeManager.gameMode == GameModeManager.GameMode.Run)
         {
-            home.Disable();
-        }
+            gameObject.SetActive(true);
+            movement.ResetState();
 
-        if (behaviour != null)
-        {
-            behaviour.Enable();
+            freightened.Disable();
+            chase.Disable();
+            scatter.Enable();
+            if (home != behaviour)
+            {
+                home.Disable();
+            }
+
+            if (behaviour != null)
+            {
+                behaviour.Enable();
+            }
         }
     }
 
@@ -56,11 +57,11 @@ public class Enemy : MonoBehaviour
         {
             if (freightened.enabled)
             {
-                manager.EnemyDamaged(this);
+                managerOnRun.EnemyDamaged(this);
             }
             else
             {
-                manager.PlayerDamaged();
+                managerOnRun.PlayerDamaged();
             }
         }
     }

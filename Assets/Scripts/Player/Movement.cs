@@ -5,6 +5,7 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     public float speed = 8;
+    private float OgSpeed = 8;
     public float speedMultiplier = 1;
 
     public Vector2 startDir;
@@ -18,6 +19,15 @@ public class Movement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         startPos = transform.position;
+        
+        if (GameModeManager.gameMode == GameModeManager.GameMode.Editor)
+        {
+            speed = 0;
+        }
+        else
+        {
+            speed = OgSpeed;
+        }
     }
 
     private void Start()

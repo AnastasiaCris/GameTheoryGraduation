@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManagerOnRun : MonoBehaviour
 {
     public Enemy[] enemies;
     public Player player;
@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public int score { get; private set; }
     public int lives { get; private set; }
 
-    public static GameManager instance;
+    public static GameManagerOnRun instance;
     private void Awake()
     {
         if(instance == null)
@@ -24,11 +24,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
      StartNewGame();   
-    }
-
-    void Update()
-    {
-        
     }
 
     void StartNewGame()

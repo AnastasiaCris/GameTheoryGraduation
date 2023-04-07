@@ -48,19 +48,19 @@ public class EnemyChase : EnemyBehaviour
 
                     //Calculating target
                     
-                    if (GameManager.instance.player.movement.direction == Vector2.up)
+                    if (GameManagerOnRun.instance.player.movement.direction == Vector2.up)
                     {
                         target = new Vector2(position.x - n, position.y + n);
                     }
-                    else if (GameManager.instance.player.movement.direction == Vector2.down)
+                    else if (GameManagerOnRun.instance.player.movement.direction == Vector2.down)
                     {
                         target = new Vector2(position.x, position.y - n);
                     }
-                    else if (GameManager.instance.player.movement.direction == Vector2.left)
+                    else if (GameManagerOnRun.instance.player.movement.direction == Vector2.left)
                     {
                         target = new Vector2(position.x - n, position.y);
                     }
-                    else if (GameManager.instance.player.movement.direction == Vector2.right)
+                    else if (GameManagerOnRun.instance.player.movement.direction == Vector2.right)
                     {
                         target = new Vector2(position.x + n, position.y);
                     }
@@ -78,20 +78,20 @@ public class EnemyChase : EnemyBehaviour
 
                     //Calculating target
                     
-                    if (GameManager.instance.player.movement.direction == Vector2.up)
+                    if (GameManagerOnRun.instance.player.movement.direction == Vector2.up)
                     {
                         playerDirByN = new Vector2(position.x - n, position.y + n);
 
                     }
-                    else if (GameManager.instance.player.movement.direction == Vector2.down)
+                    else if (GameManagerOnRun.instance.player.movement.direction == Vector2.down)
                     {
                         playerDirByN = new Vector2(position.x, position.y - n);
                     }
-                    else if (GameManager.instance.player.movement.direction == Vector2.left)
+                    else if (GameManagerOnRun.instance.player.movement.direction == Vector2.left)
                     {
                         playerDirByN = new Vector2(position.x - n, position.y);
                     }
-                    else if (GameManager.instance.player.movement.direction == Vector2.right)
+                    else if (GameManagerOnRun.instance.player.movement.direction == Vector2.right)
                     {
                         playerDirByN = new Vector2(position.x + n, position.y);
                     }

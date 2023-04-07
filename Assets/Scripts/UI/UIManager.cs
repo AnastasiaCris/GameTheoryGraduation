@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    public GameManager gamaManager;
+    public GameManagerOnRun gamaManager;
 
     public TextMeshProUGUI score;
     public TextMeshProUGUI life;

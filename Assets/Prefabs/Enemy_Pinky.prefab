@@ -15,6 +15,10 @@ PrefabInstance:
       propertyPath: behaviour
       value: 
       objectReference: {fileID: 1421766313226547780}
+    - target: {fileID: 3894514647284835560, guid: 74f138c6ed9e38f40aa5ec0677cf6170, type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3894514647284835561, guid: 74f138c6ed9e38f40aa5ec0677cf6170, type: 3}
       propertyPath: m_Name
       value: Enemy_Pinky

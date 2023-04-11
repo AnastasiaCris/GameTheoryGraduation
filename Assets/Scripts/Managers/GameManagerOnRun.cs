@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManagerOnRun : MonoBehaviour
 {
@@ -11,6 +13,10 @@ public class GameManagerOnRun : MonoBehaviour
     public int score { get; private set; }
     public int lives { get; private set; }
 
+    [Header("UI Menu")] 
+    public GameObject gameOverMenu;
+    public GameObject pauseMenu;
+
     public static GameManagerOnRun instance;
     private void Awake()
     {
@@ -20,10 +26,26 @@ public class GameManagerOnRun : MonoBehaviour
 
     void Start()
     {
+        gameOverMenu.SetActive(false);
+        pauseMenu.SetActive(false);
      StartNewGame();   
     }
 
-    void StartNewGame()
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && GameModeManager.gameMode == GameModeManager.GameMode.Classic)
+        {
+            Time.timeScale = 0;
+            if(!pauseMenu.activeSelf)
+                pauseMenu.SetActive(true);
+            else
+            {
+                Resume();
+            }
+        }
+    }
+
+    public void StartNewGame()
     {
         SetScore(0);
         SetLives(3);
@@ -36,6 +58,13 @@ public class GameManagerOnRun : MonoBehaviour
     /// </summary>
     private void StartNewRound()
     {
+        //Precaution
+        if(GameModeManager.gameMode == GameModeManager.GameMode.Classic)
+            Time.timeScale = 1;
+        pauseMenu.SetActive(false);
+        gameOverMenu.SetActive(false);
+        
+        //Reset everything
         foreach (Transform points in this.points)
         {
             points.gameObject.SetActive(true);
@@ -46,6 +75,8 @@ public class GameManagerOnRun : MonoBehaviour
         if (GameManagerEditor.instance.timerOn)
         {
             GameManagerEditor.instance.remainingTimer = GameManagerEditor.instance.timer;
+            StopCoroutine(GameManagerEditor.instance.UpdateTimer());
+            GameManagerEditor.instance.StartTimer();
         }
     }
 
@@ -78,20 +109,16 @@ public class GameManagerOnRun : MonoBehaviour
     /// <summary>
     /// called when player loses all lives
     /// </summary>
-     public IEnumerator GameOver()
+     public void GameOver()
     {
-        //TO DO: display UI
+        Time.timeScale = 0;
+        gameOverMenu.SetActive(true);
+        
         for (int i = 0; i < enemies.Length; i++)
         {
             enemies[i].gameObject.SetActive(false);
         }
         player.gameObject.SetActive(false);
-
-        //yield return new WaitForSeconds(1f);
-        //TO DO: display text saying to press any button to start new game
-        
-        yield return new WaitUntil(() => Input.anyKey);
-        StartNewGame();
     }
     
 
@@ -112,11 +139,11 @@ public class GameManagerOnRun : MonoBehaviour
         
         if (lives >= 0)
         {
-            Invoke(nameof(ResetState), 3.0f);
+            Invoke(nameof(ResetState), 1.0f);
         }
         else
         {
-            StartCoroutine(GameOver());
+           GameOver();
         }
     }
 
@@ -162,4 +189,27 @@ public class GameManagerOnRun : MonoBehaviour
     {
         enemyMultiplier = 1;
     }
+
+    #region UIButtons
+
+    public void SwitchScene()
+        {
+            SceneManager.LoadScene(0);
+        }
+    
+        public void SwitchMode()
+        {
+            pauseMenu.SetActive(false);
+            gameOverMenu.SetActive(false);
+            GameManagerEditor.instance.ChangeModes();
+        }
+    
+        public void Resume()
+        {
+            pauseMenu.SetActive(false);
+            Time.timeScale = 1;
+        }
+
+    #endregion
+    
 }

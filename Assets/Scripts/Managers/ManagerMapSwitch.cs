@@ -16,12 +16,12 @@ public class ManagerMapSwitch : MonoBehaviour
     void Awake()
     {
         //Instantiating the player and enemies
-        playerClone = Instantiate(playerPrefab, playerStartingPos.position, Quaternion.identity, transform.parent.transform);
+        playerClone = Instantiate(playerPrefab, playerStartingPos.position, Quaternion.identity, transform.parent.transform.parent.transform);
         
         enemiesClone = new GameObject[4];
         for (int i = 0; i < enemiesPrefab.Length; i++)
         {
-             enemiesClone[i] = Instantiate(enemiesPrefab[i], enemiesStartingPos[i].position, Quaternion.identity,transform.parent.transform);
+             enemiesClone[i] = Instantiate(enemiesPrefab[i], enemiesStartingPos[i].position, Quaternion.identity,transform.parent.transform.parent.transform);
         }
         
         //Setting up the enemies

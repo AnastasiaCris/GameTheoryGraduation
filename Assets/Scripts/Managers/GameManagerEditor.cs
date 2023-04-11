@@ -62,6 +62,7 @@ public class GameManagerEditor : MonoBehaviour
         }
         else
         {
+            editorUI.SetActive(true);
             elementsUI.SetActive(true);
             GameModeManager.gameMode = GameModeManager.GameMode.Editor;
             Time.timeScale = 0;
@@ -95,7 +96,7 @@ public class GameManagerEditor : MonoBehaviour
         StartCoroutine(UpdateTimer());
     }
 
-    private IEnumerator UpdateTimer()
+    public IEnumerator UpdateTimer()
     {
         while (remainingTimer >= 0)
         {
@@ -105,7 +106,7 @@ public class GameManagerEditor : MonoBehaviour
         }
 
         yield return new WaitUntil(() => remainingTimer <= 0);
-        StartCoroutine(GameManagerOnRun.instance.GameOver());
+        GameManagerOnRun.instance.GameOver();
         remainingTimer = timer; //reset timer
     }
 
@@ -114,6 +115,7 @@ public class GameManagerEditor : MonoBehaviour
 
     public void ChangeMap(string mapType)
         {
+            Debug.Log("before: " + Time.timeScale);
             //make sure you destroy any map already in there before instantiating a new one
             if (mapDestination.GetComponentInChildren<Transform>() != null)
             {
@@ -142,7 +144,7 @@ public class GameManagerEditor : MonoBehaviour
                     Instantiate(narrowMapPrefab, mapDestination.transform);
                     break;
             }
-            
+            Debug.Log("after: " + Time.timeScale);
         }
 
     #endregion

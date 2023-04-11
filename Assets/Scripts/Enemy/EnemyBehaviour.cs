@@ -41,6 +41,7 @@ public abstract class EnemyBehaviour : MonoBehaviour
     {
         List<float> distances = new List<float>();
         Vector2 shortestPos = new Vector2();
+        
         List<Vector2> posAvailable = dirAvailable(node);
         int x = 0;
         int y = 0;
@@ -76,14 +77,18 @@ public abstract class EnemyBehaviour : MonoBehaviour
         List<Vector2> posAvailable = new List<Vector2>();
         posAvailable.AddRange(node.availableDirPos);
 
-        for (int i = 0; i < directionsAvailable.Count; i++) //make sure you don't count the backwards direction
+        if (!node.turnBack)// if you can't turn back remove the backwards direction
         {
-            if (directionsAvailable[i] == -enemy.movement.direction)
+            for (int i = 0; i < directionsAvailable.Count; i++)
             {
-                directionsAvailable.Remove(directionsAvailable[i]);
-                posAvailable.RemoveAt(i);
+                if (directionsAvailable[i] == -enemy.movement.direction)
+                {
+                    directionsAvailable.Remove(directionsAvailable[i]);
+                    posAvailable.RemoveAt(i);
+                }
             }
         }
+
         return posAvailable;
     }
 

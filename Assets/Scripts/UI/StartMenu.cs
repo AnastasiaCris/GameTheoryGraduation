@@ -8,7 +8,7 @@ public class StartMenu : MonoBehaviour
         switch (gameMode)
         {
             case "run":
-               GameModeManager.gameMode = GameModeManager.GameMode.Run;
+               GameModeManager.gameMode = GameModeManager.GameMode.Classic;
                break;
             case "edit":
                GameModeManager.gameMode = GameModeManager.GameMode.Editor;

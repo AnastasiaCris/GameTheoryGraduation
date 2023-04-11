@@ -31,23 +31,20 @@ public class Enemy : MonoBehaviour
 
     public void ResetState()
     {
-        if (GameModeManager.gameMode == GameModeManager.GameMode.Run)
+        gameObject.SetActive(true);
+        movement.ResetState();
+
+        freightened.Disable();
+        chase.Disable();
+        scatter.Enable();
+        if (home != behaviour)
         {
-            gameObject.SetActive(true);
-            movement.ResetState();
+            home.Disable();
+        }
 
-            freightened.Disable();
-            chase.Disable();
-            scatter.Enable();
-            if (home != behaviour)
-            {
-                home.Disable();
-            }
-
-            if (behaviour != null)
-            {
-                behaviour.Enable();
-            }
+        if (behaviour != null)
+        {
+            behaviour.Enable();
         }
     }
 

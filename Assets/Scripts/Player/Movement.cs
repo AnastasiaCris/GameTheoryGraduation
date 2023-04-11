@@ -20,14 +20,6 @@ public class Movement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         startPos = transform.position;
         
-        if (GameModeManager.gameMode == GameModeManager.GameMode.Editor)
-        {
-            speed = 0;
-        }
-        else
-        {
-            speed = OgSpeed;
-        }
     }
 
     private void Start()
@@ -86,17 +78,17 @@ public class Movement : MonoBehaviour
     /// <returns></returns>
     public bool Ocuppied(Vector2 dir)
     {
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position, Vector2.one * 0.75f, 0.0f, dir, 1.5f, obstacleLayer);
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position, Vector2.one * 0.5f, 0.0f, dir, 1f, obstacleLayer);
 
         return hit.collider != null;
     }
 
-    /*private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
-        Gizmos.DrawCube(transform.position + new Vector3(direction.x, direction.y, 0) * 1.5f, Vector2.one * 0.75f);
+        Gizmos.DrawCube(transform.position + new Vector3(direction.x, direction.y, 0) * 1f, Vector2.one * 0.5f);
         
         Gizmos.color = Color.yellow;
-        Gizmos.DrawCube(transform.position + new Vector3(nextDirection.x, nextDirection.y, 0) * 1.5f, Vector2.one * 0.75f);
-    }*/
+        Gizmos.DrawCube(transform.position + new Vector3(nextDirection.x, nextDirection.y, 0) * 1f, Vector2.one * 0.5f);
+    }
 }

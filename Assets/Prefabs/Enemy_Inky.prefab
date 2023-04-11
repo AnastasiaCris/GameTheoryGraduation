@@ -7,6 +7,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1310428803849682378, guid: efd0cee57a0e56e4dbf7f26044167143, type: 3}
+      propertyPath: originalBodyCol.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1310428803849682378, guid: efd0cee57a0e56e4dbf7f26044167143, type: 3}
+      propertyPath: originalBodyCol.g
+      value: 0.8705883
+      objectReference: {fileID: 0}
+    - target: {fileID: 1310428803849682378, guid: efd0cee57a0e56e4dbf7f26044167143, type: 3}
+      propertyPath: originalBodyCol.r
+      value: 0.098039225
+      objectReference: {fileID: 0}
+    - target: {fileID: 1421766313226547780, guid: efd0cee57a0e56e4dbf7f26044167143, type: 3}
+      propertyPath: duration
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 1434788105566866218, guid: efd0cee57a0e56e4dbf7f26044167143, type: 3}
       propertyPath: m_Color.b
       value: 1
@@ -31,6 +47,10 @@ PrefabInstance:
       propertyPath: behaviour
       value: 
       objectReference: {fileID: 2641225338955438521}
+    - target: {fileID: 7850718516582887849, guid: efd0cee57a0e56e4dbf7f26044167143, type: 3}
+      propertyPath: startDir.y
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 7850718516582887849, guid: efd0cee57a0e56e4dbf7f26044167143, type: 3}
       propertyPath: initialDirection.x
       value: 0

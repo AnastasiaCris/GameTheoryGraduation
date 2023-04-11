@@ -3,7 +3,7 @@ public static class GameModeManager
 {
     public enum GameMode
     {
-        Run,
+        Classic,
         Editor
     }
 

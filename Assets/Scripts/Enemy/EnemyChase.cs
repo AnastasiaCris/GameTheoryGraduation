@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyChase : EnemyBehaviour
-{
-    [SerializeField]private GameObject blinky;
+{ public GameObject blinky;
  public enum EnemyType
     {
         Blinky,

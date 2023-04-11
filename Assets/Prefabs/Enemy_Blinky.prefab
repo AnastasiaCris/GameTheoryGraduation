@@ -19,6 +19,14 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3840128366176617862, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
+      propertyPath: originalBodyCol.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3840128366176617862, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
+      propertyPath: originalBodyCol.g
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5446591994115426787, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -64,16 +72,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5446591994115426789, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
+      propertyPath: startDir.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5446591994115426789, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
       propertyPath: initialDirection.x
       value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5446591994115426791, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
       propertyPath: m_Name
       value: Enemy_Blinky
-      objectReference: {fileID: 0}
-    - target: {fileID: 8594713845647992328, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
-      propertyPath: target
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8594713845647992328, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
       propertyPath: behaviour

@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: enemyType
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2641225338955438521, guid: 2d115c111e49d2848bcfb69c739b7923, type: 3}
+      propertyPath: duration
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 2663246617897590999, guid: 2d115c111e49d2848bcfb69c739b7923, type: 3}
       propertyPath: m_Color.b
       value: 0.1273585
@@ -21,6 +25,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2663246617897590999, guid: 2d115c111e49d2848bcfb69c739b7923, type: 3}
       propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680539614315894327, guid: 2d115c111e49d2848bcfb69c739b7923, type: 3}
+      propertyPath: originalBodyCol.b
+      value: 0.1254902
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680539614315894327, guid: 2d115c111e49d2848bcfb69c739b7923, type: 3}
+      propertyPath: originalBodyCol.g
+      value: 0.5137255
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680539614315894327, guid: 2d115c111e49d2848bcfb69c739b7923, type: 3}
+      propertyPath: originalBodyCol.r
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6624793382156638802, guid: 2d115c111e49d2848bcfb69c739b7923, type: 3}
@@ -66,6 +82,14 @@ PrefabInstance:
     - target: {fileID: 6624793382156638802, guid: 2d115c111e49d2848bcfb69c739b7923, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6624793382156638804, guid: 2d115c111e49d2848bcfb69c739b7923, type: 3}
+      propertyPath: startDir.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6624793382156638804, guid: 2d115c111e49d2848bcfb69c739b7923, type: 3}
+      propertyPath: startDir.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6624793382156638804, guid: 2d115c111e49d2848bcfb69c739b7923, type: 3}
       propertyPath: initialDirection.x

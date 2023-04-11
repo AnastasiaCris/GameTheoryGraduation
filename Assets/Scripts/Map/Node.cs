@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Node : MonoBehaviour
 {
-
+    public bool turnBack;
     public List<Vector2> availableDir = new List<Vector2>();
     public List<Vector2> availableDirPos = new List<Vector2>();
     public LayerMask obstacleLayer;

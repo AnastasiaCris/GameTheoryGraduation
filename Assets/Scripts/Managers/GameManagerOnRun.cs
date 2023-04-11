@@ -1,12 +1,9 @@
-
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManagerOnRun : MonoBehaviour
 {
-    public Enemy[] enemies;
+    public Enemy[] enemies = new Enemy[4];
     public Player player;
     public Transform points;
 
@@ -45,6 +42,11 @@ public class GameManagerOnRun : MonoBehaviour
         }
 
         ResetState();
+
+        if (GameManagerEditor.instance.timerOn)
+        {
+            GameManagerEditor.instance.remainingTimer = GameManagerEditor.instance.timer;
+        }
     }
 
     /// <summary>
@@ -75,9 +77,8 @@ public class GameManagerOnRun : MonoBehaviour
 
     /// <summary>
     /// called when player loses all lives
-    /// 
     /// </summary>
-     IEnumerator GameOver()
+     public IEnumerator GameOver()
     {
         //TO DO: display UI
         for (int i = 0; i < enemies.Length; i++)

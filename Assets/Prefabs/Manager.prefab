@@ -48,9 +48,9 @@ MonoBehaviour:
   playerPrefab: {fileID: 6838945617284757517, guid: 0e03f42c3366de34bbb0feb63b532046, type: 3}
   enemiesPrefab:
   - {fileID: 3894514647284835561, guid: 74f138c6ed9e38f40aa5ec0677cf6170, type: 3}
-  - {fileID: 7850718516582887851, guid: efd0cee57a0e56e4dbf7f26044167143, type: 3}
-  - {fileID: 6624793382156638806, guid: 2d115c111e49d2848bcfb69c739b7923, type: 3}
-  - {fileID: 7864425826793285734, guid: 51975e374a2aef145bf207c89fab1462, type: 3}
+  - {fileID: 4442437681986193489, guid: ecb2eb2952f054c4587b171dbddbc4e7, type: 3}
+  - {fileID: 1118229194844160990, guid: 319d0d4a08de77d4a813253b707836c2, type: 3}
+  - {fileID: 1059266606814567578, guid: f213b7fcce238494294ebdc725aba0fe, type: 3}
   playerStartingPos: {fileID: 0}
   enemiesStartingPos:
   - {fileID: 0}
@@ -81,3 +81,5 @@ MonoBehaviour:
   enemies: []
   player: {fileID: 0}
   points: {fileID: 0}
+  gameOverMenu: {fileID: 0}
+  pauseMenu: {fileID: 0}

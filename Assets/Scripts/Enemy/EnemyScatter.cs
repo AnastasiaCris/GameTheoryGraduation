@@ -16,7 +16,7 @@ public class EnemyScatter : EnemyBehaviour
         Node node = col.GetComponent<Node>();
         if (node != null && enabled && !enemy.freightened.enabled)//if you hit a node and you're in scattered and not in frightened mode
         {
-            CalculateShortestDistToTarget(node, scatterNode.position);
+            CalculateDistToTarget(node, scatterNode.position);
         }
     }
 

@@ -67,24 +67,9 @@ public class EnemyFreightened : EnemyBehaviour
     private void OnTriggerEnter2D(Collider2D col)
     {
         Node node = col.GetComponent<Node>();
-        if (node != null && enabled)//if you hit a node
+        if (node != null && enabled)//if you hit a node calculate the longest pos from the player
         {
-                Vector2 dir = Vector2.zero;
-                float maxDist = float.MinValue;
-
-                foreach (Vector2 availableDir in node.availableDir)
-                {
-                    Vector3 newPos = transform.position + new Vector3(availableDir.x, availableDir.y, 0);
-                    float dist = (enemy.target.position - newPos).sqrMagnitude;
-
-                    if (dist > maxDist)
-                    {
-                        dir = availableDir;
-                        maxDist = dist;
-                    }
-                }
-              
-                enemy.movement.SetDirection(dir);
+            CalculateDistToTarget(node, enemy.target.position, false);
         }
 
         if (col.gameObject.layer == LayerMask.NameToLayer("Spawn") && eaten)

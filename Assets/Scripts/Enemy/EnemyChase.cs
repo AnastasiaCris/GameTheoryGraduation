@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public class EnemyChase : EnemyBehaviour
@@ -119,7 +118,7 @@ public class EnemyChase : EnemyBehaviour
                     
                     break;
             }
-            CalculateShortestDistToTarget(node, target);
+            CalculateDistToTarget(node, target);
         }
     }
 

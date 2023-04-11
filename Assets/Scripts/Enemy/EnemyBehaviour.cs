@@ -6,7 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(Enemy))]
 public abstract class EnemyBehaviour : MonoBehaviour
 {
-   public Enemy enemy { get; private set; }
+    
+    public Enemy enemy { get; private set; }
     public float duration;
     private void Awake()
     {
@@ -31,40 +32,45 @@ public abstract class EnemyBehaviour : MonoBehaviour
         enabled = false;
         CancelInvoke();
     }
-    
+
     /// <summary>
-    /// Calculates the shortest distance to enemy's target
+    /// Calculates the shortest/longest distance to enemy's target and goes in that direction
     /// </summary>
     /// <param name="node"></param>
     /// <param name="target"></param>
-    public void CalculateShortestDistToTarget(Node node, Vector2 target)
+    public void CalculateDistToTarget(Node node, Vector2 target, bool shortest = true)
     {
         List<float> distances = new List<float>();
-        Vector2 shortestPos = new Vector2();
-        
+        Vector2 desiredPos = new Vector2();
+
         List<Vector2> posAvailable = dirAvailable(node);
         int x = 0;
         int y = 0;
-        
+
         for (int i = 0; i < posAvailable.Count; i++)
         {
             float distance = Vector2.Distance(posAvailable[i], target);
-                    
+
             distances.Add(distance);
-            if (distance == distances.Min())
+            if (shortest && distance == distances.Min())
             {
-                shortestPos = posAvailable[i];
-            } 
+                desiredPos = posAvailable[i];
+            }
+            else if (!shortest && distance == distances.Max())
+            {
+                desiredPos = posAvailable[i];
+            }
         }
-        x = (int)(shortestPos.x - node.transform.position.x);
-        y = (int)(shortestPos.y - node.transform.position.y);
-                                        
-        enemy.movement.SetDirection(new Vector2(x,y));
+
+        x = (int)(desiredPos.x - node.transform.position.x);
+        y = (int)(desiredPos.y - node.transform.position.y);
+        
+        enemy.movement.SetDirection(new Vector2(x, y));
 
         this.target = target;
-        this.shortestPos = shortestPos;
+        goingToPos = desiredPos;
     }
-    
+
     /// <summary>
     /// Get the directions available of the nodes except the one that turns the enemy backwards
     /// </summary>
@@ -100,7 +106,7 @@ public abstract class EnemyBehaviour : MonoBehaviour
     }
 
     private Vector2 target = Vector2.zero;
-    private Vector2 shortestPos = Vector2.zero;
+    private Vector2 goingToPos = Vector2.zero;
     private void OnDrawGizmos()
     {
         switch (GetComponent<EnemyChase>().enemyType)
@@ -120,7 +126,7 @@ public abstract class EnemyBehaviour : MonoBehaviour
         }
             
         Gizmos.DrawSphere(target, 0.2f);
-        Gizmos.DrawLine(shortestPos,target);    
+        Gizmos.DrawLine(goingToPos,target);    
     }
     
 }

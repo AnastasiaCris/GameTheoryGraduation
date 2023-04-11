@@ -25,6 +25,8 @@ public class GameManagerEditor : MonoBehaviour
     
     public GameObject mapDestination;
     
+    [Header("Rules")]
+    
     public static GameManagerEditor instance;
     void Awake()
     {

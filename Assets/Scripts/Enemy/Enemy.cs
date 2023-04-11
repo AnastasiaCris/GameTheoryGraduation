@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public GameObject enemyPrefab;
+    
     public int points = 200;
     public Movement movement{ get; private set; }
     public EnemyHome home{ get; private set; }

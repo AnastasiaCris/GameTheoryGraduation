@@ -13,8 +13,14 @@ public class ManagerMapSwitch : MonoBehaviour
     public Transform[] enemiesHomePoints = new Transform[2];
 
     [SerializeField] private GameManagerOnRun gameManagerOnRun;
+
+    public static ManagerMapSwitch instance;
     void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
         //Instantiating the player and enemies
         playerClone = Instantiate(playerPrefab, playerStartingPos.position, Quaternion.identity, transform.parent.transform.parent.transform);
         
@@ -36,10 +42,9 @@ public class ManagerMapSwitch : MonoBehaviour
 
         //Setting up the core game manager
         gameManagerOnRun.player = playerClone.GetComponent<Player>();
-        gameManagerOnRun.enemies = new Enemy[4];
         for (int i = 0; i < enemiesClone.Length; i++)
         {
-            gameManagerOnRun.enemies[i] = enemiesClone[i].GetComponent<Enemy>();
+            gameManagerOnRun.enemies.Add(enemiesClone[i].GetComponent<Enemy>());
         }
         
     }

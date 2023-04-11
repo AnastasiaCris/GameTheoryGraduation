@@ -5,7 +5,6 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     public float speed = 8;
-    private float OgSpeed = 8;
     public float speedMultiplier = 1;
 
     public Vector2 startDir;

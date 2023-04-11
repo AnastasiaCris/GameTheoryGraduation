@@ -38,12 +38,12 @@ public abstract class EnemyBehaviour : MonoBehaviour
     /// </summary>
     /// <param name="node"></param>
     /// <param name="target"></param>
-    public void CalculateDistToTarget(Node node, Vector2 target, bool shortest = true)
+    public void CalculateDistToTarget(Node node, Vector2 target, bool shortest = true, bool canTurnBack = false)
     {
         List<float> distances = new List<float>();
         Vector2 desiredPos = new Vector2();
 
-        List<Vector2> posAvailable = dirAvailable(node);
+        List<Vector2> posAvailable = dirAvailable(node,canTurnBack);
         int x = 0;
         int y = 0;
 
@@ -76,14 +76,14 @@ public abstract class EnemyBehaviour : MonoBehaviour
     /// </summary>
     /// <param name="node"></param>
     /// <returns></returns>
-    List<Vector2> dirAvailable(Node node)
+    List<Vector2> dirAvailable(Node node, bool canTurnBack)
     {
         List<Vector2> directionsAvailable = new List<Vector2>();
         directionsAvailable.AddRange(node.availableDir);
         List<Vector2> posAvailable = new List<Vector2>();
         posAvailable.AddRange(node.availableDirPos);
 
-        if (!node.turnBack)// if you can't turn back remove the backwards direction
+        if (!node.turnBack || canTurnBack)// if you can't turn back remove the backwards direction
         {
             for (int i = 0; i < directionsAvailable.Count; i++)
             {

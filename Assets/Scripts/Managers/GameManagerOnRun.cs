@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManagerOnRun : MonoBehaviour
 {
-    public Enemy[] enemies = new Enemy[4];
+    public List<Enemy> enemies = new List<Enemy>();
     public Player player;
     public Transform points;
 
@@ -78,6 +79,11 @@ public class GameManagerOnRun : MonoBehaviour
             StopCoroutine(GameManagerEditor.instance.UpdateTimer());
             GameManagerEditor.instance.StartTimer();
         }
+
+        if (GameManagerEditor.instance.spawnMoreEnemiesOnKill)
+        {
+            //delete all extra enemies and t
+        }
     }
 
     /// <summary>
@@ -86,7 +92,7 @@ public class GameManagerOnRun : MonoBehaviour
     private void ResetState()
     {
         ResetEnemyMultiplier();
-        for (int i = 0; i < enemies.Length; i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
             enemies[i].ResetState();
         }
@@ -114,7 +120,7 @@ public class GameManagerOnRun : MonoBehaviour
         Time.timeScale = 0;
         gameOverMenu.SetActive(true);
         
-        for (int i = 0; i < enemies.Length; i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
             enemies[i].gameObject.SetActive(false);
         }
@@ -162,7 +168,7 @@ public class GameManagerOnRun : MonoBehaviour
     
     public void PowerUpCollected(PowerUp point)
     {
-        for (int i = 0; i < enemies.Length; i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
             enemies[i].freightened.Enable(point.duration);
         }

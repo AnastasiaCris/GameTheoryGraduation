@@ -16,12 +16,13 @@ public class EnemyChase : EnemyBehaviour
     private void OnDisable()
     {
         //switch direction
-        GoOppositeDir();
+        if(!enemy.freightened.enabled)
+            GoOppositeDir();
         enemy.scatter.Enable();
     }
 
     private Vector2 from;
-    private Vector2 target = Vector2.zero;
+    private Vector2 targetPos = Vector2.zero;
 
     private void OnTriggerEnter2D(Collider2D col)
     {
@@ -32,7 +33,7 @@ public class EnemyChase : EnemyBehaviour
             {
                 case EnemyType.Blinky:
                     
-                    target = enemy.target.position;
+                    targetPos = enemy.target.position;
                     
                     break;
                 
@@ -40,7 +41,7 @@ public class EnemyChase : EnemyBehaviour
                 
                 case EnemyType.Pinky:
                     
-                    target = Vector2.zero;
+                    targetPos = Vector2.zero;
                     int n = 3;
                     var position = enemy.target.position;
 
@@ -48,19 +49,19 @@ public class EnemyChase : EnemyBehaviour
                     
                     if (GameManagerOnRun.instance.player.movement.direction == Vector2.up)
                     {
-                        target = new Vector2(position.x - n, position.y + n);
+                        targetPos = new Vector2(position.x - n, position.y + n);
                     }
                     else if (GameManagerOnRun.instance.player.movement.direction == Vector2.down)
                     {
-                        target = new Vector2(position.x, position.y - n);
+                        targetPos = new Vector2(position.x, position.y - n);
                     }
                     else if (GameManagerOnRun.instance.player.movement.direction == Vector2.left)
                     {
-                        target = new Vector2(position.x - n, position.y);
+                        targetPos = new Vector2(position.x - n, position.y);
                     }
                     else if (GameManagerOnRun.instance.player.movement.direction == Vector2.right)
                     {
-                        target = new Vector2(position.x + n, position.y);
+                        targetPos = new Vector2(position.x + n, position.y);
                     }
 
                     break;
@@ -69,7 +70,7 @@ public class EnemyChase : EnemyBehaviour
                 
                 case EnemyType.Inky:
 
-                    target = Vector2.zero;
+                    targetPos = Vector2.zero;
                     position = enemy.target.position;
                     Vector2 playerDirByN = Vector2.zero;
                     n = 1;
@@ -97,7 +98,7 @@ public class EnemyChase : EnemyBehaviour
                     float xDist = playerDirByN.x - blinky.transform.position.x;
                     float yDist = playerDirByN.y - blinky.transform.position.y;
 
-                    target = new Vector2(playerDirByN.x + xDist, playerDirByN.y + yDist);
+                    targetPos = new Vector2(playerDirByN.x + xDist, playerDirByN.y + yDist);
                     
                     break;
                 
@@ -109,16 +110,16 @@ public class EnemyChase : EnemyBehaviour
                     //if clyde is less than 8 tiles away from pacman, his target is a bottom left tile from scatter
                     if (Vector3.Distance(transform.position, enemy.target.position) > 8)
                     {
-                        target = enemy.target.position;
+                        targetPos = enemy.target.position;
                     }
                     else
                     {
-                        target = GetComponent<EnemyScatter>().scatterNode.position;
+                        targetPos = GetComponent<EnemyScatter>().scatterNode.position;
                     }
                     
                     break;
             }
-            CalculateDistToTarget(node, target);
+            CalculateDistToTarget(node, targetPos);
         }
     }
 

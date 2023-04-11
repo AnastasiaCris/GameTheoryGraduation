@@ -24,9 +24,8 @@ public class GameManagerEditor : MonoBehaviour
     public GameObject narrowMapPrefab;
     
     public GameObject mapDestination;
-    
-    [Header("Rules")]
-    
+
+    [Header("Rules")] public bool spawnMoreEnemiesOnKill = true;
     public static GameManagerEditor instance;
     void Awake()
     {
@@ -43,6 +42,8 @@ public class GameManagerEditor : MonoBehaviour
         {
             Time.timeScale = 0;
         }
+
+        spawnMoreEnemiesOnKill = true;
     }
 
     // Update is called once per frame

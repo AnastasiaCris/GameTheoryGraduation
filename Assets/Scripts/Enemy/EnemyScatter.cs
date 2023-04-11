@@ -7,7 +7,8 @@ public class EnemyScatter : EnemyBehaviour
     private void OnDisable()
     {
         //switchDirection
-        GoOppositeDir();
+        if(!enemy.freightened.enabled)
+            GoOppositeDir();
         enemy.chase.Enable();
     }
 

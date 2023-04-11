@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class EnemyFreightened : EnemyBehaviour
 {
+    [SerializeField] private int index;
     public SpriteRenderer body;
     public SpriteRenderer deadBody;
     
     public Color originalBodyCol;
     public Color freightenedBodyCol;
     public Color flashFreightenedBodyCol;
-    public Color bodyEaten;
     public bool eaten { get; private set; }
     private bool reachedHouse;
 
@@ -46,7 +46,19 @@ public class EnemyFreightened : EnemyBehaviour
         deadBody.enabled = true;
         
         enemy.home.Enable(duration);
+        
+        //Rule Element
+        if (GameManagerEditor.instance.spawnMoreEnemiesOnKill)
+        {
+            GameObject newEnemy = Instantiate(enemy.enemyPrefab, ManagerMapSwitch.instance.enemiesStartingPos[index].position, Quaternion.identity, transform.parent.transform);
+            
+            newEnemy.GetComponent<EnemyHome>().Disable();
+            
+            GameManagerOnRun.instance.enemies.Add(newEnemy.GetComponent<Enemy>());
+        }
     }
+
+
     private void OnEnable()
     {
         enemy.movement.speedMultiplier = 0.5f;
@@ -69,7 +81,7 @@ public class EnemyFreightened : EnemyBehaviour
         Node node = col.GetComponent<Node>();
         if (node != null && enabled)//if you hit a node calculate the longest pos from the player
         {
-            CalculateDistToTarget(node, enemy.target.position, false);
+            CalculateDistToTarget(node, enemy.target.position, false, true);
         }
 
         if (col.gameObject.layer == LayerMask.NameToLayer("Spawn") && eaten)

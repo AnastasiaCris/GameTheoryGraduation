@@ -8,6 +8,7 @@ public class EnemyHome : EnemyBehaviour
 
     private void OnEnable()
     {
+        
         StopAllCoroutines();
     }
 
@@ -58,5 +59,7 @@ public class EnemyHome : EnemyBehaviour
         enemy.movement.SetDirection(new Vector2(Random.value < 0.5f ? -1.0f : 1.0f, 0), true);
         enemy.movement.rb.isKinematic = false;
         enemy.movement.enabled = true;
+        enemy.freightened.body.enabled = true;
+        enemy.freightened.deadBody.enabled = false;
     }
 }

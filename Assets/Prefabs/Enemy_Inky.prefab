@@ -8,8 +8,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 288816096725299684, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
+      propertyPath: duration
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 288816096725299684, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
       propertyPath: enemyType
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 944913601411801504, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
+      propertyPath: duration
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 3786419274335744870, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
       propertyPath: m_Color.g
@@ -22,6 +30,10 @@ PrefabInstance:
     - target: {fileID: 3809575274610264584, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
       propertyPath: duration
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3840128366176617862, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
+      propertyPath: index
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3840128366176617862, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
       propertyPath: originalBodyCol.g

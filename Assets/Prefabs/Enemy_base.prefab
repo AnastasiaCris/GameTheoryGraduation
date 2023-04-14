@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1866547183954619771}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.005, y: 0.272, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -72,8 +72,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 51d920a767036114f9e4fc56e2411fca, type: 3}
+  m_SortingOrder: 2
+  m_Sprite: {fileID: -1577786169, guid: b8ff9830472a94149863643c8332b973, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -192,6 +192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a8a2ffc97916d148b47837423248ce1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 0}
   points: 200
   behaviour: {fileID: 0}
   target: {fileID: 0}
@@ -252,12 +253,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 8
+  index: 0
   body: {fileID: 3786419274335744870}
   deadBody: {fileID: 8720590376999745870}
   originalBodyCol: {r: 1, g: 1, b: 1, a: 1}
   freightenedBodyCol: {r: 0, g: 0.116251945, b: 1, a: 1}
   flashFreightenedBodyCol: {r: 1, g: 1, b: 1, a: 1}
-  bodyEaten: {r: 1, g: 1, b: 1, a: 0.2901961}
 --- !u!1 &5777195527234678478
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,8 +332,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 2747690628134850419, guid: 39143a05c48a501479346110d0aa2a4f, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.24313726}
+  m_Sprite: {fileID: 202253624, guid: b8ff9830472a94149863643c8332b973, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

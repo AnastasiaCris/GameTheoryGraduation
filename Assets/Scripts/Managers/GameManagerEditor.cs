@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class GameManagerEditor : MonoBehaviour
@@ -10,6 +11,10 @@ public class GameManagerEditor : MonoBehaviour
     [Header("Editor UI")] 
     public GameObject editorUI;
     public GameObject elementsUI;
+    public Image img_PlayBTN;
+    public Sprite pause;
+    public Sprite play;
+    
 
     [Header("Timer")] public bool timerOn;
     public TextMeshProUGUI timerText;
@@ -25,7 +30,12 @@ public class GameManagerEditor : MonoBehaviour
     
     public GameObject mapDestination;
 
-    [Header("Rules")] public bool spawnMoreEnemiesOnKill = true;
+    [Header("Goals")] 
+    public bool killAllEnemies;
+    
+    [Header("Rules")] 
+    public bool spawnMoreEnemiesOnKill;
+    
     public static GameManagerEditor instance;
     void Awake()
     {
@@ -42,8 +52,6 @@ public class GameManagerEditor : MonoBehaviour
         {
             Time.timeScale = 0;
         }
-
-        spawnMoreEnemiesOnKill = true;
     }
 
     // Update is called once per frame
@@ -51,10 +59,13 @@ public class GameManagerEditor : MonoBehaviour
     {
         
     }
+
+    private bool bigger;
     public void ChangeModes()
     {
         if (GameModeManager.gameMode == GameModeManager.GameMode.Editor)
         {
+            img_PlayBTN.sprite = pause;
             elementsUI.SetActive(false);
             GameModeManager.gameMode = GameModeManager.GameMode.Classic;
             Time.timeScale = 1;
@@ -65,6 +76,13 @@ public class GameManagerEditor : MonoBehaviour
         }
         else
         {
+            if (!bigger)
+            {
+              SetUpCamera(true);
+              bigger = true;
+            }
+            
+            img_PlayBTN.sprite = play;
             editorUI.SetActive(true);
             elementsUI.SetActive(true);
             GameModeManager.gameMode = GameModeManager.GameMode.Editor;
@@ -72,21 +90,40 @@ public class GameManagerEditor : MonoBehaviour
         }
     }
 
-    #region Time
-
-    public void SetTimer()
+    public void SetBoolean(int index)
     {
-        if (!timerOn)
+        switch (index)
         {
-            timerOn = true;
+            case 0:
+                timerOn = !timerOn;
+                break;
+            case 1:
+                spawnMoreEnemiesOnKill = !spawnMoreEnemiesOnKill;
+                break;
+            case 2:
+                killAllEnemies = !killAllEnemies;
+                break;
         }
-        else
-        {
-            timerOn = false;
-        }
+
         
     }
 
+    public void SetUpCamera(bool paused)
+    {
+        if (paused)
+        {
+            Camera.main.orthographicSize += 3;
+            Vector3 pos = Camera.main.transform.position;
+            //Camera.main.transform.position = new Vector3(pos.x - 5, pos.y, pos.z);
+        }
+        else
+        {
+            
+        }
+    }
+
+    #region Time
+    
     public void SetUpTimer(TMP_InputField textField)
     {
         timer = Int32.Parse(textField.text);
@@ -96,6 +133,7 @@ public class GameManagerEditor : MonoBehaviour
 
     public void StartTimer()
     {
+        StopCoroutine(UpdateTimer());
         StartCoroutine(UpdateTimer());
     }
 
@@ -118,7 +156,6 @@ public class GameManagerEditor : MonoBehaviour
 
     public void ChangeMap(string mapType)
         {
-            Debug.Log("before: " + Time.timeScale);
             //make sure you destroy any map already in there before instantiating a new one
             if (mapDestination.GetComponentInChildren<Transform>() != null)
             {
@@ -127,31 +164,40 @@ public class GameManagerEditor : MonoBehaviour
                     Destroy(child.gameObject);
                 }
             }
-    
-    
-            switch (mapType)
-            {
-                case "normal":
-                    Instantiate(normalMapPrefab, mapDestination.transform);
-                    break;
-                case "big":
-                    Instantiate(bigMapPrefab, mapDestination.transform);
-                    break;
-                case "small":
-                    Instantiate(smallMapPrefab, mapDestination.transform);
-                    break;
-                case "open":
-                    Instantiate(openMapPrefab, mapDestination.transform);
-                    break;
-                case "narrow":
-                    Instantiate(narrowMapPrefab, mapDestination.transform);
-                    break;
-            }
-            Debug.Log("after: " + Time.timeScale);
+            StartCoroutine(AddMap(mapType));
         }
 
+    IEnumerator AddMap(string mapType)
+    {
+        yield return new WaitForEndOfFrame();
+        switch (mapType)
+        {
+            case "normal":
+                Instantiate(normalMapPrefab, mapDestination.transform);
+                break;
+            case "big":
+                Instantiate(bigMapPrefab, mapDestination.transform);
+                break;
+            case "small":
+                Instantiate(smallMapPrefab, mapDestination.transform);
+                break;
+            case "open":
+                Instantiate(openMapPrefab, mapDestination.transform);
+                break;
+            case "narrow":
+                Instantiate(narrowMapPrefab, mapDestination.transform);
+                break;
+        }
+        SetUpCamera(true);
+    }
+
     #endregion
+
+    #region Rules
+
     
+
+    #endregion
 
     
 }

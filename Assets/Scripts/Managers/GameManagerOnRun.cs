@@ -1,6 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,7 +17,11 @@ public class GameManagerOnRun : MonoBehaviour
     [Header("UI Menu")] 
     public GameObject gameOverMenu;
     public GameObject pauseMenu;
+    public GameObject roundWonMenu;
 
+    //extra
+    [HideInInspector]public bool enemiesFreightened;
+    
     public static GameManagerOnRun instance;
     private void Awake()
     {
@@ -29,7 +33,8 @@ public class GameManagerOnRun : MonoBehaviour
     {
         gameOverMenu.SetActive(false);
         pauseMenu.SetActive(false);
-     StartNewGame();   
+        roundWonMenu.SetActive(false);
+        StartNewGame();   
     }
 
     private void Update()
@@ -55,15 +60,16 @@ public class GameManagerOnRun : MonoBehaviour
 
     /// <summary>
     /// Called when starting a new round (eating all points/losing all lives/starting new game)
-    /// all points are added together with the player an enemeies
+    /// all points are added together with the player an enemies
     /// </summary>
-    private void StartNewRound()
+    public void StartNewRound()
     {
         //Precaution
         if(GameModeManager.gameMode == GameModeManager.GameMode.Classic)
             Time.timeScale = 1;
         pauseMenu.SetActive(false);
         gameOverMenu.SetActive(false);
+        roundWonMenu.SetActive(false);
         
         //Reset everything
         foreach (Transform points in this.points)
@@ -76,13 +82,23 @@ public class GameManagerOnRun : MonoBehaviour
         if (GameManagerEditor.instance.timerOn)
         {
             GameManagerEditor.instance.remainingTimer = GameManagerEditor.instance.timer;
-            StopCoroutine(GameManagerEditor.instance.UpdateTimer());
             GameManagerEditor.instance.StartTimer();
         }
 
-        if (GameManagerEditor.instance.spawnMoreEnemiesOnKill)
+        if (GameManagerEditor.instance.spawnMoreEnemiesOnKill && enemies.Count > 4)
         {
-            //delete all extra enemies and t
+            
+            List<Enemy> extraEnemies = new List<Enemy>(enemies.Skip(4)) ;
+            for (int i = 0; i < extraEnemies.Count; i++)
+            {
+                Destroy(extraEnemies[i].gameObject);
+            }
+            enemies.RemoveRange(4, enemies.Count-4);
+        }
+
+        if (GameManagerEditor.instance.killAllEnemies && PointsRemained())
+        {
+            StopCoroutine(EnableGameOver());
         }
     }
 
@@ -153,16 +169,31 @@ public class GameManagerOnRun : MonoBehaviour
         }
     }
 
+    #region GoalElement
+
+    IEnumerator EnableGameOver()
+    {
+        yield return new WaitUntil((() => !enemiesFreightened));//wait until enemies are not freightened
+        GameOver();
+    }
+
+    #endregion
+
     public void PointCollected(Points point)
     {
         point.gameObject.SetActive(false);
         
         SetScore(score + point.points);
 
-        if (!PointsRemained())
+        if (!PointsRemained() && !GameManagerEditor.instance.killAllEnemies)
         {
             player.gameObject.SetActive(false);
-            Invoke(nameof(StartNewRound), 3);
+            Time.timeScale = 0;
+            roundWonMenu.SetActive(true);
+            
+        }else if (!PointsRemained() && GameManagerEditor.instance.killAllEnemies )//if all points collected and you have to kill all enemies
+        {
+            StartCoroutine(EnableGameOver());
         }
     }
     
@@ -178,7 +209,7 @@ public class GameManagerOnRun : MonoBehaviour
         Invoke(nameof(ResetEnemyMultiplier), point.duration);
     }
 
-    //Check if all points have been collected
+    ///Check if all points have been collected
     private bool PointsRemained()
     {
         foreach (Transform point in points)
@@ -207,6 +238,8 @@ public class GameManagerOnRun : MonoBehaviour
         {
             pauseMenu.SetActive(false);
             gameOverMenu.SetActive(false);
+            roundWonMenu.SetActive(false);
+            StartNewGame(); 
             GameManagerEditor.instance.ChangeModes();
         }
     

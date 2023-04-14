@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour
     public EnemyBehaviour behaviour;
     public Transform target;
     public GameManagerOnRun managerOnRun{ get; private set; }
+    public ManagerMapSwitch mapSwitchManager{ get; private set; }
 
     private void Awake()
     {
@@ -23,7 +24,7 @@ public class Enemy : MonoBehaviour
         freightened = GetComponent<EnemyFreightened>();
         home = GetComponent<EnemyHome>();
         managerOnRun = FindObjectOfType<GameManagerOnRun>();
-      
+        mapSwitchManager = FindObjectOfType<ManagerMapSwitch>();
     }
 
     private void Start()

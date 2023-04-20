@@ -18,7 +18,6 @@ public class EnemyFreightened : EnemyBehaviour
         base.Enable(duration);
         body.color = freightenedBodyCol;
         enemy.managerOnRun.enemiesFreightened = true;
-        
         Invoke(nameof(Flash), duration/2);
     }
 
@@ -89,7 +88,7 @@ public class EnemyFreightened : EnemyBehaviour
 
     private void OnEnable()
     {
-        enemy.movement.speedMultiplier = 0.5f;
+        enemy.movement.speedMultiplier *= 0.5f;
         dead = false;
         body.enabled = true;
         deadBody.enabled = false;
@@ -97,7 +96,7 @@ public class EnemyFreightened : EnemyBehaviour
 
     private void OnDisable()
     {
-        enemy.movement.speedMultiplier = 1f;
+        enemy.movement.speedMultiplier = GameManagerEditor.instance.changedSpeedMultiplier;
         dead = false;
         
         body.enabled = true;

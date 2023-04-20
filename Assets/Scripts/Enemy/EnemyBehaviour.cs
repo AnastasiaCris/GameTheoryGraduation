@@ -22,6 +22,7 @@ public abstract class EnemyBehaviour : MonoBehaviour
 
     public virtual void Enable(float duration)
     {
+        duration *= GameManagerEditor.instance.changedSpeedMultiplier;
         enabled = true;
         CancelInvoke();
         Invoke(nameof(Disable), duration);

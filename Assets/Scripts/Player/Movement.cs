@@ -36,7 +36,7 @@ public class Movement : MonoBehaviour
 
     public void ResetState()
     {
-        speedMultiplier = 1;
+        speedMultiplier = GameManagerEditor.instance.changedSpeedMultiplier;
         direction = startDir;
         nextDirection = Vector2.zero;
         transform.position = startPos;

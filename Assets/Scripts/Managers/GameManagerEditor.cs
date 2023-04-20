@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class GameManagerEditor : MonoBehaviour
@@ -21,6 +20,10 @@ public class GameManagerEditor : MonoBehaviour
     public TextMeshProUGUI timerText;
     public int timer { get; private set; }
     public int remainingTimer;
+
+    public Slider gameSpeedTimer;
+    public TextMeshProUGUI gameSpeedText;
+    public float changedSpeedMultiplier = 1;
     
     [Header("Map Prefabs")]
     public GameObject normalMapPrefab;
@@ -161,6 +164,22 @@ public class GameManagerEditor : MonoBehaviour
         FindObjectOfType<GameManagerOnRun>().GameOver();
         remainingTimer = timer; //reset timer
     }
+    
+    public void GameSpeed()
+    {
+        GameManagerOnRun onRunManager = FindObjectOfType<GameManagerOnRun>();
+
+        gameSpeedText.text = "x"+ gameSpeedTimer.value.ToString("0.00");
+
+        for (int i = 0; i < onRunManager.enemies.Count; i++)
+        {
+            onRunManager.enemies[i].movement.speedMultiplier = gameSpeedTimer.value;
+            onRunManager.enemies[i].behaviour.duration *= gameSpeedTimer.value;
+        }
+
+        onRunManager.player.movement.speedMultiplier = gameSpeedTimer.value;
+        changedSpeedMultiplier = gameSpeedTimer.value;
+    }
 
     #endregion
     
@@ -284,5 +303,6 @@ public class GameManagerEditor : MonoBehaviour
     }
 
     #endregion
+    
     
 }

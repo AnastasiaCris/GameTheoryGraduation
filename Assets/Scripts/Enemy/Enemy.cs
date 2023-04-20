@@ -3,7 +3,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public GameObject enemyPrefab;
-    
+    public int Id = 0;
     public int points = 200;
     public Movement movement{ get; private set; }
     public EnemyHome home{ get; private set; }
@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour
     public Transform target;
     public GameManagerOnRun managerOnRun{ get; private set; }
     public ManagerMapSwitch mapSwitchManager{ get; private set; }
+
 
     private void Awake()
     {
@@ -34,21 +35,20 @@ public class Enemy : MonoBehaviour
 
     public void ResetState()
     {
+        managerOnRun.newRound = true;
         gameObject.SetActive(true);
         movement.ResetState();
 
         freightened.Disable();
         chase.Disable();
-        scatter.Enable();
-        if (home != behaviour)
-        {
-            home.Disable();
-        }
+        scatter.Disable();
 
         if (behaviour != null)
         {
             behaviour.Enable();
         }
+
+        managerOnRun.newRound = false;
     }
 
     private void OnCollisionEnter2D(Collision2D col)

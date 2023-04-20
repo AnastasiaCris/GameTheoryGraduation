@@ -9,7 +9,8 @@ public class EnemyScatter : EnemyBehaviour
         //switchDirection
         if(!enemy.freightened.enabled)
             GoOppositeDir();
-        enemy.chase.Enable();
+        if(!enemy.managerOnRun.newRound)
+            enemy.chase.Enable();
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -18,6 +19,7 @@ public class EnemyScatter : EnemyBehaviour
         if (node != null && enabled && !enemy.freightened.enabled)//if you hit a node and you're in scattered and not in frightened mode
         {
             CalculateDistToTarget(node, scatterNode.position);
+            
         }
     }
 

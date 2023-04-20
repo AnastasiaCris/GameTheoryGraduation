@@ -96,6 +96,10 @@ PrefabInstance:
       value: Enemy_Clyde
       objectReference: {fileID: 0}
     - target: {fileID: 8594713845647992328, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
+      propertyPath: Id
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8594713845647992328, guid: 4a3079a1127241f4dbf490612aa0e9e5, type: 3}
       propertyPath: behaviour
       value: 
       objectReference: {fileID: 8213227981160619893}

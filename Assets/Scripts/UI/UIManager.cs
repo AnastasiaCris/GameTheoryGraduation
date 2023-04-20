@@ -1,12 +1,19 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public GameManagerOnRun gamaManager;
-
     public TextMeshProUGUI score;
-    public TextMeshProUGUI life;
+    public TextMeshProUGUI highScore;
+    
+    [Header("Life")]
+    public GameObject lifeBar;
+    public Slider healthSlider;
+    public GameObject lifeHearts;
+    public Image[] hearts;
+    public Sprite fullHeart;
+    public Sprite emptyHeart;
 
     static public UIManager instance;
 
@@ -16,14 +23,15 @@ public class UIManager : MonoBehaviour
             instance = this;
     }
 
-    void Start()
+    public void SwitchOnOff(GameObject targetObj)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (targetObj.activeSelf)
+        {
+            targetObj.SetActive(false);
+        }
+        else
+        {
+            targetObj.SetActive(true);
+        }
     }
 }

@@ -18,7 +18,8 @@ public class EnemyChase : EnemyBehaviour
         //switch direction
         if(!enemy.freightened.enabled)
             GoOppositeDir();
-        enemy.scatter.Enable();
+        if(!enemy.managerOnRun.newRound)
+            enemy.scatter.Enable();
     }
 
     private Vector2 from;

@@ -13,14 +13,18 @@ public class GameManagerOnRun : MonoBehaviour
     public int enemyMultiplier { get; private set; } = 1;
     public int score { get; private set; }
     public int lives { get; private set; }
-
+    public int maxLives = 0;
+    
     [Header("UI Menu")] 
     public GameObject gameOverMenu;
-    public GameObject pauseMenu;
     public GameObject roundWonMenu;
+    public GameObject gameOverText;
+    public GameObject roundWonText;
 
     //extra
     [HideInInspector]public bool enemiesFreightened;
+    [HideInInspector]public bool newRound;
+
     
     public static GameManagerOnRun instance;
     private void Awake()
@@ -32,29 +36,22 @@ public class GameManagerOnRun : MonoBehaviour
     void Start()
     {
         gameOverMenu.SetActive(false);
-        pauseMenu.SetActive(false);
         roundWonMenu.SetActive(false);
         StartNewGame();   
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && GameModeManager.gameMode == GameModeManager.GameMode.Classic)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Time.timeScale = 0;
-            if(!pauseMenu.activeSelf)
-                pauseMenu.SetActive(true);
-            else
-            {
-                Resume();
-            }
+            SwitchMode();
         }
     }
 
     public void StartNewGame()
     {
         SetScore(0);
-        SetLives(3);
+        SetLives(GameManagerEditor.instance.maxLives, true);
         StartNewRound();
     }
 
@@ -67,7 +64,6 @@ public class GameManagerOnRun : MonoBehaviour
         //Precaution
         if(GameModeManager.gameMode == GameModeManager.GameMode.Classic)
             Time.timeScale = 1;
-        pauseMenu.SetActive(false);
         gameOverMenu.SetActive(false);
         roundWonMenu.SetActive(false);
         
@@ -78,7 +74,7 @@ public class GameManagerOnRun : MonoBehaviour
         }
 
         ResetState();
-
+        
         if (GameManagerEditor.instance.timerOn)
         {
             GameManagerEditor.instance.remainingTimer = GameManagerEditor.instance.timer;
@@ -119,23 +115,74 @@ public class GameManagerOnRun : MonoBehaviour
     {
         this.score = score;
         UIManager.instance.score.text = "Score: " + score;
+        UIManager.instance.highScore.text = "High Score \n" + PlayerPrefs.GetInt("HighScore", 0);
+        if (this.score > PlayerPrefs.GetInt("HighScore", 0))
+        {
+            PlayerPrefs.SetInt("HighScore", this.score);
+            UIManager.instance.highScore.text = "High Score \n" + PlayerPrefs.GetInt("HighScore", 0);
+        }
+            
     }
-    
-    private void SetLives(int lives)
+
+    public void SetLives(int currentLife, bool startOfGame = false)
     {
-        this.lives = lives;
-        if(lives > 0 )
-            UIManager.instance.life.text = "Lives: " + lives;
+        lives = currentLife;
+        
+        if (startOfGame)
+        {
+            maxLives = currentLife;
+            if (maxLives < 6)
+            {
+                UIManager.instance.lifeHearts.SetActive(true);
+                UIManager.instance.lifeBar.SetActive(false);
+                for (int i = 0; i < UIManager.instance.hearts.Length; i++)
+                {
+                    if (i < lives)
+                    {
+                        UIManager.instance.hearts[i].enabled = true;
+                    }
+                    else
+                    {
+                        UIManager.instance.hearts[i].enabled = false;
+                    }
+                }
+            }
+            else
+            {
+                UIManager.instance.lifeHearts.SetActive(false);
+                UIManager.instance.lifeBar.SetActive(true);
+                UIManager.instance.healthSlider.maxValue = maxLives;
+            }
+        }
+
+        if (maxLives < 6) //if it's hearts
+        {
+            for (int i = 0; i < UIManager.instance.hearts.Length; i++)
+            {
+                if (i < lives)
+                {
+                    UIManager.instance.hearts[i].sprite = UIManager.instance.fullHeart;
+                }
+                else
+                {
+                    UIManager.instance.hearts[i].sprite = UIManager.instance.emptyHeart;
+                }
+            }
+        }
+        else //if it's a health bar
+        {
+            UIManager.instance.healthSlider.value = lives;
+        }
     }
+
 
     /// <summary>
     /// called when player loses all lives
     /// </summary>
      public void GameOver()
     {
-        Time.timeScale = 0;
-        gameOverMenu.SetActive(true);
-        
+        ShowScene(false);
+
         for (int i = 0; i < enemies.Count; i++)
         {
             enemies[i].gameObject.SetActive(false);
@@ -159,7 +206,7 @@ public class GameManagerOnRun : MonoBehaviour
         
         SetLives(lives-1);
         
-        if (lives >= 0)
+        if (lives > 0)
         {
             Invoke(nameof(ResetState), 1.0f);
         }
@@ -188,8 +235,7 @@ public class GameManagerOnRun : MonoBehaviour
         if (!PointsRemained() && !GameManagerEditor.instance.killAllEnemies)
         {
             player.gameObject.SetActive(false);
-            Time.timeScale = 0;
-            roundWonMenu.SetActive(true);
+            ShowScene(true);
             
         }else if (!PointsRemained() && GameManagerEditor.instance.killAllEnemies )//if all points collected and you have to kill all enemies
         {
@@ -236,19 +282,47 @@ public class GameManagerOnRun : MonoBehaviour
     
         public void SwitchMode()
         {
-            pauseMenu.SetActive(false);
             gameOverMenu.SetActive(false);
             roundWonMenu.SetActive(false);
             StartNewGame(); 
             GameManagerEditor.instance.ChangeModes();
         }
-    
-        public void Resume()
-        {
-            pauseMenu.SetActive(false);
-            Time.timeScale = 1;
-        }
 
-    #endregion
+        public void ShowScene(bool won)
+        {
+            StartCoroutine(LevelOverScenes(won));
+        }
+        IEnumerator LevelOverScenes(bool won)
+        {
+            if (!won)
+            {
+                gameOverText.SetActive(true);
+                yield return new WaitForSeconds(0.3f);
+                gameOverText.SetActive(false);
+                yield return new WaitForSeconds(0.3f);
+                gameOverText.SetActive(true);
+                yield return new WaitForSeconds(0.3f);
+                gameOverText.SetActive(false);
+                yield return new WaitForSeconds(0.3f);
+                gameOverMenu.SetActive(true);
+                Time.timeScale = 0;
+            }
+            else
+            {
+                roundWonText.SetActive(true);
+                yield return new WaitForSeconds(0.3f);
+                roundWonText.SetActive(false);
+                yield return new WaitForSeconds(0.3f);
+                roundWonText.SetActive(true);
+                yield return new WaitForSeconds(0.3f);
+                roundWonText.SetActive(false);
+                yield return new WaitForSeconds(0.3f);
+                roundWonMenu.SetActive(true);
+                Time.timeScale = 0;
+            }
+
+            yield return null;
+        }
+        #endregion
     
 }

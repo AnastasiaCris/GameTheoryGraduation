@@ -10,6 +10,7 @@ public class EnemyFreightened : EnemyBehaviour
     public Color freightenedBodyCol;
     public Color flashFreightenedBodyCol;
     public bool dead { get; private set; }
+    public bool canExit;
     private bool reachedHouse;
     
     public override void Enable(float duration)
@@ -38,7 +39,8 @@ public class EnemyFreightened : EnemyBehaviour
     private void Damaged()
     {
         dead = true;
-
+        canExit = true;
+        
         Vector3 pos = enemy.home.home.transform.position;
         pos.z = enemy.transform.position.z;
 

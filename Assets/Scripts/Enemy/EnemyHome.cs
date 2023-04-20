@@ -10,7 +10,7 @@ public class EnemyHome : EnemyBehaviour
     private void OnEnable()
     {
         StopAllCoroutines();
-        if(blinky && !enemy.freightened.dead)
+        if(blinky && !enemy.freightened.canExit)
             enemy.movement.direction = Vector2.zero;
     }
 
@@ -23,7 +23,7 @@ public class EnemyHome : EnemyBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (!blinky || enemy.freightened.dead)
+        if (!blinky || enemy.freightened.canExit)
         {
             if (enabled && col.gameObject.layer == LayerMask.NameToLayer("Ostacle"))
             {
@@ -34,7 +34,7 @@ public class EnemyHome : EnemyBehaviour
 
     private IEnumerator ExitHouse()
     {
-        if (!blinky || enemy.freightened.dead)
+        if (!blinky || enemy.freightened.canExit)
         {
            enemy.movement.SetDirection(Vector2.up, true);
                    enemy.movement.rb.isKinematic = true;
@@ -68,9 +68,10 @@ public class EnemyHome : EnemyBehaviour
                    enemy.movement.rb.isKinematic = false;
                    enemy.movement.enabled = true;
                    enemy.freightened.body.enabled = true;
-                   enemy.freightened.deadBody.enabled = false; 
+                   enemy.freightened.deadBody.enabled = false;
+                   enemy.freightened.canExit = false;
         }
-        else if (blinky && !enemy.freightened.dead)
+        else if (blinky && !enemy.freightened.canExit)
         {
             enemy.movement.direction = Vector2.right;
         }

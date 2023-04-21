@@ -1,15 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class ManagerMapSwitch : MonoBehaviour
 {
-    [Header("Player")]
+    [Header("Player")][Space]
     public GameObject playerPrefab;
     public GameObject playerClone{ get; private set; }
     
-    [Header("Enemies")]
+    [Space][Header("Enemies")][Space]
     public GameObject[] enemiesPrefab;
     public GameObject[] enemiesClone{ get; private set; }
     
@@ -20,7 +17,7 @@ public class ManagerMapSwitch : MonoBehaviour
 
     public int timeInterval = 2;
     
-    [Header("Starting Positions")]
+    [Space][Header("Starting Positions")][Space]
     public Transform playerStartingPos;
     public Transform[] enemiesStartingPos;
     public Transform[] enemiesScatterPoints;

@@ -7,19 +7,21 @@ using UnityEngine.SceneManagement;
 public class GameManagerOnRun : MonoBehaviour
 {
     public List<Enemy> enemies = new List<Enemy>();
-    public Player player;
-    public Transform points;
+    [Space]public Player player;
+    [Space]public Transform points;
 
     public int enemyMultiplier { get; private set; } = 1;
     public int score { get; private set; }
     public int lives { get; private set; }
-    public int maxLives = 0;
+    [HideInInspector]public int maxLives = 0;
     
-    [Header("UI Menu")] 
+    [Space][Header("UI Menu")][Space]
     public GameObject gameOverMenu;
     public GameObject roundWonMenu;
     public GameObject gameOverText;
+    public GameObject gameOverText1;
     public GameObject roundWonText;
+    public GameObject roundWonText1;
 
     //extra
     [HideInInspector]public bool enemiesFreightened;
@@ -62,8 +64,6 @@ public class GameManagerOnRun : MonoBehaviour
     public void StartNewRound()
     {
         //Precaution
-        if(GameModeManager.gameMode == GameModeManager.GameMode.Classic)
-            Time.timeScale = 1;
         gameOverMenu.SetActive(false);
         roundWonMenu.SetActive(false);
         
@@ -103,7 +103,7 @@ public class GameManagerOnRun : MonoBehaviour
     /// </summary>
     private void ResetState()
     {
-        ResetEnemyMultiplier();
+        ResetEnemyPowerUpMultiplier();
         for (int i = 0; i < enemies.Count; i++)
         {
             enemies[i].ResetState();
@@ -226,60 +226,59 @@ public class GameManagerOnRun : MonoBehaviour
 
     #endregion
 
-    public void PointCollected(Points point)
-    {
-        point.gameObject.SetActive(false);
-        
-        SetScore(score + point.points);
+    #region Points
 
-        if (!PointsRemained() && !GameManagerEditor.instance.killAllEnemies)
+        public void PointCollected(Points point)
         {
-            player.gameObject.SetActive(false);
-            ShowScene(true);
+            point.gameObject.SetActive(false);
             
-        }else if (!PointsRemained() && GameManagerEditor.instance.killAllEnemies )//if all points collected and you have to kill all enemies
-        {
-            StartCoroutine(EnableGameOver());
-        }
-    }
+            SetScore(score + point.points);
     
-    public void PowerUpCollected(PowerUp point)
-    {
-        for (int i = 0; i < enemies.Count; i++)
-        {
-            enemies[i].freightened.Enable(point.duration);
-        }
-        
-        PointCollected(point);
-        CancelInvoke();
-        Invoke(nameof(ResetEnemyMultiplier), point.duration);
-    }
-
-    ///Check if all points have been collected
-    private bool PointsRemained()
-    {
-        foreach (Transform point in points)
-        {
-            if (point.gameObject.activeSelf)
+            if (!PointsRemained() && !GameManagerEditor.instance.killAllEnemies)
             {
-                return true;
+                player.gameObject.SetActive(false);
+                ShowScene(true);
+                
+            }else if (!PointsRemained() && GameManagerEditor.instance.killAllEnemies )//if all points collected and you have to kill all enemies
+            {
+                StartCoroutine(EnableGameOver());
             }
         }
-        return false;
-    }
-
-    private void ResetEnemyMultiplier()
-    {
-        enemyMultiplier = 1;
-    }
-
-    #region UIButtons
-
-    public void SwitchScene()
+        
+        public void PowerUpCollected(PowerUp point)
         {
-            SceneManager.LoadScene(0);
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                enemies[i].freightened.Enable(point.duration);
+            }
+            
+            PointCollected(point);
+            CancelInvoke();
+            Invoke(nameof(ResetEnemyPowerUpMultiplier), point.duration);
         }
     
+        ///Check if all points have been collected
+        private bool PointsRemained()
+        {
+            foreach (Transform point in points)
+            {
+                if (point.gameObject.activeSelf)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void ResetEnemyPowerUpMultiplier()
+        {
+            enemyMultiplier = 1;
+        }
+
+    #endregion
+    
+    #region UIButtons
+
         public void SwitchMode()
         {
             gameOverMenu.SetActive(false);
@@ -304,6 +303,7 @@ public class GameManagerOnRun : MonoBehaviour
                 yield return new WaitForSeconds(0.3f);
                 gameOverText.SetActive(false);
                 yield return new WaitForSeconds(0.3f);
+                gameOverText1.SetActive(true);
                 gameOverMenu.SetActive(true);
                 Time.timeScale = 0;
             }
@@ -317,6 +317,7 @@ public class GameManagerOnRun : MonoBehaviour
                 yield return new WaitForSeconds(0.3f);
                 roundWonText.SetActive(false);
                 yield return new WaitForSeconds(0.3f);
+                roundWonText1.SetActive(true);
                 roundWonMenu.SetActive(true);
                 Time.timeScale = 0;
             }

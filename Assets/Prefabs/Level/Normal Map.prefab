@@ -239,7 +239,7 @@ Tilemap:
   - first: {x: -14, y: -17, z: 0}
     second:
       serializedVersion: 2
-      m_TileIndex: 24
+      m_TileIndex: 32
       m_TileSpriteIndex: 62
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
@@ -5626,8 +5626,8 @@ Tilemap:
     m_Data: {fileID: 11400000, guid: 7515f1ec13f6ca9469c91d247bf52062, type: 2}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: b341aec185c299548b989e05b2c24c01, type: 2}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
   - m_RefCount: 0
@@ -5642,8 +5642,8 @@ Tilemap:
     m_Data: {fileID: 11400000, guid: 3a566600393a63a4e9f974509839dc4e, type: 2}
   - m_RefCount: 26
     m_Data: {fileID: 11400000, guid: 68487faaa68a47c42bc142b03b46fe09, type: 2}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: 11400000, guid: eeb0428db02c5d54cb1fd737f6769665, type: 2}
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: 5e8314153b6b75e40be0b2cb4a819185, type: 2}
   - m_RefCount: 1
@@ -5848,7 +5848,7 @@ Tilemap:
   - m_RefCount: 26
     m_Data: {fileID: -879004233, guid: 0f25999443b0df44185d67194b2e8427, type: 3}
   - m_RefCount: 1
-    m_Data: {fileID: 1628134091, guid: 65f7c6458883aef4382d52b19e9db568, type: 3}
+    m_Data: {fileID: 1278677309, guid: 65f7c6458883aef4382d52b19e9db568, type: 3}
   - m_RefCount: 41
     m_Data: {fileID: -1815389413, guid: 65f7c6458883aef4382d52b19e9db568, type: 3}
   - m_RefCount: 23
@@ -17091,22 +17091,6 @@ PrefabInstance:
     - target: {fileID: 281485778976548950, guid: d567813abb206d44d9e130282f883f37, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 398968587261386918, guid: d567813abb206d44d9e130282f883f37, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 398968587261386918, guid: d567813abb206d44d9e130282f883f37, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 398968587261386918, guid: d567813abb206d44d9e130282f883f37, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 398968587261386918, guid: d567813abb206d44d9e130282f883f37, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -42
       objectReference: {fileID: 0}
     - target: {fileID: 558769192531135856, guid: d567813abb206d44d9e130282f883f37, type: 3}
       propertyPath: m_AnchorMax.y

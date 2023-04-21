@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class GameManagerEditor : MonoBehaviour
 {
     
-    [Header("Editor UI")] 
+    [Header("Editor UI")] [Space]
     public GameObject editorUI;
     public GameObject elementsUI;
     public Image img_PlayBTN;
@@ -16,7 +16,8 @@ public class GameManagerEditor : MonoBehaviour
     public Sprite play;
     
 
-    [Header("Timer")] public bool timerOn;
+    [Space][Header("Timer")] [Space]
+    public bool timerOn;
     public TextMeshProUGUI timerText;
     public int timer { get; private set; }
     public int remainingTimer;
@@ -25,7 +26,7 @@ public class GameManagerEditor : MonoBehaviour
     public TextMeshProUGUI gameSpeedText;
     public float changedSpeedMultiplier = 1;
     
-    [Header("Map Prefabs")]
+    [Space][Header("Map Prefabs")][Space]
     public GameObject normalMapPrefab;
     public GameObject bigMapPrefab;
     public GameObject smallMapPrefab;
@@ -33,16 +34,16 @@ public class GameManagerEditor : MonoBehaviour
     public GameObject narrowMapPrefab;
     public GameObject mapDestination;
     
-    [Header("Agents")]
+    [Space][Header("Agents")][Space]
     public GameObject enemyTypeUI;
     public List<GameObject> enemyTypeList = new List<GameObject>();
     public int maxEnemies = 4;
     public int[] enemyTypes = new int[] { 0, 1, 2, 3 };
     
-    [Header("Goals")] 
+    [Space][Header("Goals")] [Space]
     public bool killAllEnemies;
     
-    [Header("Rules")] 
+    [Space][Header("Rules")] [Space]
     public bool spawnMoreEnemiesOnKill;
     public int maxLives = 3;
     
@@ -58,79 +59,122 @@ public class GameManagerEditor : MonoBehaviour
         {
             img_PlayBTN.sprite = pause;
             elementsUI.SetActive(false);
-        }else
-        {
-            Time.timeScale = 0;
         }
+        Time.timeScale = 0;
     }
+
+    #region ModeChanges
 
     private bool bigger;
     public void ChangeModes()
-    {
-        if (GameModeManager.gameMode == GameModeManager.GameMode.Editor)
         {
-            img_PlayBTN.sprite = pause;
-            elementsUI.SetActive(false);
-            GameModeManager.gameMode = GameModeManager.GameMode.Classic;
-            Time.timeScale = 1;
-            if (timerOn)
+            if (GameModeManager.gameMode == GameModeManager.GameMode.Editor)
             {
-                StartTimer();
+                img_PlayBTN.sprite = pause;
+                elementsUI.SetActive(false);
+                GameModeManager.gameMode = GameModeManager.GameMode.Classic;
+                Time.timeScale = 1;
+                if (timerOn)
+                {
+                    StartTimer();
+                }
+    
+                if (bigger)
+                {
+                    SetUpCamera(false);
+                    bigger = false;
+                }
+    
+                FindObjectOfType<GameManagerOnRun>().StartNewRound();
             }
+            else
+            {
+                if (!bigger)
+                {
+                    SetUpCamera(true);
+                    bigger = true;
+                }
+    
+                img_PlayBTN.sprite = play;
+                editorUI.SetActive(true);
+                elementsUI.SetActive(true);
+                GameModeManager.gameMode = GameModeManager.GameMode.Editor;
+                Time.timeScale = 0;
+            }
+        }
+    
+        public void ChangeSpecificMode(string mode = "")
+        {
+            if (mode == "run")
+            {
+                img_PlayBTN.sprite = pause;
+                elementsUI.SetActive(false);
+                GameModeManager.gameMode = GameModeManager.GameMode.Classic;
+                Time.timeScale = 1;
+                if (timerOn)
+                {
+                    StartTimer();
+                }
+    
+                if (bigger)
+                {
+                    SetUpCamera(false);
+                    bigger = false;
+                }
+    
+                FindObjectOfType<GameManagerOnRun>().StartNewRound();
+            }
+            else if (mode == "editor")
+            {
+                if (!bigger)
+                {
+                    SetUpCamera(true);
+                    bigger = true;
+                }
+    
+                img_PlayBTN.sprite = play;
+                editorUI.SetActive(true);
+                elementsUI.SetActive(true);
+                GameModeManager.gameMode = GameModeManager.GameMode.Editor;
+                Time.timeScale = 0;
+            }
+        }
+    
 
-            if (bigger)
-            {
-                SetUpCamera(false);
-                bigger = false;
-            }
-            FindObjectOfType<GameManagerOnRun>().StartNewRound();
-        }
-        else
-        {
-            if (!bigger)
-            {
-              SetUpCamera(true);
-              bigger = true;
-            }
-            
-            img_PlayBTN.sprite = play;
-            editorUI.SetActive(true);
-            elementsUI.SetActive(true);
-            GameModeManager.gameMode = GameModeManager.GameMode.Editor;
-            Time.timeScale = 0;
-        }
-    }
+    #endregion
+
+    #region Settings
 
     public void SetBoolean(int index)
-    {
-        switch (index)
         {
-            case 0:
-                timerOn = !timerOn;
-                break;
-            case 1:
-                spawnMoreEnemiesOnKill = !spawnMoreEnemiesOnKill;
-                break;
-            case 2:
-                killAllEnemies = !killAllEnemies;
-                break;
+            switch (index)
+            {
+                case 0:
+                    timerOn = !timerOn;
+                    break;
+                case 1:
+                    spawnMoreEnemiesOnKill = !spawnMoreEnemiesOnKill;
+                    break;
+                case 2:
+                    killAllEnemies = !killAllEnemies;
+                    break;
+            }
+        }
+    
+        public void SetUpCamera(bool paused)
+        {
+            if (paused)
+            {
+                Camera.main.orthographicSize += 3;
+            }
+            else
+            {
+                Camera.main.orthographicSize -= 3;
+            }
         }
 
-        
-    }
-
-    public void SetUpCamera(bool paused)
-    {
-        if (paused)
-        {
-            Camera.main.orthographicSize += 3;
-        }
-        else
-        {
-            Camera.main.orthographicSize -= 3;
-        }
-    }
-
+    #endregion
+    
     #region Time
     
     public void SetUpTimer(TMP_InputField textField)
@@ -224,6 +268,68 @@ public class GameManagerEditor : MonoBehaviour
 
     #endregion
 
+    #region System Agents
+        
+        public void SetUpNrOfEnemies(TMP_InputField textField)
+             {
+                int nrOfEnemies = Int32.Parse(textField.text);
+                if (nrOfEnemies < 0)
+                {
+                    nrOfEnemies = 0;
+                    textField.text = nrOfEnemies.ToString();
+                }
+                ManagerMapSwitch onMapSwitch = FindObjectOfType<ManagerMapSwitch>();
+                onMapSwitch.DeleteAllEnemies();
+                onMapSwitch.SetUpForNewEnemies(nrOfEnemies);
+                
+                //Change the Height of the parent
+                RectTransform rectTransformParent= textField.gameObject.transform.parent.parent.GetComponent<RectTransform>();
+                float newHeight = rectTransformParent.sizeDelta.y * (nrOfEnemies + 1);
+                rectTransformParent.sizeDelta = new Vector2(rectTransformParent.sizeDelta.x, newHeight);
+    
+                
+                //Create the buttons
+                if (enemyTypeList.Count > 0) //Remove first if there are any
+                {
+                    for (int i = 0; i < enemyTypeList.Count; i++)
+                    {
+                        Destroy(enemyTypeList[i]);
+                    }
+                    enemyTypeList.Clear();
+                }
+                for (int i = 0; i < nrOfEnemies; i++)
+                {
+                    GameObject enemyTypeUIBox = Instantiate(enemyTypeUI, textField.gameObject.transform.parent.parent);
+                    enemyTypeList.Add(enemyTypeUIBox);
+                    TMP_InputField enemyTypeText = enemyTypeList[i].GetComponentInChildren<TMP_InputField>();
+                    enemyTypeText.onEndEdit.AddListener((string arg0) => SetUpTypeOfEnemy(enemyTypeText, enemyTypeList.IndexOf(enemyTypeUIBox)));
+                }
+    
+                maxEnemies = nrOfEnemies;
+                enemyTypes = new int[nrOfEnemies];
+            }
+    
+            public void SetUpTypeOfEnemy(TMP_InputField textField, int nrInTheList)
+            {
+                int enemyType = Int32.Parse(textField.text);
+                if (enemyType < 0)
+                {
+                    enemyType = 0;
+                    textField.text = enemyType.ToString();
+                }
+                else if (enemyType > 3)
+                {
+                    enemyType = 3;
+                    textField.text = enemyType.ToString();
+                }
+    
+                ManagerMapSwitch onMapSwitch = FindObjectOfType<ManagerMapSwitch>();
+                onMapSwitch.SetUpIndividualEnemies(enemyType, nrInTheList);
+    
+                enemyTypes[nrInTheList] = enemyType;
+            }
+        #endregion
+    
     #region Rules
 
     public void SetUpLives(TMP_InputField textField)
@@ -238,68 +344,6 @@ public class GameManagerEditor : MonoBehaviour
 
         maxLives = life;
         onRunManager.SetLives(life, true);
-    }
-
-    #endregion
-
-    #region SystemAgents
-
-    public void SetUpNrOfEnemies(TMP_InputField textField)
-    {
-        int nrOfEnemies = Int32.Parse(textField.text);
-        if (nrOfEnemies < 0)
-        {
-            nrOfEnemies = 0;
-            textField.text = nrOfEnemies.ToString();
-        }
-        ManagerMapSwitch onMapSwitch = FindObjectOfType<ManagerMapSwitch>();
-        onMapSwitch.DeleteAllEnemies();
-        onMapSwitch.SetUpForNewEnemies(nrOfEnemies);
-        
-        //Change the Height of the parent
-        RectTransform rectTransformParent= textField.gameObject.transform.parent.parent.GetComponent<RectTransform>();
-        float newHeight = rectTransformParent.sizeDelta.y * (nrOfEnemies + 1);
-        rectTransformParent.sizeDelta = new Vector2(rectTransformParent.sizeDelta.x, newHeight);
-
-        
-        //Create the buttons
-        if (enemyTypeList.Count > 0) //Remove first if there are any
-        {
-            for (int i = 0; i < enemyTypeList.Count; i++)
-            {
-                Destroy(enemyTypeList[i]);
-            }
-            enemyTypeList.Clear();
-        }
-        for (int i = 0; i < nrOfEnemies; i++)
-        {
-            GameObject enemyTypeUIBox = Instantiate(enemyTypeUI, textField.gameObject.transform.parent.parent);
-            enemyTypeList.Add(enemyTypeUIBox);
-            TMP_InputField enemyTypeText = enemyTypeList[i].GetComponentInChildren<TMP_InputField>();
-            enemyTypeText.onEndEdit.AddListener((string arg0) => SetUpTypeOfEnemy(enemyTypeText, enemyTypeList.IndexOf(enemyTypeUIBox)));
-        }
-
-        maxEnemies = nrOfEnemies;
-        enemyTypes = new int[nrOfEnemies];
-    }
-
-    public void SetUpTypeOfEnemy(TMP_InputField textField, int nrInTheList)
-    {
-        int enemyType = Int32.Parse(textField.text);
-        if (enemyType < 0)
-        {
-            enemyType = 0;
-            textField.text = enemyType.ToString();
-        }else if (enemyType > 3)
-        {
-            enemyType = 3;
-            textField.text = enemyType.ToString(); 
-        }
-
-        ManagerMapSwitch onMapSwitch = FindObjectOfType<ManagerMapSwitch>();
-        onMapSwitch.SetUpIndividualEnemies(enemyType, nrInTheList);
-
-        enemyTypes[nrInTheList] = enemyType;
     }
 
     #endregion

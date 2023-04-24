@@ -33,7 +33,7 @@ public class ManagerMapSwitch : MonoBehaviour
         {
             instance = this;
         }
-
+        
         //Instantiating the player
         playerClone = Instantiate(playerPrefab, playerStartingPos.position, Quaternion.identity,
             transform.parent.transform.parent.transform);

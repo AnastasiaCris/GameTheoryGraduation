@@ -13,5 +13,11 @@ public class Teleporter : MonoBehaviour
         pos.y = teleportTo.position.y;
 
         col.transform.position = pos;
+
+        Movement move = col.GetComponent<Movement>();
+        if (move && move.player)
+        {
+            move.targetPosition = new Vector2(col.transform.position.x + move.direction.x, col.transform.position.y + move.direction.y);;
+        }
     }
 }

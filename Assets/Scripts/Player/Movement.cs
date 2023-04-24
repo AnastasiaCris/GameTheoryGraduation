@@ -4,9 +4,12 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Movement : MonoBehaviour
 {
+    public bool player;
+    public bool playerDead;
     public float speed = 8;
     public float speedMultiplier = 1;
 
+    public Vector3 targetPosition;
     public Vector2 startDir;
     public LayerMask obstacleLayer;//check for raycasts
     public Rigidbody2D rb { get; private set; }
@@ -21,6 +24,7 @@ public class Movement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         startPos = transform.position;
         
+
     }
 
     private void Start()
@@ -43,16 +47,36 @@ public class Movement : MonoBehaviour
         direction = startDir;
         nextDirection = Vector2.zero;
         transform.position = startPos;
+        targetPosition = transform.position;
+        playerDead = false;
         rb.isKinematic = false;
         enabled = true;
     }
 
     private void FixedUpdate()
     {
-        Vector2 pos = rb.position;
-        Vector2 translation = direction * speed * speedMultiplier * Time.fixedDeltaTime;
-        rb.MovePosition(pos + translation);
+        if (player)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, targetPosition,
+                speed * speedMultiplier * Time.fixedDeltaTime);
+
+            if (transform.position == targetPosition)
+            {
+                if (!Ocuppied(direction))
+                {
+                    targetPosition = new Vector2(transform.position.x + direction.x, transform.position.y + direction.y);
+                }
+            }
+        }
+        else
+        {
+            Vector2 pos = rb.position;
+            Vector2 translation = direction * speed * speedMultiplier * Time.fixedDeltaTime;
+            rb.MovePosition(pos + translation);
+        }
+
     }
+
 
     /// <summary>
     /// Set in which direction the object should move
@@ -61,6 +85,8 @@ public class Movement : MonoBehaviour
     /// <param name="forced"> Times for when the enemies should go through an obstacle</param>
     public void SetDirection(Vector2 dir, bool forced = false)
     {
+        if (playerDead) return;
+        
         //only set direction if it's possible to move there
         if (forced || !Ocuppied(dir))
         {
@@ -99,12 +125,23 @@ public class Movement : MonoBehaviour
         return hit.collider != null;
     }
 
-    private void OnDrawGizmos()
+    /*private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawCube(transform.position + new Vector3(direction.x, direction.y, 0) * 1f, Vector2.one * 0.5f);
         
         Gizmos.color = Color.yellow;
         Gizmos.DrawCube(transform.position + new Vector3(nextDirection.x, nextDirection.y, 0) * 1f, Vector2.one * 0.5f);
+    }*/
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(new Vector3(transform.position.x + Input.GetAxisRaw("Horizontal"), transform.position.y), 0.25f);
+        Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y + Input.GetAxisRaw("Vertical")), 0.25f);
+        
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(new Vector3(targetPosition.x, targetPosition.y, 0), 0.25f);
+
     }
 }

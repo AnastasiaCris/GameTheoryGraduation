@@ -207,6 +207,7 @@ public class GameManagerOnRun : MonoBehaviour
         }
         player.movement.direction = Vector2.zero;
         player.movement.anim.SetInteger("PlayerAnim",4);
+        player.movement.playerDead = true;
         yield return new WaitForSeconds(player.animDeath.length + 0.5f);
 
         SetLives(lives-1);

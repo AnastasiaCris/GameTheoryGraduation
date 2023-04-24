@@ -31,7 +31,7 @@ public class Node : MonoBehaviour
             availableDirPos.Add(availablePos);
         }
     }
-    private void OnDrawGizmos()
+    /*private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
              Gizmos.DrawCube(transform.position + new Vector3(Vector2.up.x, Vector2.up.y, 0) * 0.5f, Vector2.one * 0.5f);
@@ -44,8 +44,5 @@ public class Node : MonoBehaviour
         {
             Gizmos.DrawCube(transform.position + new Vector3(availableDir[i].x, availableDir[i].y, 0) * 0.5f, Vector2.one * 0.5f);
         }
-        
-        
-        
-    }
+    }*/
 }

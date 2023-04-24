@@ -107,7 +107,7 @@ public abstract class EnemyBehaviour : MonoBehaviour
 
     private Vector2 target = Vector2.zero;
     private Vector2 goingToPos = Vector2.zero;
-    private void OnDrawGizmos()
+    /*private void OnDrawGizmos()
     {
         switch (GetComponent<EnemyChase>().enemyType)
         {
@@ -127,6 +127,6 @@ public abstract class EnemyBehaviour : MonoBehaviour
             
         Gizmos.DrawSphere(target, 0.2f);
         Gizmos.DrawLine(goingToPos,target);    
-    }
+    }*/
     
 }

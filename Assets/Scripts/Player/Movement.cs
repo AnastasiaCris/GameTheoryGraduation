@@ -14,6 +14,8 @@ public class Movement : MonoBehaviour
     public  Vector2 nextDirection { get; private set; }
     public Vector3 startPos { get; private set; }
 
+    public Animator anim;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -37,6 +39,7 @@ public class Movement : MonoBehaviour
     public void ResetState()
     {
         speedMultiplier = GameManagerEditor.instance.changedSpeedMultiplier;
+        
         direction = startDir;
         nextDirection = Vector2.zero;
         transform.position = startPos;
@@ -63,6 +66,20 @@ public class Movement : MonoBehaviour
         {
             direction = dir;
             nextDirection = Vector2.zero;
+
+            if (dir == Vector2.right)
+            {
+                anim.SetInteger("PlayerAnim", 0);
+            }else if (dir == Vector2.left)
+            {
+                anim.SetInteger("PlayerAnim", 1);
+            }else if (dir == Vector2.up)
+            {
+                anim.SetInteger("PlayerAnim", 2);
+            }else if (dir == Vector2.down)
+            {
+                anim.SetInteger("PlayerAnim", 3);
+            }
         }
         else
         {

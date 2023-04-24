@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyFreightened : EnemyBehaviour
@@ -16,23 +17,54 @@ public class EnemyFreightened : EnemyBehaviour
     public override void Enable(float duration)
     {
         base.Enable(duration);
-        body.color = freightenedBodyCol;
-        enemy.managerOnRun.enemiesFreightened = true;
-        Invoke(nameof(Flash), duration/2);
+        EnemyScared(duration);
     }
 
     public override void Disable()
     {
         base.Disable();
+        
+        StopAllCoroutines();
         body.color = originalBodyCol;
         enemy.managerOnRun.enemiesFreightened = false;
+        enemy.managerOnRun.enemyMultiplier = 1;
     }
-    void Flash()
+
+    public void EnemyScared(float duration)
     {
-        if (!dead)
-        {
-            body.color = flashFreightenedBodyCol;
-        }
+        StopCoroutine(BodyFlash(duration));
+        StartCoroutine(BodyFlash(duration));
+    }
+    /// <summary>
+    /// Called when the shield is activated
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator BodyFlash(float duration)
+    {
+        body.color = freightenedBodyCol;
+        enemy.managerOnRun.enemiesFreightened = true;
+
+        yield return new WaitForSeconds(duration - 2.5f);
+        
+        body.color = freightenedBodyCol;
+        yield return new WaitForSeconds(0.3f);
+        body.color = flashFreightenedBodyCol;
+        yield return new WaitForSeconds(0.3f);
+        body.color = freightenedBodyCol;
+        yield return new WaitForSeconds(0.3f);
+        body.color = flashFreightenedBodyCol;
+        yield return new WaitForSeconds(0.3f);
+        body.color = freightenedBodyCol;
+        yield return new WaitForSeconds(0.3f);
+        body.color = flashFreightenedBodyCol;
+        yield return new WaitForSeconds(0.3f);
+        body.color = freightenedBodyCol;
+        yield return new WaitForSeconds(0.3f);
+        body.color = flashFreightenedBodyCol;
+        yield return new WaitForSeconds(0.3f);
+        body.color = originalBodyCol;
+        enemy.managerOnRun.enemiesFreightened = false;
+        enemy.managerOnRun.enemyMultiplier = 1;
     }
 
     private void Damaged()
@@ -69,7 +101,7 @@ public class EnemyFreightened : EnemyBehaviour
         if (GameManagerEditor.instance.killAllEnemies && AreAllEnemiesDead())
         {
             Time.timeScale = 0;
-            enemy.managerOnRun.roundWonMenu.SetActive(true);
+            enemy.managerOnRun.ShowScene(true);
         }
         //check if all enemies are eaten 
         bool AreAllEnemiesDead(){

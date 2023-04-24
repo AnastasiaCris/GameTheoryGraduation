@@ -15,7 +15,7 @@ public class ManagerMapSwitch : MonoBehaviour
     private int typeBlue;
     private int typeOrange;
 
-    public int timeInterval = 2;
+    private int timeInterval = 1;
     
     [Space][Header("Starting Positions")][Space]
     public Transform playerStartingPos;
@@ -125,6 +125,8 @@ public class ManagerMapSwitch : MonoBehaviour
 
         //Setting up the core game manager
         gameManagerOnRun.enemies[nrInTheList] = enemyClone.GetComponent<Enemy>();
+        
+        GameManagerEditor.instance.enemyTypes[nrInTheList] = enemyType;
 
     }
 

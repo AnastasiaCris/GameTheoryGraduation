@@ -1,2 +1,4 @@
 To do:
 Look into how to walk in a grid
+
+Make sure the user doesnt have on the goal kill all enemies if the bool normal power up is not enabled

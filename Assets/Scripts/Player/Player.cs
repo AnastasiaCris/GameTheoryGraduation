@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -10,6 +9,13 @@ public class Player : MonoBehaviour
     public KeyCode[] Down;
     public KeyCode[] Left;
     public KeyCode[] Right;
+
+    public AnimationClip animDeath;
+    
+    //Formal elements
+    public bool currentlyInvincible;
+    public SpriteRenderer protectionShield;
+    public Color[] shieldColors;
     private void Awake()
     {
         movement = GetComponent<Movement>();
@@ -17,7 +23,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        
+        protectionShield.enabled = false;
     }
 
     void Update()
@@ -29,6 +35,7 @@ public class Player : MonoBehaviour
             StopCoroutine(GoInDirection(Vector2.right));
             StartCoroutine(GoInDirection(Vector2.up));*/
             movement.SetDirection(Vector2.up);
+            
         }
         if (ButtonPressed(Down))
         {
@@ -37,6 +44,7 @@ public class Player : MonoBehaviour
             StopCoroutine(GoInDirection(Vector2.right));
             StartCoroutine(GoInDirection(Vector2.down));*/
             movement.SetDirection(Vector2.down);
+            
         }
         if (ButtonPressed(Left))
         {
@@ -45,6 +53,7 @@ public class Player : MonoBehaviour
             StopCoroutine(GoInDirection(Vector2.right));
             StartCoroutine(GoInDirection(Vector2.left));*/
             movement.SetDirection(Vector2.left);
+            
         }
         if (ButtonPressed(Right))
         {
@@ -53,6 +62,7 @@ public class Player : MonoBehaviour
             StopCoroutine(GoInDirection(Vector2.up));
             StartCoroutine(GoInDirection(Vector2.right));*/
             movement.SetDirection(Vector2.right);
+            
         }
         
         //rotate player to look in the direction you're going
@@ -61,6 +71,8 @@ public class Player : MonoBehaviour
     }
 
     private bool nodeHit;
+    private static readonly int PlayerAnim = Animator.StringToHash("PlayerAnim");
+
     IEnumerator GoInDirection(Vector2 direction)
     {
         if (direction == -movement.direction)
@@ -90,6 +102,14 @@ public class Player : MonoBehaviour
     {
         movement.ResetState();
         gameObject.SetActive(true);
+        movement.anim.SetInteger("PlayerAnim", 0);
+        if (GameManagerEditor.instance.invincible)
+        {
+            StopInvincibility();
+        }else if (GameManagerEditor.instance.speed)
+        {
+            StopSpeeding();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -99,5 +119,94 @@ public class Player : MonoBehaviour
         {
             nodeHit = true;
         }
+    }
+
+    public void Invincibility(float duration)
+    {
+        StopCoroutine(InvincibilityExpiring(duration));
+        StartCoroutine(InvincibilityExpiring(duration));
+    }
+    /// <summary>
+    /// Called when the shield is activated
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator InvincibilityExpiring(float duration)
+    {
+        currentlyInvincible = true;
+        protectionShield.enabled = true;
+        Physics2D.IgnoreLayerCollision(8,9, true);//disable collision between enemy and player
+        
+        yield return new WaitForSeconds(duration - 2.5f);
+        
+        protectionShield.enabled = false;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = true;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = false;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = true;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = false;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = true;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = false;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = true;
+        yield return new WaitForSeconds(0.3f);
+        
+        StopInvincibility();
+    }
+
+    private void StopInvincibility()
+    {
+        protectionShield.enabled = false;
+        currentlyInvincible = false;
+        Physics2D.IgnoreLayerCollision(8,9, false);//enable collision between enemy and player
+    }
+
+    public void SpeedIncrease(float duration)
+    {
+        StopCoroutine(SpeedExpiring(duration));
+        StartCoroutine(SpeedExpiring(duration));
+    }
+    /// <summary>
+    /// Called when the shield is activated
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator SpeedExpiring(float duration)
+    {
+        movement.speedMultiplier *= 1.5f;
+        protectionShield.enabled = true;
+        protectionShield.color = shieldColors[1];
+        yield return new WaitForSeconds(duration - 2.5f);
+        
+        protectionShield.enabled = false;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = true;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = false;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = true;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = false;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = true;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = false;
+        yield return new WaitForSeconds(0.3f);
+        protectionShield.enabled = true;
+        yield return new WaitForSeconds(0.3f);
+        
+        protectionShield.enabled = false;
+        protectionShield.color = shieldColors[0];
+        movement.speedMultiplier = 1;
+    }
+    
+    private void StopSpeeding()
+    {
+        protectionShield.enabled = false;
+        protectionShield.color = shieldColors[0];
+        movement.speedMultiplier = 1;
     }
 }

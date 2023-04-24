@@ -14,8 +14,7 @@ public class Enemy : MonoBehaviour
     public Transform target;
     public GameManagerOnRun managerOnRun{ get; private set; }
     public ManagerMapSwitch mapSwitchManager{ get; private set; }
-
-
+    
     private void Awake()
     {
         movement = GetComponent<Movement>();
@@ -59,7 +58,7 @@ public class Enemy : MonoBehaviour
             {
                 managerOnRun.EnemyDamaged(this);
             }
-            else
+            else if(!freightened.enabled && !col.gameObject.GetComponent<Player>().currentlyInvincible)
             {
                 managerOnRun.PlayerDamaged();
             }

@@ -85,10 +85,10 @@ public class GameManagerEditor : MonoBehaviour
                 elementsUI.SetActive(false);
                 GameModeManager.gameMode = GameModeManager.GameMode.Classic;
                 Time.timeScale = 1;
-                if (timerOn)
+                /*if (timerOn)
                 {
                     StartTimer();
-                }
+                }*/
 
                 if (_bigger)
                 {
@@ -96,8 +96,8 @@ public class GameManagerEditor : MonoBehaviour
                     _bigger = false;
                 }
 
-                FindObjectOfType<GameManagerOnRun>().StartNewRound();
-            }
+                FindObjectOfType<GameManagerOnRun>().StartNewGame();
+        }
             else if (mode == "editor" || mode == "" && GameModeManager.gameMode == GameModeManager.GameMode.Classic)
             {
                 if (!_bigger)

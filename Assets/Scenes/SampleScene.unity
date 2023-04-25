@@ -6379,7 +6379,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Formal Elements Edition
+  m_text: Formal Elements of Game Design
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 70c6c0dcffa474f45b7542d509eb684b, type: 2}
   m_sharedMaterial: {fileID: 1144419284076076224, guid: 70c6c0dcffa474f45b7542d509eb684b, type: 2}
@@ -16914,7 +16914,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: PacMan
+  m_text: CoinMan
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 70c6c0dcffa474f45b7542d509eb684b, type: 2}
   m_sharedMaterial: {fileID: 1144419284076076224, guid: 70c6c0dcffa474f45b7542d509eb684b, type: 2}

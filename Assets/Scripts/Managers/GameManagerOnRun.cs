@@ -18,9 +18,7 @@ public class GameManagerOnRun : MonoBehaviour
     public GameObject gameOverMenu;
     public GameObject roundWonMenu;
     public GameObject gameOverText;
-    public GameObject gameOverText1;
     public GameObject roundWonText;
-    public GameObject roundWonText1;
 
     //extra
     [HideInInspector]public bool enemiesFreightened;
@@ -304,7 +302,6 @@ public class GameManagerOnRun : MonoBehaviour
         {
             gameOverMenu.SetActive(false);
             roundWonMenu.SetActive(false);
-            StartNewGame(); 
             GameManagerEditor.instance.ChangeSpecificMode();
         }
 
@@ -324,7 +321,6 @@ public class GameManagerOnRun : MonoBehaviour
                 yield return new WaitForSeconds(0.3f);
                 gameOverText.SetActive(false);
                 yield return new WaitForSeconds(0.3f);
-                gameOverText1.SetActive(true);
                 gameOverMenu.SetActive(true);
                 Time.timeScale = 0;
             }
@@ -346,7 +342,6 @@ public class GameManagerOnRun : MonoBehaviour
                 yield return new WaitForSeconds(0.3f);
                 roundWonText.SetActive(false);
                 yield return new WaitForSeconds(0.3f);
-                roundWonText1.SetActive(true);
                 roundWonMenu.SetActive(true);
                 Time.timeScale = 0;
             }

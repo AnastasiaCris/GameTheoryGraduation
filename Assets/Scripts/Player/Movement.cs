@@ -4,12 +4,12 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Movement : MonoBehaviour
 {
-    public bool player;
-    public bool playerDead;
+    public bool gridMovement;
+    [HideInInspector]public bool playerDead;
     public float speed = 8;
     public float speedMultiplier = 1;
 
-    public Vector3 targetPosition;
+    [HideInInspector]public Vector3 targetPosition;
     public Vector2 startDir;
     public LayerMask obstacleLayer;//check for raycasts
     public Rigidbody2D rb { get; private set; }
@@ -23,14 +23,8 @@ public class Movement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         startPos = transform.position;
-        
-
     }
 
-    private void Start()
-    {
-        ResetState();
-    }
 
     void Update()
     {
@@ -43,11 +37,11 @@ public class Movement : MonoBehaviour
     public void ResetState()
     {
         speedMultiplier = GameManagerEditor.instance.changedSpeedMultiplier;
-        
         direction = startDir;
         nextDirection = Vector2.zero;
         transform.position = startPos;
-        targetPosition = transform.position;
+        if(gridMovement)
+            targetPosition = transform.position;
         playerDead = false;
         rb.isKinematic = false;
         enabled = true;
@@ -55,7 +49,7 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (player)
+        if (gridMovement)
         {
             transform.position = Vector2.MoveTowards(transform.position, targetPosition,
                 speed * speedMultiplier * Time.fixedDeltaTime);
@@ -125,23 +119,16 @@ public class Movement : MonoBehaviour
         return hit.collider != null;
     }
 
-    /*private void OnDrawGizmos()
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
         Gizmos.DrawCube(transform.position + new Vector3(direction.x, direction.y, 0) * 1f, Vector2.one * 0.5f);
-        
+
         Gizmos.color = Color.yellow;
         Gizmos.DrawCube(transform.position + new Vector3(nextDirection.x, nextDirection.y, 0) * 1f, Vector2.one * 0.5f);
-    }*/
 
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(new Vector3(transform.position.x + Input.GetAxisRaw("Horizontal"), transform.position.y), 0.25f);
-        Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y + Input.GetAxisRaw("Vertical")), 0.25f);
-        
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(new Vector3(targetPosition.x, targetPosition.y, 0), 0.25f);
-
     }
+
 }

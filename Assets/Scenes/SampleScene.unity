@@ -210,7 +210,7 @@ GameObject:
   - component: {fileID: 8515807}
   - component: {fileID: 8515808}
   m_Layer: 5
-  m_Name: Group
+  m_Name: Buttons Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

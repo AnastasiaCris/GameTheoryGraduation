@@ -37,7 +37,6 @@ public class GameManagerOnRun : MonoBehaviour
     {
         gameOverMenu.SetActive(false);
         roundWonMenu.SetActive(false);
-        StartNewGame();   
     }
 
     private void Update()

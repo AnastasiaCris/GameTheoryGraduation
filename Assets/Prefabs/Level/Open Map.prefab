@@ -21975,6 +21975,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2290226782720578195, guid: d567813abb206d44d9e130282f883f37, type: 3}
+      propertyPath: gridMovement
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2290226782720578195, guid: d567813abb206d44d9e130282f883f37, type: 3}
       propertyPath: playerStartingPos
       value: 
       objectReference: {fileID: 4435763982300295634}

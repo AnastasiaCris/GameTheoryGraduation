@@ -214,9 +214,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4afea95a9eb6f0428fb575097425c0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: 1
-  speed: 8
+  player: 0
+  playerDead: 0
+  speed: 8.5
   speedMultiplier: 1
+  targetPosition: {x: 0, y: 0, z: 0}
   startDir: {x: 1, y: 0}
   obstacleLayer:
     serializedVersion: 2

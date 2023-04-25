@@ -15,7 +15,7 @@ public class Teleporter : MonoBehaviour
         col.transform.position = pos;
 
         Movement move = col.GetComponent<Movement>();
-        if (move && move.player)
+        if (move && move.gridMovement)
         {
             move.targetPosition = new Vector2(col.transform.position.x + move.direction.x, col.transform.position.y + move.direction.y);;
         }

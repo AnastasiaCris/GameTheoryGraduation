@@ -4,6 +4,7 @@ public class ManagerMapSwitch : MonoBehaviour
 {
     [Header("Player")][Space]
     public GameObject playerPrefab;
+    [SerializeField] bool gridMovement;
     public GameObject playerClone{ get; private set; }
     
     [Space][Header("Enemies")][Space]
@@ -40,6 +41,9 @@ public class ManagerMapSwitch : MonoBehaviour
 
         //Setting up the core game manager
         gameManagerOnRun.player = playerClone.GetComponent<Player>();
+
+        if (gridMovement)
+            gameManagerOnRun.player.movement.gridMovement = true;
         
         //Set up the enemies
         SetUpForNewEnemies(GameManagerEditor.instance.maxEnemies);

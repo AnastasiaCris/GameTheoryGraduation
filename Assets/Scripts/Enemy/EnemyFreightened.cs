@@ -64,7 +64,6 @@ public class EnemyFreightened : EnemyBehaviour
         yield return new WaitForSeconds(0.3f);
         body.color = originalBodyCol;
         enemy.managerOnRun.enemiesFreightened = false;
-        enemy.managerOnRun.enemyMultiplier = 1;
     }
 
     private void Damaged()

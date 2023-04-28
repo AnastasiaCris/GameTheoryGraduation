@@ -196,8 +196,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4afea95a9eb6f0428fb575097425c0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridMovement: 0
+  playerDead: 0
   speed: 8
   speedMultiplier: 1
+  targetPosition: {x: 0, y: 0, z: 0}
   startDir: {x: 0, y: 0}
   obstacleLayer:
     serializedVersion: 2
@@ -233,6 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 487d2daac200c16429da6b9e3cecbfad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  originalDuration: 0
   duration: 0
   home: {fileID: 0}
   exit: {fileID: 0}
@@ -249,6 +253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cd205595e92e6d488dae12db36ae2dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  originalDuration: 0
   duration: 7
   scatterNode: {fileID: 0}
 --- !u!114 &288816096725299684
@@ -263,6 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5adfc7afb0640fa44b0098d1755b437e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  originalDuration: 0
   duration: 20
   blinky: {fileID: 0}
   enemyType: 0
@@ -278,6 +284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9a1f0568f7908646acd9fc0ca818e69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  originalDuration: 8
   duration: 8
   index: 0
   body: {fileID: 3786419274335744870}

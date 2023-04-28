@@ -10,13 +10,15 @@ public class EnemyFreightened : EnemyBehaviour
     public Color originalBodyCol;
     public Color freightenedBodyCol;
     public Color flashFreightenedBodyCol;
-    public bool dead { get; private set; }
+    public bool dead;
     public bool canExit;
     private bool reachedHouse;
     
     public override void Enable(float duration)
     {
         base.Enable(duration);
+        originalDuration = duration;
+        duration = originalDuration * GameManagerEditor.instance.changedSpeedMultiplierForTimers;
         EnemyScared(duration);
     }
 
@@ -32,7 +34,7 @@ public class EnemyFreightened : EnemyBehaviour
 
     public void EnemyScared(float duration)
     {
-        StopCoroutine(BodyFlash(duration));
+        StopAllCoroutines();
         StartCoroutine(BodyFlash(duration));
     }
     /// <summary>
@@ -88,7 +90,7 @@ public class EnemyFreightened : EnemyBehaviour
         if (GameManagerEditor.instance.spawnMoreEnemiesOnKill)
         {
             GameObject newEnemy = Instantiate(enemy.enemyPrefab,
-                enemy.mapSwitchManager.enemiesStartingPos[index].position, Quaternion.identity,
+                enemy.setUpMapManagerSetUp.enemiesStartingPos[index].position, Quaternion.identity,
                 transform.parent.transform);
 
             newEnemy.GetComponent<EnemyHome>().Disable();
@@ -99,7 +101,6 @@ public class EnemyFreightened : EnemyBehaviour
         //Goal Element
         if (GameManagerEditor.instance.killAllEnemies && AreAllEnemiesDead())
         {
-            Time.timeScale = 0;
             enemy.managerOnRun.ShowScene(true);
         }
         //check if all enemies are eaten 

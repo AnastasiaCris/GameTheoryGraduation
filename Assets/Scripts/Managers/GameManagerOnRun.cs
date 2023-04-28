@@ -31,6 +31,7 @@ public class GameManagerOnRun : MonoBehaviour
     {
         if(instance == null)
             instance = this;
+        GameManagerEditor.instance.onRunManager = this;
     }
 
     void Start()
@@ -178,7 +179,6 @@ public class GameManagerOnRun : MonoBehaviour
      public void GameOver()
     {
         ShowScene(false);
-        player.gameObject.SetActive(false);
     }
     
 
@@ -200,7 +200,7 @@ public class GameManagerOnRun : MonoBehaviour
     {
         for (int i = 0; i < enemies.Count; i++)
         {
-            enemies[i].gameObject.SetActive(false);
+            enemies[i].movement.direction = Vector2.zero;
         }
         player.movement.direction = Vector2.zero;
         player.movement.anim.SetInteger("PlayerAnim",4);
@@ -223,7 +223,7 @@ public class GameManagerOnRun : MonoBehaviour
 
     IEnumerator EnableGameOver()
     {
-        yield return new WaitUntil((() => !enemiesFreightened));//wait until enemies are not freightened
+        yield return new WaitUntil(() => !enemiesFreightened);//wait until enemies are not freightened
         GameOver();
     }
 
@@ -310,6 +310,13 @@ public class GameManagerOnRun : MonoBehaviour
         }
         IEnumerator LevelOverScenes(bool won)
         {
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                enemies[i].movement.direction = Vector2.zero;
+            }
+                
+            player.movement.direction = Vector2.zero;
+            
             if (!won)
             {
                 gameOverText.SetActive(true);
@@ -325,12 +332,7 @@ public class GameManagerOnRun : MonoBehaviour
             }
             else
             {
-                for (int i = 0; i < enemies.Count; i++)
-                {
-                    enemies[i].gameObject.SetActive(false);
-                }
                 
-                player.movement.direction = Vector2.zero;
                 player.movement.anim.SetInteger("PlayerAnim", 5);
                 
                 roundWonText.SetActive(true);

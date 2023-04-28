@@ -7,6 +7,7 @@ public abstract class EnemyBehaviour : MonoBehaviour
 {
     
     public Enemy enemy { get; private set; }
+    public float originalDuration;
     public float duration;
     private void Awake()
     {
@@ -15,13 +16,13 @@ public abstract class EnemyBehaviour : MonoBehaviour
     }
 
     public void Enable()
-    {
+    {                
         Enable(duration);
     }
 
     public virtual void Enable(float duration)
-    {
-        duration *= GameManagerEditor.instance.changedSpeedMultiplier;
+    {   if(!enemy.freightened)
+            duration = originalDuration * GameManagerEditor.instance.changedSpeedMultiplierForTimers;
         enabled = true;
         CancelInvoke();
         Invoke(nameof(Disable), duration);

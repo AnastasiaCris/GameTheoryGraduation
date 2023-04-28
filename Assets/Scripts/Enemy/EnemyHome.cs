@@ -36,7 +36,7 @@ public class EnemyHome : EnemyBehaviour
     {
         if (!blinky || enemy.freightened.canExit)
         {
-           enemy.movement.SetDirection(Vector2.up, true);
+            enemy.movement.SetDirection(Vector2.up, true);
                    enemy.movement.rb.isKinematic = true;
                    enemy.movement.enabled = false;
            
@@ -70,11 +70,13 @@ public class EnemyHome : EnemyBehaviour
                    enemy.freightened.body.enabled = true;
                    enemy.freightened.deadBody.enabled = false;
                    enemy.freightened.canExit = false;
+                   enemy.freightened.dead = false;
         }
         else if (blinky && !enemy.freightened.canExit)
         {
             enemy.movement.direction = Vector2.right;
         }
+
         
     }
 }

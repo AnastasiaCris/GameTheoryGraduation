@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -13,7 +14,7 @@ public class Enemy : MonoBehaviour
     public EnemyBehaviour behaviour;
     public Transform target;
     public GameManagerOnRun managerOnRun{ get; private set; }
-    public ManagerMapSwitch mapSwitchManager{ get; private set; }
+    public ManagerSetUpMap setUpMapManagerSetUp{ get; private set; }
     
     private void Awake()
     {
@@ -24,12 +25,7 @@ public class Enemy : MonoBehaviour
         freightened = GetComponent<EnemyFreightened>();
         home = GetComponent<EnemyHome>();
         managerOnRun = FindObjectOfType<GameManagerOnRun>();
-        mapSwitchManager = FindObjectOfType<ManagerMapSwitch>();
-    }
-
-    private void Start()
-    {
-        ResetState();
+        setUpMapManagerSetUp = FindObjectOfType<ManagerSetUpMap>();
     }
 
     public void ResetState()
@@ -41,12 +37,8 @@ public class Enemy : MonoBehaviour
         freightened.Disable();
         chase.Disable();
         scatter.Disable();
-
-        if (behaviour != null)
-        {
-            behaviour.Enable();
-        }
-
+        home.Enable();
+        
         managerOnRun.newRound = false;
     }
 

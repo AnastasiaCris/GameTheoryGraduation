@@ -70,22 +70,6 @@ public class Player : MonoBehaviour
        // transform.rotation = Quaternion.AngleAxis(angleDir * Mathf.Rad2Deg, Vector3.forward);
     }
 
-    private bool nodeHit;
-    private static readonly int PlayerAnim = Animator.StringToHash("PlayerAnim");
-
-    IEnumerator GoInDirection(Vector2 direction)
-    {
-        if (direction == -movement.direction)
-        {
-            movement.SetDirection(direction);
-            yield break;
-        }
-            
-        nodeHit = false;
-        yield return new WaitUntil((() => nodeHit));
-        movement.SetDirection(direction);
-    }
-
     private bool ButtonPressed(KeyCode[] dir)
     {
         for (int i = 0; i < dir.Length; i++)
@@ -112,17 +96,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        Node node = other.GetComponent<Node>();
-        if (node != null)
-        {
-            nodeHit = true;
-        }
-    }
-
     public void Invincibility(float duration)
     {
+        duration *= GameManagerEditor.instance.changedSpeedMultiplierForTimers;
         StopCoroutine(InvincibilityExpiring(duration));
         StartCoroutine(InvincibilityExpiring(duration));
     }
@@ -167,6 +143,7 @@ public class Player : MonoBehaviour
 
     public void SpeedIncrease(float duration)
     {
+        duration *= GameManagerEditor.instance.changedSpeedMultiplierForTimers;
         StopCoroutine(SpeedExpiring(duration));
         StartCoroutine(SpeedExpiring(duration));
     }

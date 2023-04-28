@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour
     public Rigidbody2D rb { get; private set; }
     public Vector2 direction;
     public  Vector2 nextDirection { get; private set; }
-    public Vector3 startPos { get; private set; }
+    public Vector3 startPos;
 
     public Animator anim;
 

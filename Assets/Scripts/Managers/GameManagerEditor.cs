@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManagerEditor : MonoBehaviour
 {
+    public ManagerSetUpMap onSetUpMap;
+    public GameManagerOnRun onRunManager;
     
     [Header("Editor UI")] [Space]
     public GameObject editorUI;
@@ -23,6 +26,7 @@ public class GameManagerEditor : MonoBehaviour
     public Slider gameSpeedTimer;
     public TextMeshProUGUI gameSpeedText;
     public float changedSpeedMultiplier = 1;
+    public float changedSpeedMultiplierForTimers = 1;
     
     [Space][Header("Space Element")][Space]
     public GameObject normalMapPrefab;
@@ -47,6 +51,9 @@ public class GameManagerEditor : MonoBehaviour
     
     [Space][Header("Goals Element")] [Space]
     public bool killAllEnemies;
+    public TextMeshProUGUI killEnemiesGoalText;
+    public Toggle killEnemiesGoalToggle;
+    public Color[] textCol;
     
     [Space][Header("Rules Element")] [Space]
     public bool spawnMoreEnemiesOnKill;
@@ -81,14 +88,13 @@ public class GameManagerEditor : MonoBehaviour
         {
             if (mode == "run" || mode == "" && GameModeManager.gameMode == GameModeManager.GameMode.Editor)
             {
+                if(onSetUpMap.enemiesGameobjectClone[0].GetComponent<EnemyChase>().blinky == null)//if blinky is not set up
+                    onSetUpMap.AfterAllEnemiesInstantiated();
+
                 img_PlayBTN.sprite = pause;
                 elementsUI.SetActive(false);
                 GameModeManager.gameMode = GameModeManager.GameMode.Classic;
                 Time.timeScale = 1;
-                /*if (timerOn)
-                {
-                    StartTimer();
-                }*/
 
                 if (_bigger)
                 {
@@ -96,7 +102,7 @@ public class GameManagerEditor : MonoBehaviour
                     _bigger = false;
                 }
 
-                FindObjectOfType<GameManagerOnRun>().StartNewGame();
+                onRunManager.StartNewGame();
         }
             else if (mode == "editor" || mode == "" && GameModeManager.gameMode == GameModeManager.GameMode.Classic)
             {
@@ -133,6 +139,19 @@ public class GameManagerEditor : MonoBehaviour
                     {
                         invincible = false;
                         speed = false;
+                        killEnemiesGoalText.text = $"Kill all enemies";
+                        killEnemiesGoalText.color = textCol[0];
+                        killEnemiesGoalToggle.enabled = true;
+                    }
+                    else
+                    {
+                        //disable the goal canKillEnemies
+                        if(killAllEnemies)
+                            killAllEnemies = false;
+                        killEnemiesGoalText.text = $"Enable 'Can kill enemies' Object";
+                        killEnemiesGoalText.color = textCol[1];
+                        killEnemiesGoalToggle.isOn = false;
+                        killEnemiesGoalToggle.enabled = false;
                     }
                     break;
                 case 4:
@@ -167,6 +186,7 @@ public class GameManagerEditor : MonoBehaviour
                 Camera.main.orthographicSize -= 3;
             }
         }
+        
 
     #endregion
     
@@ -174,50 +194,62 @@ public class GameManagerEditor : MonoBehaviour
     
     public void SetUpTimer(TMP_InputField textField)
     {
-        timer = Int32.Parse(textField.text);
+        int timer = 0;
+        if (int.TryParse(textField.text, out timer))
+        {
+            timer = Int32.Parse(textField.text);
+        }
         if (timer <= 0)
         {
             timer = 0;
             textField.text = timer.ToString();
         }
-        remainingTimer = timer;
+
+        this.timer = timer;
+        remainingTimer = this.timer;
+        
+        if (remainingTimer >= 6)
+            timerText.color = Color.white;
+        else
+            timerText.color = Color.red;
+        
         timerText.text = $"{remainingTimer / 60:00} : {remainingTimer % 60:00}";
     }
 
     public void StartTimer()
     {
-        StopCoroutine(UpdateTimer());
+        StopAllCoroutines();
         StartCoroutine(UpdateTimer());
     }
 
     public IEnumerator UpdateTimer()
     {
-        while (remainingTimer >= 0)
+        while (remainingTimer > 0)
         {
-            timerText.text = $"{remainingTimer / 60:00} : {remainingTimer % 60:00}";
+            if (remainingTimer >= 6)
+                timerText.color = Color.white;
+            else
+                timerText.color = Color.red;
+            
             remainingTimer--;
+            timerText.text = $"{remainingTimer / 60:00} : {remainingTimer % 60:00}";
             yield return new WaitForSeconds(1);
         }
 
         yield return new WaitUntil(() => remainingTimer <= 0);
-        FindObjectOfType<GameManagerOnRun>().GameOver();
+        onRunManager.player.movement.anim.SetInteger("PlayerAnim",4);
+        onRunManager.GameOver();
         remainingTimer = timer; //reset timer
     }
-    
+
     public void GameSpeed()
     {
-        GameManagerOnRun onRunManager = FindObjectOfType<GameManagerOnRun>();
+        gameSpeedText.text = "x" + gameSpeedTimer.value.ToString("0.00");
 
-        gameSpeedText.text = "x"+ gameSpeedTimer.value.ToString("0.00");
-
-        for (int i = 0; i < onRunManager.enemies.Count; i++)
-        {
-            onRunManager.enemies[i].movement.speedMultiplier = gameSpeedTimer.value;
-            onRunManager.enemies[i].behaviour.duration *= gameSpeedTimer.value;
-        }
-
-        onRunManager.player.movement.speedMultiplier = gameSpeedTimer.value;
         changedSpeedMultiplier = gameSpeedTimer.value;
+
+        changedSpeedMultiplierForTimers = 2 - changedSpeedMultiplier;
+        
     }
 
     #endregion
@@ -267,7 +299,11 @@ public class GameManagerEditor : MonoBehaviour
 
         public void SetUpNrOfEnemies(TMP_InputField textField)
         {
-            int nrOfEnemies = Int32.Parse(textField.text);
+            int nrOfEnemies = 0;
+            if (int.TryParse(textField.text, out nrOfEnemies))
+            {
+                nrOfEnemies = Int32.Parse(textField.text);
+            }
             if (nrOfEnemies < 0)
             {
                 nrOfEnemies = 0;
@@ -280,9 +316,8 @@ public class GameManagerEditor : MonoBehaviour
             }
 
             //First delete any enemies and set up for new enemies
-            ManagerMapSwitch onMapSwitch = FindObjectOfType<ManagerMapSwitch>();
-            onMapSwitch.DeleteAllEnemies();
-            onMapSwitch.SetUpForNewEnemies(nrOfEnemies);
+            onSetUpMap.DeleteAllEnemies();
+            onSetUpMap.SetUpForNewEnemies(nrOfEnemies);
 
             //Change the Height of the UI parent according to how many objects there are
             float newHeight = rectTransformParentUISize.y * (nrOfEnemies + 1);
@@ -306,9 +341,9 @@ public class GameManagerEditor : MonoBehaviour
                 ChangeEnemyType changeEnemyType = enemyTypeUIBox.GetComponent<ChangeEnemyType>();
 
                 changeEnemyType.arrowLeft.onClick.AddListener(() =>
-                    onMapSwitch.SetUpIndividualEnemies(changeEnemyType.enemyType, enemyTypeUIPrefabList.IndexOf(enemyTypeUIBox)));
+                    onSetUpMap.SetUpIndividualEnemies(changeEnemyType.enemyType, enemyTypeUIPrefabList.IndexOf(enemyTypeUIBox)));
                 changeEnemyType.arrowRight.onClick.AddListener(() =>
-                    onMapSwitch.SetUpIndividualEnemies(changeEnemyType.enemyType, enemyTypeUIPrefabList.IndexOf(enemyTypeUIBox)));
+                    onSetUpMap.SetUpIndividualEnemies(changeEnemyType.enemyType, enemyTypeUIPrefabList.IndexOf(enemyTypeUIBox)));
             }
 
             maxEnemies = nrOfEnemies;
@@ -327,7 +362,6 @@ public class GameManagerEditor : MonoBehaviour
 
     public void SetUpLives(TMP_InputField textField)
     {
-        GameManagerOnRun onRunManager = FindObjectOfType<GameManagerOnRun>();
         int life = Int32.Parse(textField.text);
         if (life <= 0)
         {

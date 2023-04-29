@@ -89,13 +89,29 @@ public class EnemyFreightened : EnemyBehaviour
 
         if (GameManagerEditor.instance.spawnMoreEnemiesOnKill)
         {
-            GameObject newEnemy = Instantiate(enemy.enemyPrefab,
+            GameObject newEnemy = Instantiate(enemy.setUpMapManagerSetUp.enemiesPrefab[enemy.Id],
                 enemy.setUpMapManagerSetUp.enemiesStartingPos[index].position, Quaternion.identity,
                 transform.parent.transform);
-
-            newEnemy.GetComponent<EnemyHome>().Disable();
-
+            Enemy newEnem_ = newEnemy.GetComponent<Enemy>();
+            
+            //Set up enemy
+            
+            newEnem_.target = enemy.setUpMapManagerSetUp.playerClone.transform;
+            newEnem_.home.home = enemy.setUpMapManagerSetUp.enemiesHomePoints[0];
+            newEnem_.home.exit = enemy.setUpMapManagerSetUp.enemiesHomePoints[1];
+            newEnem_.scatter.scatterNode = enemy.setUpMapManagerSetUp.enemiesScatterPoints[enemy.Id];
+            newEnem_.movement.direction = Vector2.right;
+            
+            //The enemy will start with being dead first
+            newEnem_.freightened.dead = true;
+            newEnem_.freightened.canExit = true;
+            newEnem_.freightened.body.enabled = false;
+            newEnem_.freightened.deadBody.enabled = true;
+            newEnem_.home.Enable(duration);
+            
+            //Add the extra enemy to a list
             enemy.managerOnRun.enemies.Add(newEnemy.GetComponent<Enemy>());
+            GameManagerEditor.instance.extraEnemies.Add(newEnemy);
         }
 
         //Goal Element

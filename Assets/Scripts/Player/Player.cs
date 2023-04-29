@@ -28,46 +28,29 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if (GameManagerEditor.instance.onRunManager.gameOverMenu.activeSelf || GameManagerEditor.instance.onRunManager.roundWonMenu.activeSelf)
+            return;
+        
         if (ButtonPressed(Up))
         {
-            /*StopCoroutine(GoInDirection(Vector2.down));
-            StopCoroutine(GoInDirection(Vector2.left));
-            StopCoroutine(GoInDirection(Vector2.right));
-            StartCoroutine(GoInDirection(Vector2.up));*/
             movement.SetDirection(Vector2.up);
-            
         }
         if (ButtonPressed(Down))
         {
-            /*StopCoroutine(GoInDirection(Vector2.up));
-            StopCoroutine(GoInDirection(Vector2.left));
-            StopCoroutine(GoInDirection(Vector2.right));
-            StartCoroutine(GoInDirection(Vector2.down));*/
             movement.SetDirection(Vector2.down);
             
         }
         if (ButtonPressed(Left))
         {
-            /*StopCoroutine(GoInDirection(Vector2.down));
-            StopCoroutine(GoInDirection(Vector2.up));
-            StopCoroutine(GoInDirection(Vector2.right));
-            StartCoroutine(GoInDirection(Vector2.left));*/
             movement.SetDirection(Vector2.left);
             
         }
         if (ButtonPressed(Right))
         {
-            /*StopCoroutine(GoInDirection(Vector2.down));
-            StopCoroutine(GoInDirection(Vector2.left));
-            StopCoroutine(GoInDirection(Vector2.up));
-            StartCoroutine(GoInDirection(Vector2.right));*/
             movement.SetDirection(Vector2.right);
             
         }
         
-        //rotate player to look in the direction you're going
-        //float angleDir = Mathf.Atan2(movement.direction.y, movement.direction.x);
-       // transform.rotation = Quaternion.AngleAxis(angleDir * Mathf.Rad2Deg, Vector3.forward);
     }
 
     private bool ButtonPressed(KeyCode[] dir)

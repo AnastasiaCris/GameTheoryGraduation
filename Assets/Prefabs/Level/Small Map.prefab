@@ -135,8 +135,8 @@ Tilemap:
   - first: {x: -4, y: -7, z: 0}
     second:
       serializedVersion: 2
-      m_TileIndex: 5
-      m_TileSpriteIndex: 5
+      m_TileIndex: 10
+      m_TileSpriteIndex: 10
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -1085,8 +1085,8 @@ Tilemap:
   - first: {x: -5, y: 2, z: 0}
     second:
       serializedVersion: 2
-      m_TileIndex: 5
-      m_TileSpriteIndex: 5
+      m_TileIndex: 10
+      m_TileSpriteIndex: 10
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -1125,8 +1125,8 @@ Tilemap:
   - first: {x: -1, y: 2, z: 0}
     second:
       serializedVersion: 2
-      m_TileIndex: 5
-      m_TileSpriteIndex: 5
+      m_TileIndex: 10
+      m_TileSpriteIndex: 10
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -1374,8 +1374,8 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 3
-    m_Data: {fileID: 11400000, guid: eab070bbb370978498ff71e4a8fe2f15, type: 2}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 5
     m_Data: {fileID: 11400000, guid: 185e2d4076727fc468cc36e02ff56b69, type: 2}
   - m_RefCount: 1
@@ -1384,7 +1384,7 @@ Tilemap:
     m_Data: {fileID: 11400000, guid: cc4d4c0dea4ed764a83821fcdf9891b3, type: 2}
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: bf3f4797baf650f419e3ac08a8571b92, type: 2}
-  - m_RefCount: 81
+  - m_RefCount: 84
     m_Data: {fileID: 11400000, guid: 5970accc46cb6294d9806ac07fd8444a, type: 2}
   - m_RefCount: 0
     m_Data: {fileID: 0}
@@ -1413,8 +1413,8 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 3
-    m_Data: {fileID: 218712228, guid: 65f7c6458883aef4382d52b19e9db568, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 5
     m_Data: {fileID: 895866771, guid: 65f7c6458883aef4382d52b19e9db568, type: 3}
   - m_RefCount: 0
@@ -1423,7 +1423,7 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 81
+  - m_RefCount: 84
     m_Data: {fileID: -1382782238, guid: 65f7c6458883aef4382d52b19e9db568, type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}

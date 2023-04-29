@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public GameObject enemyPrefab;
     public int Id = 0;
     public int points = 200;
     public Movement movement{ get; private set; }
@@ -26,6 +25,7 @@ public class Enemy : MonoBehaviour
         home = GetComponent<EnemyHome>();
         managerOnRun = FindObjectOfType<GameManagerOnRun>();
         setUpMapManagerSetUp = FindObjectOfType<ManagerSetUpMap>();
+        
     }
 
     public void ResetState()

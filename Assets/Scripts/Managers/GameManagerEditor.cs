@@ -58,7 +58,8 @@ public class GameManagerEditor : MonoBehaviour
     [Space][Header("Rules Element")] [Space]
     public bool spawnMoreEnemiesOnKill;
     public int maxLives = 3;
-    
+    public List<GameObject> extraEnemies = new List<GameObject>();
+
     public static GameManagerEditor instance;
     void Awake()
     {

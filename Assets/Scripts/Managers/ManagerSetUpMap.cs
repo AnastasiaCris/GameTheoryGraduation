@@ -78,6 +78,15 @@ public class ManagerSetUpMap : MonoBehaviour
         {
             gameManagerOnRun.enemies.Add(new Enemy());
         }
+        
+        if (GameManagerEditor.instance.extraEnemies.Count > 0) //if there are any extra enemies, delete them
+        {
+            for (int i = 0; i < GameManagerEditor.instance.extraEnemies.Count; i++)
+            {
+                Destroy(GameManagerEditor.instance.extraEnemies[i]);
+            }
+            GameManagerEditor.instance.extraEnemies.Clear();
+        }
 
          typeRed = 0;
          typePink = 0;
@@ -88,7 +97,14 @@ public class ManagerSetUpMap : MonoBehaviour
 
     public void SetUpIndividualEnemies(int enemyType, int nrInTheList)
     {
-        
+        if (GameManagerEditor.instance.extraEnemies.Count > 0) //if there are any extra enemies, delete them
+        {
+            for (int i = 0; i < GameManagerEditor.instance.extraEnemies.Count; i++)
+            {
+                Destroy(GameManagerEditor.instance.extraEnemies[i]);
+            }
+            GameManagerEditor.instance.extraEnemies.Clear();
+        }
         if (enemiesGameobjectClone[nrInTheList] != null) //if this gameobject is null then continue, otherwise delete it first
         {
             //check first which type of enemy it is

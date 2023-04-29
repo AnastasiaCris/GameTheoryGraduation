@@ -24,7 +24,6 @@ public class GameManagerOnRun : MonoBehaviour
     [HideInInspector]public bool enemiesFreightened;
     [HideInInspector]public bool newRound;
 
-    
     public static GameManagerOnRun instance;
 
     private void Awake()
@@ -64,6 +63,15 @@ public class GameManagerOnRun : MonoBehaviour
         //Precaution
         gameOverMenu.SetActive(false);
         roundWonMenu.SetActive(false);
+        if (GameManagerEditor.instance.extraEnemies.Count > 0) //if there are any extra enemies, delete them
+        {
+            for (int i = 0; i < GameManagerEditor.instance.extraEnemies.Count; i++)
+            {
+                Destroy(GameManagerEditor.instance.extraEnemies[i]);
+            }
+            enemies.RemoveRange(GameManagerEditor.instance.onSetUpMap.enemiesGameobjectClone.Length, enemies.Count-GameManagerEditor.instance.onSetUpMap.enemiesGameobjectClone.Length);
+            GameManagerEditor.instance.extraEnemies.Clear();
+        }
         
         //Reset everything
         foreach (Transform points in this.points)
@@ -77,16 +85,6 @@ public class GameManagerOnRun : MonoBehaviour
         {
             GameManagerEditor.instance.remainingTimer = GameManagerEditor.instance.timer;
             GameManagerEditor.instance.StartTimer();
-        }
-
-        if (GameManagerEditor.instance.spawnMoreEnemiesOnKill && enemies.Count > 4)
-        {
-            List<Enemy> extraEnemies = new List<Enemy>(enemies.Skip(4)) ;
-            for (int i = 0; i < extraEnemies.Count; i++)
-            {
-                Destroy(extraEnemies[i].gameObject);
-            }
-            enemies.RemoveRange(4, enemies.Count-4);
         }
 
         if (GameManagerEditor.instance.killAllEnemies && AllPointsCollected())

@@ -3,10 +3,9 @@ using UnityEngine;
 
 public class EnemyHome : EnemyBehaviour
 {
-    public Transform home;
-    public Transform exit;
+    [HideInInspector]public Transform home;
+    [HideInInspector]public Transform exit;
     public bool blinky;
-
     private void OnEnable()
     {
         StopAllCoroutines();

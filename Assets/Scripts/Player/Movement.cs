@@ -13,9 +13,9 @@ public class Movement : MonoBehaviour
     public Vector2 startDir;
     public LayerMask obstacleLayer;//check for raycasts
     public Rigidbody2D rb { get; private set; }
-    public Vector2 direction;
+    [HideInInspector]public Vector2 direction;
     public  Vector2 nextDirection { get; private set; }
-    public Vector3 startPos;
+    [HideInInspector]public Vector3 startPos;
 
     public Animator anim;
 

@@ -1,8 +1,9 @@
 
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class EnemyChase : EnemyBehaviour
-{ public GameObject blinky;
+{ [FormerlySerializedAs("blinky")] public GameObject inkyDependant;
  public enum EnemyType
     {
         Blinky,
@@ -15,6 +16,8 @@ public class EnemyChase : EnemyBehaviour
 
     private void OnDisable()
     {
+        if (enemy.multiplayer)
+            return;
         //switch direction
         if(!enemy.freightened.enabled)
             GoOppositeDir();
@@ -27,6 +30,9 @@ public class EnemyChase : EnemyBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
+        if (enemy.multiplayer)
+            return;
+        
         Node node = col.GetComponent<Node>();
         if (node != null && enabled && !enemy.freightened.enabled)//if you hit a node and you're not in frightened mode
         {
@@ -96,8 +102,8 @@ public class EnemyChase : EnemyBehaviour
                         playerDirByN = new Vector2(position.x + n, position.y);
                     }
 
-                    float xDist = playerDirByN.x - blinky.transform.position.x;
-                    float yDist = playerDirByN.y - blinky.transform.position.y;
+                    float xDist = playerDirByN.x - inkyDependant.transform.position.x;
+                    float yDist = playerDirByN.y - inkyDependant.transform.position.y;
 
                     targetPos = new Vector2(playerDirByN.x + xDist, playerDirByN.y + yDist);
                     

@@ -21,15 +21,15 @@ public class Player : MonoBehaviour
         movement = GetComponent<Movement>();
     }
 
-    void Start()
+    public virtual void Start()
     {
         protectionShield.enabled = false;
     }
 
-    void Update()
+    public virtual void Update()
     {
-        if (GameManagerEditor.instance.onRunManager.gameOverMenu.activeSelf || GameManagerEditor.instance.onRunManager.roundWonMenu.activeSelf)
-            return;
+        //if (GameManagerEditor.instance.onRunManager.gameOverMenu.activeSelf || GameManagerEditor.instance.onRunManager.roundWonMenu.activeSelf || GameManagerEditor.instance.onRunManager.sceneEnabled)
+           // return;
         
         if (ButtonPressed(Up))
         {
@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
         
     }
 
-    private bool ButtonPressed(KeyCode[] dir)
+    public bool ButtonPressed(KeyCode[] dir)
     {
         for (int i = 0; i < dir.Length; i++)
         {
@@ -70,6 +70,7 @@ public class Player : MonoBehaviour
         movement.ResetState();
         gameObject.SetActive(true);
         movement.anim.SetInteger("PlayerAnim", 0);
+        StopAllCoroutines();
         if (GameManagerEditor.instance.invincible)
         {
             StopInvincibility();
@@ -127,7 +128,7 @@ public class Player : MonoBehaviour
     public void SpeedIncrease(float duration)
     {
         duration *= GameManagerEditor.instance.changedSpeedMultiplierForTimers;
-        StopCoroutine(SpeedExpiring(duration));
+        StopAllCoroutines();
         StartCoroutine(SpeedExpiring(duration));
     }
     /// <summary>
@@ -136,6 +137,7 @@ public class Player : MonoBehaviour
     /// <returns></returns>
     public IEnumerator SpeedExpiring(float duration)
     {
+        movement.speedMultiplier = GameManagerEditor.instance.changedSpeedMultiplier;
         movement.speedMultiplier *= 1.5f;
         protectionShield.enabled = true;
         protectionShield.color = shieldColors[1];
@@ -158,15 +160,13 @@ public class Player : MonoBehaviour
         protectionShield.enabled = true;
         yield return new WaitForSeconds(0.3f);
         
-        protectionShield.enabled = false;
-        protectionShield.color = shieldColors[0];
-        movement.speedMultiplier = 1;
+        StopSpeeding();
     }
     
     private void StopSpeeding()
     {
         protectionShield.enabled = false;
         protectionShield.color = shieldColors[0];
-        movement.speedMultiplier = 1;
+        movement.speedMultiplier = GameManagerEditor.instance.changedSpeedMultiplier;;
     }
 }

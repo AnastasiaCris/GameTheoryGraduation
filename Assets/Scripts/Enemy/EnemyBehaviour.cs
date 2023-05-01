@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -5,7 +6,6 @@ using UnityEngine;
 [RequireComponent(typeof(Enemy))]
 public abstract class EnemyBehaviour : MonoBehaviour
 {
-    
     public Enemy enemy { get; private set; }
     public float originalDuration;
     public float duration;
@@ -18,6 +18,12 @@ public abstract class EnemyBehaviour : MonoBehaviour
     public void Enable()
     {                
         Enable(duration);
+    }
+
+    private void Update()
+    {
+        if(!enemy.canMove)
+            enemy.movement.direction = Vector2.zero;
     }
 
     public virtual void Enable(float duration)

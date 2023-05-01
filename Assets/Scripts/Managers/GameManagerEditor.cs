@@ -3,13 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManagerEditor : MonoBehaviour
 {
-    public ManagerSetUpMap onSetUpMap;
-    public GameManagerOnRun onRunManager;
+    [HideInInspector]public ManagerSetUpMap onSetUpMap;
+    [HideInInspector]public GameManagerOnRun onRunManager;
     
     [Header("Editor UI")] [Space]
     public GameObject editorUI;
@@ -22,11 +21,11 @@ public class GameManagerEditor : MonoBehaviour
     public bool timerOn;
     public TextMeshProUGUI timerText;
     public int timer { get; private set; }
-    public int remainingTimer;
+    [HideInInspector]public int remainingTimer;
     public Slider gameSpeedTimer;
     public TextMeshProUGUI gameSpeedText;
-    public float changedSpeedMultiplier = 1;
-    public float changedSpeedMultiplierForTimers = 1;
+    [HideInInspector]public float changedSpeedMultiplier = 1;
+    [HideInInspector]public float changedSpeedMultiplierForTimers = 1;
     
     [Space][Header("Space Element")][Space]
     public GameObject normalMapPrefab;
@@ -36,11 +35,14 @@ public class GameManagerEditor : MonoBehaviour
     public GameObject narrowMapPrefab;
     public GameObject mapDestination;
     
+    [Space][Header("Agency")][Space]
+    public bool multiplayer;
+    
     [Space][Header("System Agents Element")][Space]
     public int maxEnemies = 4;
     public int[] enemyTypes = new int[] { 0, 1, 2, 3 };
     public GameObject enemyTypeUIPrefab;
-    public List<GameObject> enemyTypeUIPrefabList = new List<GameObject>();
+    [HideInInspector]public List<GameObject> enemyTypeUIPrefabList = new List<GameObject>();
     [SerializeField] RectTransform rectTransformParentUI;
     private Vector2 rectTransformParentUISize;
     
@@ -58,7 +60,7 @@ public class GameManagerEditor : MonoBehaviour
     [Space][Header("Rules Element")] [Space]
     public bool spawnMoreEnemiesOnKill;
     public int maxLives = 3;
-    public List<GameObject> extraEnemies = new List<GameObject>();
+    [HideInInspector]public List<GameObject> extraEnemies = new List<GameObject>();
 
     public static GameManagerEditor instance;
     void Awake()
@@ -66,7 +68,6 @@ public class GameManagerEditor : MonoBehaviour
         if(instance == null)
             instance = this;
         
-        //GameModeManager.gameMode = GameModeManager.GameMode.Editor;
         Instantiate(normalMapPrefab, mapDestination.transform);
         if (GameModeManager.gameMode == GameModeManager.GameMode.Classic)
         {
@@ -89,8 +90,10 @@ public class GameManagerEditor : MonoBehaviour
         {
             if (mode == "run" || mode == "" && GameModeManager.gameMode == GameModeManager.GameMode.Editor)
             {
-                if(onSetUpMap.enemiesGameobjectClone[0].GetComponent<EnemyChase>().blinky == null)//if blinky is not set up
-                    onSetUpMap.AfterAllEnemiesInstantiated();
+                    if(onSetUpMap.enemiesGameobjectClone != null)
+                        if(onSetUpMap.enemiesGameobjectClone.Length > 0)
+                            if(onSetUpMap.enemiesGameobjectClone[0].GetComponent<EnemyChase>().inkyDependant == null)//if blinky is not set up
+                                onSetUpMap.AfterAllEnemiesInstantiated();
 
                 img_PlayBTN.sprite = pause;
                 elementsUI.SetActive(false);
@@ -107,6 +110,9 @@ public class GameManagerEditor : MonoBehaviour
         }
             else if (mode == "editor" || mode == "" && GameModeManager.gameMode == GameModeManager.GameMode.Classic)
             {
+                onRunManager.StopCoroutines();
+                onRunManager.player.StopAllCoroutines();
+                
                 if (!_bigger)
                 {
                     SetUpCamera(true);
@@ -136,24 +142,6 @@ public class GameManagerEditor : MonoBehaviour
                     break;
                 case 3:
                     normalPowerUp = !normalPowerUp;
-                    if (normalPowerUp)
-                    {
-                        invincible = false;
-                        speed = false;
-                        killEnemiesGoalText.text = $"Kill all enemies";
-                        killEnemiesGoalText.color = textCol[0];
-                        killEnemiesGoalToggle.enabled = true;
-                    }
-                    else
-                    {
-                        //disable the goal canKillEnemies
-                        if(killAllEnemies)
-                            killAllEnemies = false;
-                        killEnemiesGoalText.text = $"Enable 'Can kill enemies' Object";
-                        killEnemiesGoalText.color = textCol[1];
-                        killEnemiesGoalToggle.isOn = false;
-                        killEnemiesGoalToggle.enabled = false;
-                    }
                     break;
                 case 4:
                     invincible = !invincible;
@@ -171,6 +159,49 @@ public class GameManagerEditor : MonoBehaviour
                         invincible = false;
                     }
                     break;
+                case 6:
+                    multiplayer = !multiplayer;
+
+                    if (multiplayer)
+                    {
+                        //disable all enemies
+                        onSetUpMap.DeleteAllEnemies();
+                        Destroy(onSetUpMap.playerClone);
+                        onSetUpMap.SetUpForMultiplayer();
+                    }
+                    else//get back to default
+                    {
+                        onSetUpMap.DeleteAllEnemies();
+                        Destroy(onSetUpMap.playersGameobjectClone[0]);
+                        Destroy(onSetUpMap.playersGameobjectClone[1]);
+
+                        maxEnemies = 4;
+                        enemyTypes = new[] { 0, 1, 2, 3 };
+                        onSetUpMap.SetUpPlayer();
+                        onSetUpMap.SetUpDefaultEnemies();
+                    }
+                    break;
+            }
+            
+            if (normalPowerUp)
+            {
+                invincible = false;
+                speed = false;
+                killEnemiesGoalText.text = $"Kill all enemies";
+                killEnemiesGoalText.color = textCol[0];
+                killEnemiesGoalToggle.enabled = true;
+                killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
+            }
+            else
+            {
+                //disable the goal canKillEnemies
+                if(killAllEnemies)
+                    killAllEnemies = false;
+                killEnemiesGoalText.text = $"Enable 'Can kill enemies' Object";
+                killEnemiesGoalText.color = textCol[1];
+                killEnemiesGoalToggle.isOn = false;
+                killEnemiesGoalToggle.enabled = false;
+                killEnemiesGoalToggle.graphic.gameObject.SetActive(false);
             }
         }
 
@@ -363,7 +394,11 @@ public class GameManagerEditor : MonoBehaviour
 
     public void SetUpLives(TMP_InputField textField)
     {
-        int life = Int32.Parse(textField.text);
+        int life = 0;
+        if (int.TryParse(textField.text, out life))
+        {
+            life = Int32.Parse(textField.text);
+        }
         if (life <= 0)
         {
             life = 1;

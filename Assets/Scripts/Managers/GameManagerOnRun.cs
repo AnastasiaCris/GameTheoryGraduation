@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GameManagerOnRun : MonoBehaviour
 {
     public List<Enemy> enemies = new List<Enemy>();
-    [Space]public Player player;
-    [Space]public Transform points;
-
-    public int enemyMultiplier = 1;
+    public Player player;
+    public Transform points;
+    
     public int score { get; private set; }
+    [HideInInspector]public int enemyPointMultiplier = 1;
+
     public int lives { get; private set; }
     [HideInInspector]public int maxLives = 0;
     
@@ -19,10 +22,16 @@ public class GameManagerOnRun : MonoBehaviour
     public GameObject roundWonMenu;
     public GameObject gameOverText;
     public GameObject roundWonText;
+    [Space]
+    public GameObject P1WonMenu;
+    public GameObject P2WonMenu;
+    public GameObject P1WonText;
+    public GameObject P2WonText;
 
     //extra
     [HideInInspector]public bool enemiesFreightened;
     [HideInInspector]public bool newRound;
+    [HideInInspector]public bool sceneEnabled;
 
     public static GameManagerOnRun instance;
 
@@ -37,6 +46,16 @@ public class GameManagerOnRun : MonoBehaviour
     {
         gameOverMenu.SetActive(false);
         roundWonMenu.SetActive(false);
+    }
+
+    public void StopCoroutines()
+    {
+        StopAllCoroutines();
+        gameOverMenu.SetActive(false);
+        roundWonMenu.SetActive(false);
+        gameOverText.SetActive(false);
+        roundWonText.SetActive(false);
+        sceneEnabled = false;
     }
 
     private void Update()
@@ -63,6 +82,14 @@ public class GameManagerOnRun : MonoBehaviour
         //Precaution
         gameOverMenu.SetActive(false);
         roundWonMenu.SetActive(false);
+        gameOverText.SetActive(false);
+        roundWonText.SetActive(false);
+        P1WonMenu.SetActive(false);
+        P1WonText.SetActive(false);
+        P2WonMenu.SetActive(false);
+        P2WonText.SetActive(false);
+        sceneEnabled = false;
+        
         if (GameManagerEditor.instance.extraEnemies.Count > 0) //if there are any extra enemies, delete them
         {
             for (int i = 0; i < GameManagerEditor.instance.extraEnemies.Count; i++)
@@ -91,6 +118,11 @@ public class GameManagerOnRun : MonoBehaviour
         {
             StopCoroutine(EnableGameOver());
         }
+        
+        if(GameManagerEditor.instance.multiplayer)
+        {
+            SetLives(GameManagerEditor.instance.maxLives, true);
+        }
     }
 
     /// <summary>
@@ -98,12 +130,13 @@ public class GameManagerOnRun : MonoBehaviour
     /// </summary>
     private void ResetState()
     {
-        enemyMultiplier = 1;
+        enemyPointMultiplier = 1;
         for (int i = 0; i < enemies.Count; i++)
         {
             enemies[i].ResetState();
         }
         player.ResetState();
+        
     }
 
     private void SetScore(int score)
@@ -182,8 +215,8 @@ public class GameManagerOnRun : MonoBehaviour
 
     public void EnemyDamaged(Enemy enemy)
     {
-        SetScore(score + enemy.points * enemyMultiplier);
-        enemyMultiplier++; //everytime you kill an enemy the score multiplies
+        SetScore(score + enemy.points * enemyPointMultiplier);
+        enemyPointMultiplier++; //everytime you kill an enemy the score multiplies
     }
     
     /// <summary>
@@ -198,7 +231,7 @@ public class GameManagerOnRun : MonoBehaviour
     {
         for (int i = 0; i < enemies.Count; i++)
         {
-            enemies[i].movement.direction = Vector2.zero;
+            enemies[i].canMove = false;
         }
         player.movement.direction = Vector2.zero;
         player.movement.anim.SetInteger("PlayerAnim",4);
@@ -302,6 +335,7 @@ public class GameManagerOnRun : MonoBehaviour
             GameManagerEditor.instance.ChangeSpecificMode();
         }
 
+
         public void ShowScene(bool won)
         {
             StartCoroutine(LevelOverScenes(won));
@@ -312,39 +346,73 @@ public class GameManagerOnRun : MonoBehaviour
             {
                 enemies[i].movement.direction = Vector2.zero;
             }
-                
+
+            sceneEnabled = true;    
             player.movement.direction = Vector2.zero;
             
             if (!won)
             {
-                gameOverText.SetActive(true);
-                yield return new WaitForSeconds(0.3f);
-                gameOverText.SetActive(false);
-                yield return new WaitForSeconds(0.3f);
-                gameOverText.SetActive(true);
-                yield return new WaitForSeconds(0.3f);
-                gameOverText.SetActive(false);
-                yield return new WaitForSeconds(0.3f);
-                gameOverMenu.SetActive(true);
-                Time.timeScale = 0;
+                if (GameManagerEditor.instance.multiplayer)
+                {
+                    P2WonText.SetActive(true);
+                    yield return new WaitForSeconds(0.3f);
+                    P2WonText.SetActive(false);
+                    yield return new WaitForSeconds(0.3f);
+                    P2WonText.SetActive(true);
+                    yield return new WaitForSeconds(0.3f);
+                    P2WonText.SetActive(false);
+                    yield return new WaitForSeconds(0.3f);
+                    P2WonMenu.SetActive(true);
+                    Time.timeScale = 0;
+                }
+                else
+                {
+                    gameOverText.SetActive(true);
+                    yield return new WaitForSeconds(0.3f);
+                    gameOverText.SetActive(false);
+                    yield return new WaitForSeconds(0.3f);
+                    gameOverText.SetActive(true);
+                    yield return new WaitForSeconds(0.3f);
+                    gameOverText.SetActive(false);
+                    yield return new WaitForSeconds(0.3f);
+                    gameOverMenu.SetActive(true);
+                    Time.timeScale = 0;
+                }
+
             }
             else
             {
-                
                 player.movement.anim.SetInteger("PlayerAnim", 5);
-                
-                roundWonText.SetActive(true);
-                yield return new WaitForSeconds(0.3f);
-                roundWonText.SetActive(false);
-                yield return new WaitForSeconds(0.3f);
-                roundWonText.SetActive(true);
-                yield return new WaitForSeconds(0.3f);
-                roundWonText.SetActive(false);
-                yield return new WaitForSeconds(0.3f);
-                roundWonMenu.SetActive(true);
-                Time.timeScale = 0;
+
+                if (GameManagerEditor.instance.multiplayer)
+                {
+                    P1WonText.SetActive(true);
+                    yield return new WaitForSeconds(0.3f);
+                    P1WonText.SetActive(false);
+                    yield return new WaitForSeconds(0.3f);
+                    P1WonText.SetActive(true);
+                    yield return new WaitForSeconds(0.3f);
+                    P1WonText.SetActive(false);
+                    yield return new WaitForSeconds(0.3f);
+                    P1WonMenu.SetActive(true);
+                    Time.timeScale = 0;
+                }
+                else
+                {
+                    roundWonText.SetActive(true);
+                    yield return new WaitForSeconds(0.3f);
+                    roundWonText.SetActive(false);
+                    yield return new WaitForSeconds(0.3f);
+                    roundWonText.SetActive(true);
+                    yield return new WaitForSeconds(0.3f);
+                    roundWonText.SetActive(false);
+                    yield return new WaitForSeconds(0.3f);
+                    roundWonMenu.SetActive(true);
+                    Time.timeScale = 0;
+                }
             }
 
+            sceneEnabled = false;
             yield return null;
         }
 

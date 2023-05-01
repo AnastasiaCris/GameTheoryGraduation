@@ -46,12 +46,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 6838945617284757517, guid: 0e03f42c3366de34bbb0feb63b532046, type: 3}
+  multiplayerPlayerPrefabs:
+  - {fileID: 6838945617284757517, guid: 10ad12ff9a3a80643a06edd72679820b, type: 3}
+  - {fileID: 1470566846897214875, guid: 2be4889077edc3f4f8ebdef96e692642, type: 3}
+  gridMovement: 0
+  playerStartingPos: {fileID: 0}
   enemiesPrefab:
   - {fileID: 3894514647284835561, guid: 74f138c6ed9e38f40aa5ec0677cf6170, type: 3}
   - {fileID: 4442437681986193489, guid: ecb2eb2952f054c4587b171dbddbc4e7, type: 3}
   - {fileID: 1118229194844160990, guid: 319d0d4a08de77d4a813253b707836c2, type: 3}
   - {fileID: 1059266606814567578, guid: f213b7fcce238494294ebdc725aba0fe, type: 3}
-  playerStartingPos: {fileID: 0}
   enemiesStartingPos:
   - {fileID: 0}
   - {fileID: 0}
@@ -81,5 +85,12 @@ MonoBehaviour:
   enemies: []
   player: {fileID: 0}
   points: {fileID: 0}
+  enemyPointMultiplier: 1
+  maxLives: 0
   gameOverMenu: {fileID: 0}
-  pauseMenu: {fileID: 0}
+  roundWonMenu: {fileID: 0}
+  gameOverText: {fileID: 0}
+  roundWonText: {fileID: 0}
+  enemiesFreightened: 0
+  newRound: 0
+  sceneEnabled: 0

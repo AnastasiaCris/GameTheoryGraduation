@@ -10,16 +10,17 @@ public class EnemyFreightened : EnemyBehaviour
     public Color originalBodyCol;
     public Color freightenedBodyCol;
     public Color flashFreightenedBodyCol;
-    public bool dead;
-    public bool canExit;
+    [HideInInspector]public bool dead;
+    [HideInInspector]public bool canExit;
     private bool reachedHouse;
     
     public override void Enable(float duration)
     {
-        base.Enable(duration);
         originalDuration = duration;
         duration = originalDuration * GameManagerEditor.instance.changedSpeedMultiplierForTimers;
+        this.duration = duration;
         EnemyScared(duration);
+        base.Enable(duration);
     }
 
     public override void Disable()
@@ -29,7 +30,7 @@ public class EnemyFreightened : EnemyBehaviour
         StopAllCoroutines();
         body.color = originalBodyCol;
         enemy.managerOnRun.enemiesFreightened = false;
-        enemy.managerOnRun.enemyMultiplier = 1;
+        enemy.managerOnRun.enemyPointMultiplier = 1;
     }
 
     public void EnemyScared(float duration)

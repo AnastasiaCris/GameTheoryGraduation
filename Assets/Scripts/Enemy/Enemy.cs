@@ -1,19 +1,21 @@
-using TMPro;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
     public int Id = 0;
+    public int typeAmount = 0;
     public int points = 200;
     public Movement movement{ get; private set; }
     public EnemyHome home{ get; private set; }
     public EnemyScatter scatter{ get; private set; }
     public EnemyChase chase{ get; private set; }
     public EnemyFreightened freightened{ get; private set; }
-    public EnemyBehaviour behaviour;
     public Transform target;
     public GameManagerOnRun managerOnRun{ get; private set; }
     public ManagerSetUpMap setUpMapManagerSetUp{ get; private set; }
+
+    public bool multiplayer;
+    public bool canMove;
     
     private void Awake()
     {
@@ -40,6 +42,7 @@ public class Enemy : MonoBehaviour
         home.Enable();
         
         managerOnRun.newRound = false;
+        canMove = true;
     }
 
     private void OnCollisionEnter2D(Collision2D col)

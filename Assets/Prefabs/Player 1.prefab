@@ -294,8 +294,8 @@ GameObject:
   - component: {fileID: 6838945617284757510}
   - component: {fileID: 6838945617284757504}
   - component: {fileID: 6838945617284757508}
-  - component: {fileID: 7708894519672554315}
   - component: {fileID: 6838945617284757511}
+  - component: {fileID: -3474998702891447489}
   m_Layer: 8
   m_Name: Player 1
   m_TagString: Untagged
@@ -358,29 +358,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.49
---- !u!114 &7708894519672554315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6838945617284757517}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9a85166747548a4dbd9f0b535ad968f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Up: 77000000
-  Down: 73000000
-  Left: 61000000
-  Right: 64000000
-  animDeath: {fileID: 7400000, guid: 09a819dc9bdd8254fbe85d9f63f05db3, type: 2}
-  currentlyInvincible: 0
-  protectionShield: {fileID: 8516524115319553919}
-  shieldColors:
-  - {r: 1, g: 1, b: 1, a: 0.78431374}
-  - {r: 1, g: 0.8593202, b: 0, a: 0.78431374}
-  indicationKeys: {fileID: 2095413536002195544}
 --- !u!114 &6838945617284757511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -405,6 +382,29 @@ MonoBehaviour:
   direction: {x: 0, y: 0}
   startPos: {x: 0, y: 0, z: 0}
   anim: {fileID: 8146875893226588467}
+--- !u!114 &-3474998702891447489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6838945617284757517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6f65c08523974d459b2fb15a4fdda26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Up: 77000000
+  Down: 73000000
+  Left: 61000000
+  Right: 64000000
+  animDeath: {fileID: 7400000, guid: 09a819dc9bdd8254fbe85d9f63f05db3, type: 2}
+  indicationKeys: {fileID: 2095413536002195544}
+  currentlyInvincible: 0
+  protectionShield: {fileID: 8516524115319553919}
+  shieldColors:
+  - {r: 1, g: 1, b: 1, a: 0.78431374}
+  - {r: 1, g: 0.8593202, b: 0, a: 0.78431374}
 --- !u!1 &8825064066020729332
 GameObject:
   m_ObjectHideFlags: 0

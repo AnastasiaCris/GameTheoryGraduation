@@ -62,6 +62,10 @@ public class GameManagerEditor : MonoBehaviour
     public int maxLives = 3;
     [HideInInspector]public List<GameObject> extraEnemies = new List<GameObject>();
 
+    [Space] [Header("Implicit Rules Element")] [Space]
+    public bool commandLine;
+    public GameObject commandTable;
+
     public static GameManagerEditor instance;
     void Awake()
     {
@@ -175,11 +179,16 @@ public class GameManagerEditor : MonoBehaviour
                         Destroy(onSetUpMap.playersGameobjectClone[0]);
                         Destroy(onSetUpMap.playersGameobjectClone[1]);
 
-                        maxEnemies = 4;
-                        enemyTypes = new[] { 0, 1, 2, 3 };
                         onSetUpMap.SetUpPlayer();
-                        onSetUpMap.SetUpDefaultEnemies();
+                        onSetUpMap.SetUpForNewEnemies(maxEnemies);
+                        for (int i = 0; i < enemyTypes.Length; i++)
+                        {
+                            onSetUpMap.SetUpIndividualEnemies(enemyTypes[i], i);
+                        }
                     }
+                    break;
+                case 7:
+                    commandLine = !commandLine;
                     break;
             }
             
@@ -202,6 +211,26 @@ public class GameManagerEditor : MonoBehaviour
                 killEnemiesGoalToggle.isOn = false;
                 killEnemiesGoalToggle.enabled = false;
                 killEnemiesGoalToggle.graphic.gameObject.SetActive(false);
+            }
+
+            if (multiplayer) return;
+            if (maxEnemies == 0)
+            {
+                //disable the goal canKillEnemies
+                if(killAllEnemies)
+                    killAllEnemies = false;
+                killEnemiesGoalText.text = $"Add enemies in 'System Agents'";
+                killEnemiesGoalText.color = textCol[1];
+                killEnemiesGoalToggle.isOn = false;
+                killEnemiesGoalToggle.enabled = false;
+                killEnemiesGoalToggle.graphic.gameObject.SetActive(false);
+            }
+            else
+            {
+                killEnemiesGoalText.text = $"Kill all enemies";
+                killEnemiesGoalText.color = textCol[0];
+                killEnemiesGoalToggle.enabled = true;
+                killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
             }
         }
 
@@ -380,6 +409,27 @@ public class GameManagerEditor : MonoBehaviour
 
             maxEnemies = nrOfEnemies;
             enemyTypes = new int[nrOfEnemies];
+
+            if (multiplayer)
+                return;
+            if (nrOfEnemies == 0)
+            {
+                //disable the goal canKillEnemies
+                if(killAllEnemies)
+                    killAllEnemies = false;
+                killEnemiesGoalText.text = $"Add enemies in 'System Agents'";
+                killEnemiesGoalText.color = textCol[1];
+                killEnemiesGoalToggle.isOn = false;
+                killEnemiesGoalToggle.enabled = false;
+                killEnemiesGoalToggle.graphic.gameObject.SetActive(false);
+            }
+            else
+            {
+                killEnemiesGoalText.text = $"Kill all enemies";
+                killEnemiesGoalText.color = textCol[0];
+                killEnemiesGoalToggle.enabled = true;
+                killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
+            }
         }
 
     #endregion

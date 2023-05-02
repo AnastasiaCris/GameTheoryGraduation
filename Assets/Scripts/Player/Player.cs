@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     public KeyCode[] Right;
 
     public AnimationClip animDeath;
+    public GameObject indicationKeys;
+
     
     //Formal elements
     public bool currentlyInvincible;
@@ -28,8 +30,8 @@ public class Player : MonoBehaviour
 
     public virtual void Update()
     {
-        //if (GameManagerEditor.instance.onRunManager.gameOverMenu.activeSelf || GameManagerEditor.instance.onRunManager.roundWonMenu.activeSelf || GameManagerEditor.instance.onRunManager.sceneEnabled)
-           // return;
+        if (GameManagerEditor.instance.onRunManager.gameOverMenu.activeSelf || GameManagerEditor.instance.onRunManager.roundWonMenu.activeSelf || GameManagerEditor.instance.onRunManager.sceneEnabled)
+            return;
         
         if (ButtonPressed(Up))
         {
@@ -51,6 +53,8 @@ public class Player : MonoBehaviour
             
         }
         
+        if (indicationKeys.activeSelf && (ButtonPressed(Up) || ButtonPressed(Down) || ButtonPressed(Left) || ButtonPressed(Right)))
+            indicationKeys.SetActive(false);
     }
 
     public bool ButtonPressed(KeyCode[] dir)
@@ -95,7 +99,9 @@ public class Player : MonoBehaviour
         currentlyInvincible = true;
         protectionShield.enabled = true;
         Physics2D.IgnoreLayerCollision(8,9, true);//disable collision between enemy and player
-        
+        if(GameManagerEditor.instance.multiplayer)
+            Physics2D.IgnoreLayerCollision(8,11, true);//disable collision between player 1 and player 2
+
         yield return new WaitForSeconds(duration - 2.5f);
         
         protectionShield.enabled = false;
@@ -123,6 +129,8 @@ public class Player : MonoBehaviour
         protectionShield.enabled = false;
         currentlyInvincible = false;
         Physics2D.IgnoreLayerCollision(8,9, false);//enable collision between enemy and player
+        if(GameManagerEditor.instance.multiplayer)
+            Physics2D.IgnoreLayerCollision(8,11, false);//enable collision between player 1 and player 2
     }
 
     public void SpeedIncrease(float duration)

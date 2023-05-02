@@ -5,17 +5,17 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     public bool gridMovement;
-    [HideInInspector]public bool playerDead;
+    public bool playerDead;
     public float speed = 8;
     public float speedMultiplier = 1;
 
-    [HideInInspector]public Vector3 targetPosition;
+    public Vector3 targetPosition;
     public Vector2 startDir;
     public LayerMask obstacleLayer;//check for raycasts
     public Rigidbody2D rb { get; private set; }
-    [HideInInspector]public Vector2 direction;
+    public Vector2 direction;
     public  Vector2 nextDirection { get; private set; }
-    [HideInInspector]public Vector3 startPos;
+    public Vector3 startPos;
 
     public Animator anim;
 

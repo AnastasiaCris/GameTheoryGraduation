@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 1470566846897214879}
   - component: {fileID: 1470566846897214872}
   - component: {fileID: 1470566846897214874}
-  - component: {fileID: 4915501735370867864}
+  - component: {fileID: 1102490942297706458}
   - component: {fileID: 1470566846897214873}
   - component: {fileID: 2934131417384237684}
   - component: {fileID: 7719445506639484532}
@@ -266,7 +266,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.48
---- !u!114 &4915501735370867864
+--- !u!114 &1102490942297706458
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -275,7 +275,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1470566846897214875}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9a85166747548a4dbd9f0b535ad968f, type: 3}
+  m_Script: {fileID: 11500000, guid: a6f65c08523974d459b2fb15a4fdda26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Up: 11010000
@@ -283,12 +283,12 @@ MonoBehaviour:
   Left: 14010000
   Right: 13010000
   animDeath: {fileID: 7400000, guid: e523afd9cd2423d4db2d23c1bf553928, type: 2}
+  indicationKeys: {fileID: 104083449165869941}
   currentlyInvincible: 0
   protectionShield: {fileID: 1361437907572918161}
   shieldColors:
   - {r: 1, g: 1, b: 1, a: 0.78431374}
   - {r: 1, g: 0.8593202, b: 0, a: 0.78431374}
-  indicationKeys: {fileID: 104083449165869941}
 --- !u!114 &1470566846897214873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -330,6 +330,7 @@ MonoBehaviour:
   points: 200
   target: {fileID: 0}
   multiplayer: 1
+  canMove: 0
 --- !u!114 &7719445506639484532
 MonoBehaviour:
   m_ObjectHideFlags: 0

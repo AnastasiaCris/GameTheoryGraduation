@@ -96,7 +96,11 @@ public class GameManagerOnRun : MonoBehaviour
             {
                 Destroy(GameManagerEditor.instance.extraEnemies[i]);
             }
-            enemies.RemoveRange(GameManagerEditor.instance.onSetUpMap.enemiesGameobjectClone.Length, enemies.Count-GameManagerEditor.instance.onSetUpMap.enemiesGameobjectClone.Length);
+
+            int range = GameManagerEditor.instance.multiplayer
+                ? GameManagerEditor.instance.onSetUpMap.enemiesGameobjectClone.Length + 1
+                : GameManagerEditor.instance.onSetUpMap.enemiesGameobjectClone.Length;
+            enemies.RemoveRange(range, enemies.Count-range);
             GameManagerEditor.instance.extraEnemies.Clear();
         }
         

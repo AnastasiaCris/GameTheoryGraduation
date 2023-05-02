@@ -90,18 +90,23 @@ public class EnemyFreightened : EnemyBehaviour
 
         if (GameManagerEditor.instance.spawnMoreEnemiesOnKill)
         {
-            GameObject newEnemy = Instantiate(enemy.setUpMapManagerSetUp.enemiesPrefab[enemy.Id],
-                enemy.setUpMapManagerSetUp.enemiesStartingPos[index].position, Quaternion.identity,
-                transform.parent.transform);
+            int Id =  enemy.gameObject.layer == 9? enemy.Id : Random.Range(0, 4);//checks if it's an ordinary enemy, otherwise it's player 2
+            GameObject newEnemy = Instantiate(enemy.setUpMapManagerSetUp.enemiesPrefab[Id],
+                enemy.home.home.position, Quaternion.identity, transform.parent.transform);
             Enemy newEnem_ = newEnemy.GetComponent<Enemy>();
             
             //Set up enemy
-            
             newEnem_.target = enemy.setUpMapManagerSetUp.playerClone.transform;
             newEnem_.home.home = enemy.setUpMapManagerSetUp.enemiesHomePoints[0];
             newEnem_.home.exit = enemy.setUpMapManagerSetUp.enemiesHomePoints[1];
             newEnem_.scatter.scatterNode = enemy.setUpMapManagerSetUp.enemiesScatterPoints[enemy.Id];
+            newEnem_.canMove = true;
             newEnem_.movement.direction = Vector2.right;
+            if (newEnem_.chase.enemyType == EnemyChase.EnemyType.Inky)
+            {
+                newEnem_.chase.inkyDependant =
+                    enemy.gameObject.layer == 9 ? enemy.chase.inkyDependant : enemy.gameObject;
+            }
             
             //The enemy will start with being dead first
             newEnem_.freightened.dead = true;

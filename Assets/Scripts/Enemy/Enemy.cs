@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour
     public ManagerSetUpMap setUpMapManagerSetUp{ get; private set; }
 
     public bool multiplayer;
-    public bool canMove;
+    public bool canMove = true;
     
     private void Awake()
     {
@@ -27,7 +27,7 @@ public class Enemy : MonoBehaviour
         home = GetComponent<EnemyHome>();
         managerOnRun = FindObjectOfType<GameManagerOnRun>();
         setUpMapManagerSetUp = FindObjectOfType<ManagerSetUpMap>();
-        
+        canMove = true;
     }
 
     public void ResetState()

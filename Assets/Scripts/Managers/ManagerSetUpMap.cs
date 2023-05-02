@@ -504,7 +504,7 @@ public class ManagerSetUpMap : MonoBehaviour
         enemy.target = playerClone.transform;
         enemy.home.home = enemiesHomePoints[0];
         enemy.home.exit = enemiesHomePoints[1];
-        enemy.scatter.scatterNode = enemiesScatterPoints[enemy.Id];
+        enemy.scatter.scatterNode = enemiesScatterPoints[0];
         
         //Setting up the core game manager
         gameManagerOnRun.player = playerClone.GetComponent<Player>();
@@ -515,6 +515,6 @@ public class ManagerSetUpMap : MonoBehaviour
         playersGameobjectClone = new GameObject[] { playerClone, playerClone2 };
         
         gameManagerOnRun.enemies.Add(enemy);
-        GameManagerEditor.instance.enemyTypes = new int[] { 0 };
+        GameManagerEditor.instance.enemyTypes = new int[] { 0,1,2,3 };
     }
 }

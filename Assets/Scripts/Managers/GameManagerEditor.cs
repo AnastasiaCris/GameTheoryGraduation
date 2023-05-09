@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class GameManagerEditor : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class GameManagerEditor : MonoBehaviour
     public Image img_PlayBTN;
     public Sprite pause;
     public Sprite play;
-    
+
     [Space][Header("Timer Element")] [Space]
     public bool timerOn;
     public TextMeshProUGUI timerText;
@@ -61,12 +62,15 @@ public class GameManagerEditor : MonoBehaviour
     public bool spawnMoreEnemiesOnKill;
     public int maxLives = 3;
     [HideInInspector]public List<GameObject> extraEnemies = new List<GameObject>();
+    public TextMeshProUGUI spawnMoreRuleText;
+    public Toggle spawnMoreRuleToggle;
 
     [Space] [Header("Implicit Rules Element")] [Space]
     public bool commandLine;
     public GameObject commandTable;
 
     public static GameManagerEditor instance;
+
     void Awake()
     {
         if(instance == null)
@@ -168,8 +172,7 @@ public class GameManagerEditor : MonoBehaviour
 
                     if (multiplayer)
                     {
-                        //disable all enemies
-                        onSetUpMap.DeleteAllEnemies();
+                        //onSetUpMap.DeleteAllEnemies();
                         Destroy(onSetUpMap.playerClone);
                         onSetUpMap.SetUpForMultiplayer();
                     }
@@ -192,7 +195,7 @@ public class GameManagerEditor : MonoBehaviour
                     break;
             }
             
-            if (normalPowerUp)
+            if (maxEnemies != 0 && normalPowerUp)
             {
                 invincible = false;
                 speed = false;
@@ -200,8 +203,13 @@ public class GameManagerEditor : MonoBehaviour
                 killEnemiesGoalText.color = textCol[0];
                 killEnemiesGoalToggle.enabled = true;
                 killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
+
+                spawnMoreRuleText.text = $"Kill an enemy, 1 extra respawns";
+                spawnMoreRuleText.color = textCol[0];
+                spawnMoreRuleToggle.enabled = true;
+                spawnMoreRuleToggle.graphic.gameObject.SetActive(true);
             }
-            else
+            else if(!normalPowerUp)
             {
                 //disable the goal canKillEnemies
                 if(killAllEnemies)
@@ -211,9 +219,31 @@ public class GameManagerEditor : MonoBehaviour
                 killEnemiesGoalToggle.isOn = false;
                 killEnemiesGoalToggle.enabled = false;
                 killEnemiesGoalToggle.graphic.gameObject.SetActive(false);
+                
+                spawnMoreRuleText.text = $"Enable 'Can kill enemies' Object";
+                spawnMoreRuleText.color = textCol[1];
+                spawnMoreRuleToggle.isOn = false;
+                spawnMoreRuleToggle.enabled = false;
+                spawnMoreRuleToggle.graphic.gameObject.SetActive(false);
             }
 
-            if (multiplayer) return;
+            if (multiplayer)
+            {
+                if (normalPowerUp)
+                {
+                    killEnemiesGoalText.text = $"Kill all enemies";
+                    killEnemiesGoalText.color = textCol[0];
+                    killEnemiesGoalToggle.enabled = true;
+                    killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
+                
+                    spawnMoreRuleText.text = $"Kill an enemy, 1 extra respawns";
+                    spawnMoreRuleText.color = textCol[0];
+                    spawnMoreRuleToggle.enabled = true;
+                    spawnMoreRuleToggle.graphic.gameObject.SetActive(true);
+                }
+                return;
+            }
+                
             if (maxEnemies == 0)
             {
                 //disable the goal canKillEnemies
@@ -224,13 +254,24 @@ public class GameManagerEditor : MonoBehaviour
                 killEnemiesGoalToggle.isOn = false;
                 killEnemiesGoalToggle.enabled = false;
                 killEnemiesGoalToggle.graphic.gameObject.SetActive(false);
+                
+                spawnMoreRuleText.text = $"Add enemies in 'System Agents'";
+                spawnMoreRuleText.color = textCol[1];
+                spawnMoreRuleToggle.isOn = false;
+                spawnMoreRuleToggle.enabled = false;
+                spawnMoreRuleToggle.graphic.gameObject.SetActive(false);
             }
-            else
+            else if (maxEnemies != 0 && normalPowerUp)
             {
                 killEnemiesGoalText.text = $"Kill all enemies";
                 killEnemiesGoalText.color = textCol[0];
                 killEnemiesGoalToggle.enabled = true;
                 killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
+                
+                spawnMoreRuleText.text = $"Kill an enemy, 1 extra respawns";
+                spawnMoreRuleText.color = textCol[0];
+                spawnMoreRuleToggle.enabled = true;
+                spawnMoreRuleToggle.graphic.gameObject.SetActive(true);
             }
         }
 
@@ -247,8 +288,7 @@ public class GameManagerEditor : MonoBehaviour
                 Camera.main.orthographicSize -= 3;
             }
         }
-        
-
+    
     #endregion
     
     #region Time
@@ -379,7 +419,9 @@ public class GameManagerEditor : MonoBehaviour
             //First delete any enemies and set up for new enemies
             onSetUpMap.DeleteAllEnemies();
             onSetUpMap.SetUpForNewEnemies(nrOfEnemies);
-
+            maxEnemies = nrOfEnemies;
+            enemyTypes = new int[nrOfEnemies];
+            
             //Change the Height of the UI parent according to how many objects there are
             float newHeight = rectTransformParentUISize.y * (nrOfEnemies + 1);
             rectTransformParentUI.sizeDelta = new Vector2(rectTransformParentUI.sizeDelta.x, newHeight);
@@ -397,9 +439,11 @@ public class GameManagerEditor : MonoBehaviour
 
             for (int i = 0; i < nrOfEnemies; i++)
             {
-                GameObject enemyTypeUIBox = Instantiate(enemyTypeUIPrefab, textField.gameObject.transform.parent.parent);
+                GameObject enemyTypeUIBox = Instantiate(enemyTypeUIPrefab, rectTransformParentUI.transform);
                 enemyTypeUIPrefabList.Add(enemyTypeUIBox);
                 ChangeEnemyType changeEnemyType = enemyTypeUIBox.GetComponent<ChangeEnemyType>();
+                
+                onSetUpMap.SetUpIndividualEnemies(changeEnemyType.enemyType, enemyTypeUIPrefabList.IndexOf(enemyTypeUIBox));
 
                 changeEnemyType.arrowLeft.onClick.AddListener(() =>
                     onSetUpMap.SetUpIndividualEnemies(changeEnemyType.enemyType, enemyTypeUIPrefabList.IndexOf(enemyTypeUIBox)));
@@ -407,8 +451,7 @@ public class GameManagerEditor : MonoBehaviour
                     onSetUpMap.SetUpIndividualEnemies(changeEnemyType.enemyType, enemyTypeUIPrefabList.IndexOf(enemyTypeUIBox)));
             }
 
-            maxEnemies = nrOfEnemies;
-            enemyTypes = new int[nrOfEnemies];
+            
 
             if (multiplayer)
                 return;
@@ -422,13 +465,39 @@ public class GameManagerEditor : MonoBehaviour
                 killEnemiesGoalToggle.isOn = false;
                 killEnemiesGoalToggle.enabled = false;
                 killEnemiesGoalToggle.graphic.gameObject.SetActive(false);
+                
+                spawnMoreRuleText.text = $"Add enemies in 'System Agents'";
+                spawnMoreRuleText.color = textCol[1];
+                spawnMoreRuleToggle.isOn = false;
+                spawnMoreRuleToggle.enabled = false;
+                spawnMoreRuleToggle.graphic.gameObject.SetActive(false);
             }
-            else
+            else if (nrOfEnemies != 0 && normalPowerUp)
             {
                 killEnemiesGoalText.text = $"Kill all enemies";
                 killEnemiesGoalText.color = textCol[0];
                 killEnemiesGoalToggle.enabled = true;
                 killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
+                
+                spawnMoreRuleText.text = $"Kill an enemy, 1 extra respawns";
+                spawnMoreRuleText.color = textCol[0];
+                spawnMoreRuleToggle.enabled = true;
+                spawnMoreRuleToggle.graphic.gameObject.SetActive(true);
+            }else if (nrOfEnemies != 0 && !normalPowerUp)
+            {
+                if(killAllEnemies)
+                    killAllEnemies = false;
+                killEnemiesGoalText.text = $"Enable 'Can kill enemies' Object";
+                killEnemiesGoalText.color = textCol[1];
+                killEnemiesGoalToggle.isOn = false;
+                killEnemiesGoalToggle.enabled = false;
+                killEnemiesGoalToggle.graphic.gameObject.SetActive(false);
+                
+                spawnMoreRuleText.text = $"Enable 'Can kill enemies' Object";
+                spawnMoreRuleText.color = textCol[1];
+                spawnMoreRuleToggle.isOn = false;
+                spawnMoreRuleToggle.enabled = false;
+                spawnMoreRuleToggle.graphic.gameObject.SetActive(false);
             }
         }
 

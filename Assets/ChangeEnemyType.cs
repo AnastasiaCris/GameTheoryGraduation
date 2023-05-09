@@ -12,6 +12,7 @@ public class ChangeEnemyType : MonoBehaviour
     void Start()
     {
         enemyType = 4;
+        ChangeType(true);
     }
 
     public void ChangeType(bool right)

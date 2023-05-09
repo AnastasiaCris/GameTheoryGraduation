@@ -140,7 +140,6 @@ public class GameManagerOnRun : MonoBehaviour
             enemies[i].ResetState();
         }
         player.ResetState();
-        
     }
 
     private void SetScore(int score)
@@ -153,7 +152,6 @@ public class GameManagerOnRun : MonoBehaviour
             PlayerPrefs.SetInt("HighScore", this.score);
             UIManager.instance.highScore.text = "High Score \n" + PlayerPrefs.GetInt("HighScore", 0);
         }
-            
     }
 
     public void SetLives(int currentLife, bool startOfGame = false)
@@ -233,6 +231,8 @@ public class GameManagerOnRun : MonoBehaviour
 
     IEnumerator PlayerDamagedNow()
     {
+        if (player.movement.playerDead)
+            yield break;
         for (int i = 0; i < enemies.Count; i++)
         {
             enemies[i].canMove = false;

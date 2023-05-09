@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
 {
@@ -18,6 +20,7 @@ public class Player : MonoBehaviour
     public bool currentlyInvincible;
     public SpriteRenderer protectionShield;
     public Color[] shieldColors;
+    private Enemy enemy;
     private void Awake()
     {
         movement = GetComponent<Movement>();
@@ -26,11 +29,21 @@ public class Player : MonoBehaviour
     public virtual void Start()
     {
         protectionShield.enabled = false;
+        enemy = GetComponent<Enemy>();
     }
 
     public virtual void Update()
     {
-        if (GameManagerEditor.instance.onRunManager.gameOverMenu.activeSelf || GameManagerEditor.instance.onRunManager.roundWonMenu.activeSelf || GameManagerEditor.instance.onRunManager.sceneEnabled)
+        if (currentlyInvincible)
+        {
+            Physics2D.IgnoreLayerCollision(8,9, true);//enable collision between enemy and player
+
+        }
+        else
+        {
+            Physics2D.IgnoreLayerCollision(8,9, false);//enable collision between enemy and player
+        }
+        if (GameManagerEditor.instance.onRunManager.gameOverMenu.activeSelf || GameManagerEditor.instance.onRunManager.roundWonMenu.activeSelf || GameManagerEditor.instance.onRunManager.sceneEnabled || enemy != null && !enemy.canMove)
             return;
         
         if (ButtonPressed(Up))
@@ -176,5 +189,108 @@ public class Player : MonoBehaviour
         protectionShield.enabled = false;
         protectionShield.color = shieldColors[0];
         movement.speedMultiplier = GameManagerEditor.instance.changedSpeedMultiplier;;
+    }
+
+    public int typeEnemyGizmos = 0;
+    public Vector3 targetGizmos = Vector3.zero;
+    public GameObject inkyDependant;
+    public GameObject OrangeEnemy;
+    private void OnDrawGizmos()
+    {
+
+        switch (typeEnemyGizmos)
+        {
+            case 0:
+                Gizmos.color = Color.red;
+
+                targetGizmos = transform.position;
+                break;
+            case 1:
+                Gizmos.color = Color.gray;
+
+                int n = 3;
+                if (movement.direction == Vector2.up)
+                {
+                    targetGizmos = new Vector2(transform.position.x - n, transform.position.y + n);
+                    
+                    Gizmos.DrawLine(transform.position, new Vector3(transform.position.x,transform.position.y + n));
+                    Gizmos.DrawLine(new Vector3(transform.position.x,transform.position.y + n), targetGizmos);
+                }
+                else if (movement.direction == Vector2.down)
+                {
+                    targetGizmos = new Vector2(transform.position.x, transform.position.y - n);
+                    Gizmos.DrawLine(transform.position, targetGizmos);
+                }
+                else if (movement.direction == Vector2.left)
+                {
+                    targetGizmos = new Vector2(transform.position.x - n, transform.position.y);
+                    Gizmos.DrawLine(transform.position, targetGizmos);
+                }
+                else if (movement.direction == Vector2.right)
+                {
+                    targetGizmos = new Vector2(transform.position.x + n, transform.position.y);
+                    Gizmos.DrawLine(transform.position, targetGizmos);
+                }
+                Gizmos.color = Color.magenta;
+
+                break;
+            case 2:
+                Gizmos.color = Color.gray;
+                Vector2 playerDirByN = Vector2.zero;
+                n = 1;
+
+                //Calculating target
+                    
+                if (GameManagerOnRun.instance.player.movement.direction == Vector2.up)
+                {
+                    playerDirByN = new Vector2(transform.position.x - n, transform.position.y + n);
+                    Gizmos.DrawLine(transform.position, new Vector3(transform.position.x,transform.position.y + n));
+                    Gizmos.DrawLine( new Vector3(transform.position.x,transform.position.y + n), playerDirByN);
+                }
+                else if (GameManagerOnRun.instance.player.movement.direction == Vector2.down)
+                {
+                    playerDirByN = new Vector2(transform.position.x, transform.position.y - n);
+                    Gizmos.DrawLine(transform.position, playerDirByN);
+
+                }
+                else if (GameManagerOnRun.instance.player.movement.direction == Vector2.left)
+                {
+                    playerDirByN = new Vector2(transform.position.x - n, transform.position.y);
+                    Gizmos.DrawLine(transform.position, playerDirByN);
+
+                }
+                else if (GameManagerOnRun.instance.player.movement.direction == Vector2.right)
+                {
+                    playerDirByN = new Vector2(transform.position.x + n, transform.position.y);
+                    Gizmos.DrawLine(transform.position, playerDirByN);
+                }
+
+                float xDist = playerDirByN.x - inkyDependant.transform.position.x;
+                float yDist = playerDirByN.y - inkyDependant.transform.position.y;
+                
+                targetGizmos = new Vector2(playerDirByN.x + xDist, playerDirByN.y + yDist);
+                
+                Gizmos.DrawLine(inkyDependant.transform.position, targetGizmos);
+                
+                Gizmos.color = Color.cyan;
+
+                break;
+            case 3:
+                Gizmos.color = Color.gray;
+                if (Vector3.Distance(transform.position, OrangeEnemy.transform.position) > 8)
+                {
+                    targetGizmos = transform.position;
+                }
+                else
+                {
+                    targetGizmos = OrangeEnemy.GetComponent<EnemyScatter>().scatterNode.position;
+                }
+                
+                Gizmos.DrawWireSphere(transform.position, 8);
+                Gizmos.color = Color.yellow;
+                break;
+        }
+        
+        Gizmos.DrawSphere(targetGizmos, 0.2f);
     }
 }

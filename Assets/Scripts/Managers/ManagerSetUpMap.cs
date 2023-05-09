@@ -45,6 +45,7 @@ public class ManagerSetUpMap : MonoBehaviour
         else
         {
             SetUpForMultiplayer();
+            SetUpDefaultEnemies();
         }
     }
 
@@ -493,10 +494,13 @@ public class ManagerSetUpMap : MonoBehaviour
     {
         //Instantiating the players
         playerClone = Instantiate(multiplayerPlayerPrefabs[0], playerStartingPos.position, Quaternion.identity,
-            transform.parent.transform.parent.transform);
+            transform.parent.transform.parent.transform); //player
 
-        GameObject playerClone2 = Instantiate(multiplayerPlayerPrefabs[1], enemiesStartingPos[0].position, Quaternion.identity,
-            transform.parent.transform.parent.transform);
+        Vector3 newpos = new Vector3(enemiesStartingPos[0].position.x - 1, enemiesStartingPos[0].position.y,
+            enemiesStartingPos[0].position.z);
+
+        GameObject playerClone2 = Instantiate(multiplayerPlayerPrefabs[1], newpos, Quaternion.identity,
+            transform.parent.transform.parent.transform);//enemy
         
         //Set them up
         Enemy enemy = playerClone2.GetComponent<Enemy>();
@@ -515,6 +519,6 @@ public class ManagerSetUpMap : MonoBehaviour
         playersGameobjectClone = new GameObject[] { playerClone, playerClone2 };
         
         gameManagerOnRun.enemies.Add(enemy);
-        GameManagerEditor.instance.enemyTypes = new int[] { 0,1,2,3 };
+        //GameManagerEditor.instance.enemyTypes = new int[] { 0,1,2,3 };
     }
 }

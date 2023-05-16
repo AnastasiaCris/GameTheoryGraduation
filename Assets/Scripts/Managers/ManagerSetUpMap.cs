@@ -85,6 +85,7 @@ public class ManagerSetUpMap : MonoBehaviour
             {
                 for (int i = 0; i < enemiesGameobjectClone.Length; i++)
                 {
+                    enemiesGameobjectClone[i].GetComponent<Enemy>().freightened.Damaged();
                     Destroy(enemiesGameobjectClone[i]);
                 }
             }
@@ -512,6 +513,7 @@ public class ManagerSetUpMap : MonoBehaviour
         
         //Setting up the core game manager
         gameManagerOnRun.player = playerClone.GetComponent<Player>();
+        gameManagerOnRun.player2 = playerClone2.GetComponent<Player>();
 
         if (gridMovement)
             gameManagerOnRun.player.movement.gridMovement = true;

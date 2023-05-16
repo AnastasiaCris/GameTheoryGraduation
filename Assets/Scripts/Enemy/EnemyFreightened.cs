@@ -51,25 +51,29 @@ public class EnemyFreightened : EnemyBehaviour
         
         body.color = freightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
+        GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         body.color = flashFreightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
         body.color = freightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
+        GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         body.color = flashFreightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
         body.color = freightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
+        GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         body.color = flashFreightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
         body.color = freightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
+        GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         body.color = flashFreightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
         body.color = originalBodyCol;
         enemy.managerOnRun.enemiesFreightened = false;
     }
 
-    private void Damaged()
+    public void Damaged()
     {
         dead = true;
         canExit = true;
@@ -146,6 +150,12 @@ public class EnemyFreightened : EnemyBehaviour
         dead = false;
         body.enabled = true;
         deadBody.enabled = false;
+        
+        if (enemy.managerOnRun.player.alwaysInvincible)
+        {
+            Physics2D.IgnoreLayerCollision(8,9, false);//enable collision between enemy and player
+
+        }
     }
 
     private void OnDisable()
@@ -155,6 +165,11 @@ public class EnemyFreightened : EnemyBehaviour
         
         body.enabled = true;
         deadBody.enabled = false;
+        
+        if (enemy.managerOnRun.player.alwaysInvincible)
+        {
+            Physics2D.IgnoreLayerCollision(8,9, true);//disable collision between enemy and player
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D col)

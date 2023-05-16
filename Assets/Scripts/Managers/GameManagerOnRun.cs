@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -9,6 +10,7 @@ public class GameManagerOnRun : MonoBehaviour
 {
     public List<Enemy> enemies = new List<Enemy>();
     public Player player;
+    public Player player2;
     public Transform points;
     
     public int score { get; private set; }
@@ -27,6 +29,18 @@ public class GameManagerOnRun : MonoBehaviour
     public GameObject P2WonMenu;
     public GameObject P1WonText;
     public GameObject P2WonText;
+    
+    [Space][Header("Audio")][Space]
+    public AudioSource[] audio;
+    public AudioSource audioSourceMusic;
+    public AudioClip audio_timerDown;
+    public AudioClip audio_gameOver;
+    public AudioClip audio_roundWon;
+    public AudioClip audio_coinCollected;
+    public AudioClip audio_powerupCollected;
+    public AudioClip audio_powerupExpiring;
+    public AudioClip audio_playerDies;
+    public AudioClip audio_enemyDies;
 
     //extra
     [HideInInspector]public bool enemiesFreightened;
@@ -60,7 +74,7 @@ public class GameManagerOnRun : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && !GameManagerEditor.instance.writing)
         {
             SwitchMode();
         }
@@ -73,12 +87,25 @@ public class GameManagerOnRun : MonoBehaviour
         StartNewRound();
     }
 
+    public void StartNewRound()
+    {
+        StartCoroutine(StartRound());
+    }
+
     /// <summary>
     /// Called when starting a new round (eating all points/losing all lives/starting new game)
     /// all points are added together with the player an enemies
     /// </summary>
-    public void StartNewRound()
+    public IEnumerator StartRound()
     {
+        foreach (Transform points in this.points)
+        {
+            points.gameObject.SetActive(true);
+        }
+
+        ResetState();
+        StopEverything();
+        
         //Precaution
         gameOverMenu.SetActive(false);
         roundWonMenu.SetActive(false);
@@ -89,6 +116,47 @@ public class GameManagerOnRun : MonoBehaviour
         P2WonMenu.SetActive(false);
         P2WonText.SetActive(false);
         sceneEnabled = false;
+        
+        
+
+        if (!GameManagerEditor.instance.killAllEnemies)
+        {
+            UIManager.instance.goalDescription.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"Goal: Collect all coins";
+        }
+        else
+        {
+            UIManager.instance.goalDescription.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"Goal: Kill all enemies";
+        }
+        UIManager.instance.goalDescription.SetActive(true);
+        UIManager.instance.goalDescription.GetComponent<Animator>().Play("GoalDescription");
+        
+        float timePassed = 0;
+        while (timePassed < 5)
+        {
+            timePassed += Time.unscaledDeltaTime;
+            if (Input.anyKeyDown || Input.GetMouseButtonDown(0)) timePassed = 6;
+            yield return null;
+        }
+
+        UIManager.instance.goalDescription.SetActive(false);
+
+        UIManager.instance.timeStart.transform.parent.gameObject.SetActive(true);
+        UIManager.instance.timeStart.GetComponent<TextMeshProUGUI>().text = $"3";
+        PlayAudioClip(audio_timerDown, 0);
+        yield return new WaitForSecondsRealtime(1);
+        UIManager.instance.timeStart.GetComponent<TextMeshProUGUI>().text = $"2";
+        PlayAudioClip(audio_timerDown, 0);
+        yield return new WaitForSecondsRealtime(1);
+        UIManager.instance.timeStart.GetComponent<TextMeshProUGUI>().text = $"1";
+        PlayAudioClip(audio_timerDown, 0);
+        yield return new WaitForSecondsRealtime(1);
+        UIManager.instance.timeStart.GetComponent<TextMeshProUGUI>().text = $"GO";
+        PlayAudioClip(audio_timerDown, 0);
+        yield return new WaitForSecondsRealtime(1);
+        UIManager.instance.timeStart.transform.parent.gameObject.SetActive(false);
+        
+        Time.timeScale = 1;
+        audioSourceMusic.Play();
         
         if (GameManagerEditor.instance.extraEnemies.Count > 0) //if there are any extra enemies, delete them
         {
@@ -129,20 +197,34 @@ public class GameManagerOnRun : MonoBehaviour
         }
     }
 
+    private void StopEverything()
+    {
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            enemies[i].canMove = false;
+        }
+        
+        player.movement.direction = Vector2.zero;
+        GameManagerEditor.instance.writing = true;
+
+    }
+
     /// <summary>
     /// Reset the enemies and player
     /// </summary>
-    private void ResetState()
+    private void ResetState(bool enableSound = false)
     {
+        if(enableSound) audioSourceMusic.Play();
         enemyPointMultiplier = 1;
         for (int i = 0; i < enemies.Count; i++)
         {
             enemies[i].ResetState();
         }
         player.ResetState();
+        GameManagerEditor.instance.writing = false;
     }
 
-    private void SetScore(int score)
+    public void SetScore(int score)
     {
         this.score = score;
         UIManager.instance.score.text = "Score: " + score;
@@ -217,6 +299,7 @@ public class GameManagerOnRun : MonoBehaviour
 
     public void EnemyDamaged(Enemy enemy)
     {
+        PlayAudioClip(audio_enemyDies, 3);
         SetScore(score + enemy.points * enemyPointMultiplier);
         enemyPointMultiplier++; //everytime you kill an enemy the score multiplies
     }
@@ -236,17 +319,24 @@ public class GameManagerOnRun : MonoBehaviour
         for (int i = 0; i < enemies.Count; i++)
         {
             enemies[i].canMove = false;
+            enemies[i].movement.direction = Vector2.zero;
         }
+        PlayAudioClip(audio_playerDies, 3);
+        audioSourceMusic.Stop();
         player.movement.direction = Vector2.zero;
         player.movement.anim.SetInteger("PlayerAnim",4);
         player.movement.playerDead = true;
-        yield return new WaitForSeconds(player.animDeath.length + 0.5f);
+        if (GameManagerEditor.instance.multiplayer)
+        {
+            player2.movement.anim.SetInteger("PlayerAnim", 5);
+        }
+        yield return new WaitForSeconds(player.animDeath.length + 2f);
 
         SetLives(lives-1);
         
         if (lives > 0)
         {
-            Invoke(nameof(ResetState), 1.0f);
+            ResetState(true);
         }
         else
         {
@@ -298,8 +388,26 @@ public class GameManagerOnRun : MonoBehaviour
             {
                 player.SpeedIncrease(point.duration);
             }
-            
+            PlayAudioClip(audio_powerupCollected, 1);
             PointCollected(point);
+        }
+        
+        public void PowerUpCollectedDebug(float duration)
+        {
+            if (GameManagerEditor.instance.normalPowerUp)
+            {
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    enemies[i].freightened.Enable(duration);
+                }
+            }else if (GameManagerEditor.instance.invincible)
+            {
+                player.Invincibility(duration);
+                
+            }else if (GameManagerEditor.instance.speed)
+            {
+                player.SpeedIncrease(duration);
+            }
         }
     
         ///Check if all points have been collected
@@ -342,6 +450,7 @@ public class GameManagerOnRun : MonoBehaviour
 
         public void ShowScene(bool won)
         {
+            audioSourceMusic.Stop();
             StartCoroutine(LevelOverScenes(won));
         }
         IEnumerator LevelOverScenes(bool won)
@@ -356,29 +465,40 @@ public class GameManagerOnRun : MonoBehaviour
             
             if (!won)
             {
+                player.movement.anim.SetInteger("PlayerAnim", 4);
                 if (GameManagerEditor.instance.multiplayer)
                 {
+                    PlayAudioClip(audio_roundWon, 3);
                     P2WonText.SetActive(true);
                     yield return new WaitForSeconds(0.3f);
                     P2WonText.SetActive(false);
-                    yield return new WaitForSeconds(0.3f);
+                    yield return new WaitForSeconds(0.2f);
                     P2WonText.SetActive(true);
                     yield return new WaitForSeconds(0.3f);
                     P2WonText.SetActive(false);
+                    yield return new WaitForSeconds(0.2f);
+                    P2WonText.SetActive(true);
                     yield return new WaitForSeconds(0.3f);
+                    P2WonText.SetActive(false);
+                    yield return new WaitForSeconds(0.2f);
                     P2WonMenu.SetActive(true);
                     Time.timeScale = 0;
                 }
                 else
                 {
+                    PlayAudioClip(audio_gameOver, 3);
                     gameOverText.SetActive(true);
                     yield return new WaitForSeconds(0.3f);
                     gameOverText.SetActive(false);
-                    yield return new WaitForSeconds(0.3f);
+                    yield return new WaitForSeconds(0.2f);
                     gameOverText.SetActive(true);
                     yield return new WaitForSeconds(0.3f);
                     gameOverText.SetActive(false);
+                    yield return new WaitForSeconds(0.2f);
+                    gameOverText.SetActive(true);
                     yield return new WaitForSeconds(0.3f);
+                    gameOverText.SetActive(false);
+                    yield return new WaitForSeconds(0.2f);
                     gameOverMenu.SetActive(true);
                     Time.timeScale = 0;
                 }
@@ -390,27 +510,37 @@ public class GameManagerOnRun : MonoBehaviour
 
                 if (GameManagerEditor.instance.multiplayer)
                 {
+                    PlayAudioClip(audio_roundWon, 3);
                     P1WonText.SetActive(true);
                     yield return new WaitForSeconds(0.3f);
                     P1WonText.SetActive(false);
-                    yield return new WaitForSeconds(0.3f);
+                    yield return new WaitForSeconds(0.2f);
                     P1WonText.SetActive(true);
                     yield return new WaitForSeconds(0.3f);
                     P1WonText.SetActive(false);
+                    yield return new WaitForSeconds(0.2f);
+                    P1WonText.SetActive(true);
                     yield return new WaitForSeconds(0.3f);
+                    P1WonText.SetActive(false);
+                    yield return new WaitForSeconds(0.2f);
                     P1WonMenu.SetActive(true);
                     Time.timeScale = 0;
                 }
                 else
                 {
+                    PlayAudioClip(audio_roundWon, 3);
                     roundWonText.SetActive(true);
                     yield return new WaitForSeconds(0.3f);
                     roundWonText.SetActive(false);
-                    yield return new WaitForSeconds(0.3f);
+                    yield return new WaitForSeconds(0.2f);
                     roundWonText.SetActive(true);
                     yield return new WaitForSeconds(0.3f);
                     roundWonText.SetActive(false);
+                    yield return new WaitForSeconds(0.2f);
+                    roundWonText.SetActive(true);
                     yield return new WaitForSeconds(0.3f);
+                    roundWonText.SetActive(false);
+                    yield return new WaitForSeconds(0.2f);
                     roundWonMenu.SetActive(true);
                     Time.timeScale = 0;
                 }
@@ -423,6 +553,12 @@ public class GameManagerOnRun : MonoBehaviour
         public void ResetTime()
         {
             Time.timeScale = 1;
+        }
+
+        public void PlayAudioClip(AudioClip clip, int whichSource)
+        {
+            audio[whichSource].clip = clip;
+            audio[whichSource].Play();
         }
         #endregion
     

@@ -15,6 +15,6 @@ public class PowerUp : Points
 
   protected override void Collect()
   {
-    FindObjectOfType<GameManagerOnRun>().PowerUpCollected(this);
+    _managerOnRun.PowerUpCollected(this);
   }
 }

@@ -6,10 +6,17 @@ using UnityEngine;
 public class Points : MonoBehaviour
 {
     public int points = 10;
+    protected GameManagerOnRun _managerOnRun;
+
+    private void Awake()
+    {
+        _managerOnRun = FindObjectOfType<GameManagerOnRun>();
+    }
 
     protected virtual void Collect()
     {
-        FindObjectOfType<GameManagerOnRun>().PointCollected(this);
+        _managerOnRun.PlayAudioClip(_managerOnRun.audio_coinCollected, 0);
+        _managerOnRun.PointCollected(this);
     }
     private void OnTriggerEnter2D(Collider2D col)
     {

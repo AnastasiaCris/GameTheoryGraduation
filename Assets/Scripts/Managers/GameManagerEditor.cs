@@ -17,6 +17,7 @@ public class GameManagerEditor : MonoBehaviour
     public Image img_PlayBTN;
     public Sprite pause;
     public Sprite play;
+    public bool soundOn;
 
     [Space][Header("Timer Element")] [Space]
     public bool timerOn;
@@ -67,7 +68,8 @@ public class GameManagerEditor : MonoBehaviour
 
     [Space] [Header("Implicit Rules Element")] [Space]
     public bool commandLine;
-    public GameObject commandTable;
+    public bool writing;
+    public ConsoleDebug consoleDebug;
 
     public static GameManagerEditor instance;
 
@@ -89,6 +91,7 @@ public class GameManagerEditor : MonoBehaviour
     {
         normalPowerUp = true;
         rectTransformParentUISize = rectTransformParentUI.sizeDelta;
+        onRunManager.audioSourceMusic.Play();
     }
 
     #region Settings
@@ -98,6 +101,8 @@ public class GameManagerEditor : MonoBehaviour
         {
             if (mode == "run" || mode == "" && GameModeManager.gameMode == GameModeManager.GameMode.Editor)
             {
+                onRunManager.audioSourceMusic.Stop();
+                
                     if(onSetUpMap.enemiesGameobjectClone != null)
                         if(onSetUpMap.enemiesGameobjectClone.Length > 0)
                             if(onSetUpMap.enemiesGameobjectClone[0].GetComponent<EnemyChase>().inkyDependant == null)//if blinky is not set up
@@ -106,26 +111,36 @@ public class GameManagerEditor : MonoBehaviour
                 img_PlayBTN.sprite = pause;
                 elementsUI.SetActive(false);
                 GameModeManager.gameMode = GameModeManager.GameMode.Classic;
-                Time.timeScale = 1;
 
                 if (_bigger)
                 {
                     SetUpCamera(false);
                     _bigger = false;
                 }
-
+                
                 onRunManager.StartNewGame();
         }
             else if (mode == "editor" || mode == "" && GameModeManager.gameMode == GameModeManager.GameMode.Classic)
             {
+                onRunManager.audioSourceMusic.Stop();
                 onRunManager.StopCoroutines();
                 onRunManager.player.StopAllCoroutines();
+                UIManager.instance.goalDescription.SetActive(false);
+                UIManager.instance.timeStart.transform.parent.gameObject.SetActive(false);
                 
                 if (!_bigger)
                 {
                     SetUpCamera(true);
                     _bigger = true;
                 }
+
+                if (commandLine)
+                {
+                    consoleDebug.showDebug = false;
+                    consoleDebug.field.gameObject.SetActive(false);
+                    consoleDebug.helpFieldMain.SetActive(false);
+                }
+
 
                 img_PlayBTN.sprite = play;
                 editorUI.SetActive(true);
@@ -275,6 +290,22 @@ public class GameManagerEditor : MonoBehaviour
             }
         }
 
+        public void Sound()
+        {
+            soundOn = !soundOn;
+            if (soundOn)
+            {
+                UIManager.instance.soundVisualizer.sprite = UIManager.instance.sound_sprites[0];
+                AudioListener.volume = 1;
+                
+            }
+            else
+            {
+                UIManager.instance.soundVisualizer.sprite = UIManager.instance.sound_sprites[1];
+                AudioListener.volume = 0;
+            }
+        }
+        
         private void SetUpCamera(bool paused)
         {
             if (Camera.main == null)return;

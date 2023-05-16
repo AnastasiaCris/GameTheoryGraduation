@@ -15,6 +15,14 @@ public class UIManager : MonoBehaviour
     public Sprite fullHeart;
     public Sprite emptyHeart;
 
+    [Header("Other UI")] 
+    public GameObject timeStart;
+
+    public Image soundVisualizer;
+    public Sprite[] sound_sprites;
+
+    public GameObject goalDescription;
+    
     static public UIManager instance;
 
     private void Awake()

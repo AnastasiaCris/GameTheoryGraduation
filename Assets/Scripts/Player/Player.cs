@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     
     //Formal elements
     public bool currentlyInvincible;
+    public bool alwaysInvincible;
     public SpriteRenderer protectionShield;
     public Color[] shieldColors;
     private Enemy enemy;
@@ -34,16 +35,8 @@ public class Player : MonoBehaviour
 
     public virtual void Update()
     {
-        if (currentlyInvincible)
-        {
-            Physics2D.IgnoreLayerCollision(8,9, true);//enable collision between enemy and player
-
-        }
-        else
-        {
-            Physics2D.IgnoreLayerCollision(8,9, false);//enable collision between enemy and player
-        }
-        if (GameManagerEditor.instance.onRunManager.gameOverMenu.activeSelf || GameManagerEditor.instance.onRunManager.roundWonMenu.activeSelf || GameManagerEditor.instance.onRunManager.sceneEnabled || enemy != null && !enemy.canMove)
+        
+        if (GameManagerEditor.instance.onRunManager.gameOverMenu.activeSelf || GameManagerEditor.instance.onRunManager.roundWonMenu.activeSelf || GameManagerEditor.instance.onRunManager.sceneEnabled || enemy != null && !enemy.canMove || GameManagerEditor.instance.writing)
             return;
         
         if (ButtonPressed(Up))
@@ -97,6 +90,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void InvincibilityDebug(bool inv)
+    {
+        alwaysInvincible = inv;
+        
+        if (alwaysInvincible)
+        {
+            Physics2D.IgnoreLayerCollision(8,9, true);//disable collision between enemy and player
+        }
+        else
+        {
+            Physics2D.IgnoreLayerCollision(8,9, false);//enable collision between enemy and player
+        }
+        
+    }
+
     public void Invincibility(float duration)
     {
         duration *= GameManagerEditor.instance.changedSpeedMultiplierForTimers;
@@ -119,18 +127,22 @@ public class Player : MonoBehaviour
         
         protectionShield.enabled = false;
         yield return new WaitForSeconds(0.3f);
+        GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         protectionShield.enabled = true;
         yield return new WaitForSeconds(0.3f);
         protectionShield.enabled = false;
         yield return new WaitForSeconds(0.3f);
+        GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         protectionShield.enabled = true;
         yield return new WaitForSeconds(0.3f);
         protectionShield.enabled = false;
         yield return new WaitForSeconds(0.3f);
+        GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         protectionShield.enabled = true;
         yield return new WaitForSeconds(0.3f);
         protectionShield.enabled = false;
         yield return new WaitForSeconds(0.3f);
+        GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         protectionShield.enabled = true;
         yield return new WaitForSeconds(0.3f);
         
@@ -166,18 +178,22 @@ public class Player : MonoBehaviour
         
         protectionShield.enabled = false;
         yield return new WaitForSeconds(0.3f);
+        GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         protectionShield.enabled = true;
         yield return new WaitForSeconds(0.3f);
         protectionShield.enabled = false;
         yield return new WaitForSeconds(0.3f);
+        GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         protectionShield.enabled = true;
         yield return new WaitForSeconds(0.3f);
         protectionShield.enabled = false;
         yield return new WaitForSeconds(0.3f);
+        GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         protectionShield.enabled = true;
         yield return new WaitForSeconds(0.3f);
         protectionShield.enabled = false;
         yield return new WaitForSeconds(0.3f);
+        GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         protectionShield.enabled = true;
         yield return new WaitForSeconds(0.3f);
         

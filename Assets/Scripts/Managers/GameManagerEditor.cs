@@ -388,7 +388,10 @@ public class GameManagerEditor : MonoBehaviour
         changedSpeedMultiplier = gameSpeedTimer.value;
 
         changedSpeedMultiplierForTimers = 2 - changedSpeedMultiplier;
-        
+        if (changedSpeedMultiplierForTimers < 0.3f)
+        {
+            changedSpeedMultiplierForTimers = 0.3f;
+        }
     }
 
     #endregion

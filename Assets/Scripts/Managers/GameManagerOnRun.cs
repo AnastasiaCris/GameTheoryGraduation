@@ -156,6 +156,8 @@ public class GameManagerOnRun : MonoBehaviour
         UIManager.instance.timeStart.transform.parent.gameObject.SetActive(false);
         
         Time.timeScale = 1;
+        GameManagerEditor.instance.writing = false;
+
         audioSourceMusic.Play();
         
         if (GameManagerEditor.instance.extraEnemies.Count > 0) //if there are any extra enemies, delete them
@@ -221,7 +223,6 @@ public class GameManagerOnRun : MonoBehaviour
             enemies[i].ResetState();
         }
         player.ResetState();
-        GameManagerEditor.instance.writing = false;
     }
 
     public void SetScore(int score)

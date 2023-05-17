@@ -60,6 +60,11 @@ public class ManagerSetUpMap : MonoBehaviour
 
         if (gridMovement)
             gameManagerOnRun.player.movement.gridMovement = true;
+        //set up the target for the enemies
+        for (int i = 0; i < gameManagerOnRun.enemies.Count; i++)
+        {
+            gameManagerOnRun.enemies[i].target = playerClone.transform;
+        }
     }
 
     public void SetUpDefaultEnemies()
@@ -78,6 +83,42 @@ public class ManagerSetUpMap : MonoBehaviour
                 AfterAllEnemiesInstantiated();
     }
 
+    public void DeleteEnemiesDebug(bool delete = true, bool kill = false)
+    {
+        if (delete)
+        {
+            if (enemiesGameobjectClone != null)
+                if (enemiesGameobjectClone.Length > 0)
+                {
+                    for (int i = 0; i < enemiesGameobjectClone.Length; i++)
+                    {
+                        if (!kill)
+                        {
+                            enemiesGameobjectClone[i].SetActive(false);
+                        }
+                    }
+                }
+        }
+        else
+        {
+            if (enemiesGameobjectClone != null)
+                if (enemiesGameobjectClone.Length > 0)
+                {
+                    for (int i = 0; i < enemiesGameobjectClone.Length; i++)
+                    {
+                        if (kill)
+                        {
+                            enemiesGameobjectClone[i].GetComponent<EnemyFreightened>().Damaged();
+                        }
+                        else
+                        {
+                            enemiesGameobjectClone[i].SetActive(true);
+                        }
+                    }
+                } 
+        }
+
+    }
     public void DeleteAllEnemies()
     {
         if(enemiesGameobjectClone != null)
@@ -522,5 +563,11 @@ public class ManagerSetUpMap : MonoBehaviour
         
         gameManagerOnRun.enemies.Add(enemy);
         //GameManagerEditor.instance.enemyTypes = new int[] { 0,1,2,3 };
+
+        //set up the target for the enemies
+        for (int i = 0; i < gameManagerOnRun.enemies.Count; i++)
+        {
+            gameManagerOnRun.enemies[i].target = playerClone.transform;
+        }
     }
 }

@@ -122,6 +122,7 @@ public class GameManagerEditor : MonoBehaviour
         }
             else if (mode == "editor" || mode == "" && GameModeManager.gameMode == GameModeManager.GameMode.Classic)
             {
+                ResetAll();
                 onRunManager.audioSourceMusic.Stop();
                 onRunManager.StopCoroutines();
                 onRunManager.player.StopAllCoroutines();
@@ -319,7 +320,13 @@ public class GameManagerEditor : MonoBehaviour
                 Camera.main.orthographicSize -= 3;
             }
         }
-    
+
+        private void ResetAll()
+        {
+            writing = false;
+            onRunManager.player.alwaysInvincible = false;
+            onSetUpMap.DeleteEnemiesDebug(false);
+        }
     #endregion
     
     #region Time
@@ -331,7 +338,7 @@ public class GameManagerEditor : MonoBehaviour
         {
             timer = Int32.Parse(textField.text);
         }
-        if (timer <= 0)
+        if (timer <= 0 && textField.text.Length > 0)
         {
             timer = 0;
             textField.text = timer.ToString();
@@ -552,7 +559,8 @@ public class GameManagerEditor : MonoBehaviour
         if (life <= 0)
         {
             life = 1;
-            textField.text = life.ToString();
+            if(textField.text.Length > 0)
+                textField.text = life.ToString();
         }
 
         maxLives = life;

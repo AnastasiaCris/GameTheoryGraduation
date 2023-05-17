@@ -10,6 +10,7 @@ public class ConsoleDebug : MonoBehaviour
     private string input;
 
     public static DebugCommand KILL_ENEMIES;
+    public static DebugCommand DELETE_ENEMIES;
     public static DebugCommand KILL_HERO;
     public static DebugCommand WIN_ROUND;
     public static DebugCommand LOSE_ROUND;
@@ -38,7 +39,10 @@ public class ConsoleDebug : MonoBehaviour
 
         
         KILL_ENEMIES = new DebugCommand("kill_enemies", "Kills all enemies", "kill_enemies",
-            () => GameManagerEditor.instance.onSetUpMap.DeleteAllEnemies());
+            () => GameManagerEditor.instance.onSetUpMap.DeleteEnemiesDebug(false,true));
+        
+        DELETE_ENEMIES = new DebugCommand("delete_enemies", "Deletes all enemies", "delete_enemies",
+            () => GameManagerEditor.instance.onSetUpMap.DeleteEnemiesDebug());
         
         KILL_HERO = new DebugCommand("kill_hero", "Kills the hero", "kill_hero",
             () => GameManagerEditor.instance.onRunManager.PlayerDamaged());
@@ -55,13 +59,13 @@ public class ConsoleDebug : MonoBehaviour
         INVINCIBLE_OFF = new DebugCommand("hero_invincible_off", "The hero is not immune to enemies", "hero_invincible_off",
             () => GameManagerEditor.instance.onRunManager.player.InvincibilityDebug(false));
         
-        POWERUP_ON = new DebugCommand("powerup_on", "Enables the powerup effect", "powerup_on",
+        POWERUP_ON = new DebugCommand("powerup_on", "Enables the powerup effect until an actual powerup is collected", "powerup_on",
             () => GameManagerEditor.instance.onRunManager.PowerUpCollectedDebug(float.PositiveInfinity));
 
-        PAUSE_ON = new DebugCommand("time_stop", "Stops the time", "time_stop",
+        PAUSE_ON = new DebugCommand("pause", "Pauses the time", "pause",
             () => Time.timeScale = 0);
         
-        PAUSE_OFF = new DebugCommand("time_start", "Starts the time", "time_start",
+        PAUSE_OFF = new DebugCommand("unpause", "Unpauses the time", "unpause",
             () => Time.timeScale = 1);
 
         SET_SCORE = new DebugCommand<int>("set_score", "Sets the amount of score", "set_score <score amount>", (x) =>
@@ -79,6 +83,7 @@ public class ConsoleDebug : MonoBehaviour
         commandList = new List<object>
         {
             KILL_ENEMIES,
+            DELETE_ENEMIES,
             KILL_HERO,
             WIN_ROUND,
             LOSE_ROUND,

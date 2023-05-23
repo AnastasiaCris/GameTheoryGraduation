@@ -285,6 +285,7 @@ MonoBehaviour:
   animDeath: {fileID: 7400000, guid: e523afd9cd2423d4db2d23c1bf553928, type: 2}
   indicationKeys: {fileID: 104083449165869941}
   currentlyInvincible: 0
+  alwaysInvincible: 0
   protectionShield: {fileID: 1361437907572918161}
   shieldColors:
   - {r: 1, g: 1, b: 1, a: 0.78431374}
@@ -401,10 +402,11 @@ MonoBehaviour:
   body: {fileID: 7742459659612827418}
   deadBody: {fileID: 2808958571964310834}
   originalBodyCol: {r: 1, g: 1, b: 1, a: 1}
-  freightenedBodyCol: {r: 0, g: 0.116251945, b: 1, a: 1}
-  flashFreightenedBodyCol: {r: 1, g: 0, b: 0, a: 1}
+  freightenedBodyCol: {r: 0, g: 1, b: 0.7647059, a: 1}
+  flashFreightenedBodyCol: {r: 1, g: 1, b: 1, a: 1}
   dead: 0
   canExit: 0
+  player: 1
 --- !u!1 &5051315334114717959
 GameObject:
   m_ObjectHideFlags: 0

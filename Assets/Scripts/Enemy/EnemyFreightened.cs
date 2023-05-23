@@ -13,6 +13,7 @@ public class EnemyFreightened : EnemyBehaviour
     [HideInInspector]public bool dead;
     [HideInInspector]public bool canExit;
     private bool reachedHouse;
+    public bool player;
     
     public override void Enable(float duration)
     {
@@ -129,6 +130,7 @@ public class EnemyFreightened : EnemyBehaviour
         {
             enemy.managerOnRun.ShowScene(true);
         }
+        
         //check if all enemies are eaten 
         bool AreAllEnemiesDead(){
             foreach(Enemy ball in enemy.managerOnRun.enemies) {
@@ -146,7 +148,8 @@ public class EnemyFreightened : EnemyBehaviour
 
     private void OnEnable()
     {
-        enemy.movement.speedMultiplier *= 0.5f;
+        if(!player)
+            enemy.movement.speedMultiplier *= 0.5f;
         dead = false;
         body.enabled = true;
         deadBody.enabled = false;
@@ -174,8 +177,9 @@ public class EnemyFreightened : EnemyBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
+        
         Node node = col.GetComponent<Node>();
-        if (node != null && enabled)//if you hit a node calculate the longest pos from the player
+        if (node != null && enabled && !player)//if you hit a node calculate the longest pos from the player
         {
             CalculateDistToTarget(node, enemy.target.position, false, true);
         }

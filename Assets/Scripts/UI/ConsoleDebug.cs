@@ -17,8 +17,6 @@ public class ConsoleDebug : MonoBehaviour
     public static DebugCommand INVINCIBLE_ON;
     public static DebugCommand INVINCIBLE_OFF;
     public static DebugCommand POWERUP_ON;
-    public static DebugCommand PAUSE_ON;
-    public static DebugCommand PAUSE_OFF;
     public static DebugCommand<int> SET_SCORE;
     public static DebugCommand<int> SET_LIVES;
     
@@ -30,10 +28,17 @@ public class ConsoleDebug : MonoBehaviour
     public TMP_InputField field;
     public GameObject helpFieldMain;
     public TextMeshProUGUI helpField;
-    
 
+
+    public static ConsoleDebug instance;
+    
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        
         field.gameObject.SetActive(showDebug);
         helpFieldMain.SetActive(showHelp);
 
@@ -59,14 +64,9 @@ public class ConsoleDebug : MonoBehaviour
         INVINCIBLE_OFF = new DebugCommand("hero_invincible_off", "The hero is not immune to enemies", "hero_invincible_off",
             () => GameManagerEditor.instance.onRunManager.player.InvincibilityDebug(false));
         
-        POWERUP_ON = new DebugCommand("powerup_on", "Enables the powerup effect until an actual powerup is collected", "powerup_on",
+        POWERUP_ON = new DebugCommand("powerup_on", "Enables the powerup effect until a powerup is collected", "powerup_on",
             () => GameManagerEditor.instance.onRunManager.PowerUpCollectedDebug(float.PositiveInfinity));
-
-        PAUSE_ON = new DebugCommand("pause", "Pauses the time", "pause",
-            () => Time.timeScale = 0);
         
-        PAUSE_OFF = new DebugCommand("unpause", "Unpauses the time", "unpause",
-            () => Time.timeScale = 1);
 
         SET_SCORE = new DebugCommand<int>("set_score", "Sets the amount of score", "set_score <score amount>", (x) =>
         {
@@ -90,8 +90,6 @@ public class ConsoleDebug : MonoBehaviour
             INVINCIBLE_ON,
             INVINCIBLE_OFF,
             POWERUP_ON,
-            PAUSE_ON,
-            PAUSE_OFF,
             SET_SCORE,
             SET_LIVES,
             HELP
@@ -104,19 +102,25 @@ public class ConsoleDebug : MonoBehaviour
         HandleInput();
         input = "";
         field.text = input;
+        
     }
 
     void Update()
     {
-        if (!GameManagerEditor.instance.commandLine || GameModeManager.gameMode == GameModeManager.GameMode.Editor)
+        if (!GameManagerEditor.instance.commandLine || GameModeManager.gameMode == GameModeManager.GameMode.Editor || UIManager.instance.timeStart.transform.parent.gameObject.activeSelf || UIManager.instance.goalDescription.activeSelf || GameManagerEditor.instance.onRunManager.sceneEnabled)
             return;
-        if (Input.GetKeyDown(KeyCode.F2) || Input.GetKeyDown(KeyCode.BackQuote))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             showDebug = !showDebug;
 
             field.gameObject.SetActive(showDebug);
+            Time.timeScale = showDebug ? 0 : 1;
             if(!showDebug)
                 helpFieldMain.gameObject.SetActive(showDebug);
+            else
+            {
+                field.Select();
+            }
         }
     }
 

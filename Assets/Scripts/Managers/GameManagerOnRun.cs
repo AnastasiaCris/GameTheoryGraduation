@@ -60,6 +60,7 @@ public class GameManagerOnRun : MonoBehaviour
     {
         gameOverMenu.SetActive(false);
         roundWonMenu.SetActive(false);
+        sceneEnabled = false;
     }
 
     public void StopCoroutines()
@@ -445,6 +446,7 @@ public class GameManagerOnRun : MonoBehaviour
         {
             gameOverMenu.SetActive(false);
             roundWonMenu.SetActive(false);
+            sceneEnabled = false;
             GameManagerEditor.instance.ChangeSpecificMode();
         }
 
@@ -452,6 +454,10 @@ public class GameManagerOnRun : MonoBehaviour
         public void ShowScene(bool won)
         {
             audioSourceMusic.Stop();
+            Time.timeScale = 1;
+            ConsoleDebug.instance.showDebug = false;
+            ConsoleDebug.instance.field.gameObject.SetActive(false);
+            ConsoleDebug.instance.helpFieldMain.gameObject.SetActive(false);
             StartCoroutine(LevelOverScenes(won));
         }
         IEnumerator LevelOverScenes(bool won)
@@ -546,8 +552,7 @@ public class GameManagerOnRun : MonoBehaviour
                     Time.timeScale = 0;
                 }
             }
-
-            sceneEnabled = false;
+            
             yield return null;
         }
 

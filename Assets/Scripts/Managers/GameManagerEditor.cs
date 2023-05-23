@@ -220,7 +220,7 @@ public class GameManagerEditor : MonoBehaviour
                 killEnemiesGoalToggle.enabled = true;
                 killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
 
-                spawnMoreRuleText.text = $"Kill an enemy, 1 extra respawns";
+                spawnMoreRuleText.text = $"Kill an enemy, one more appears";
                 spawnMoreRuleText.color = textCol[0];
                 spawnMoreRuleToggle.enabled = true;
                 spawnMoreRuleToggle.graphic.gameObject.SetActive(true);
@@ -252,7 +252,7 @@ public class GameManagerEditor : MonoBehaviour
                     killEnemiesGoalToggle.enabled = true;
                     killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
                 
-                    spawnMoreRuleText.text = $"Kill an enemy, 1 extra respawns";
+                    spawnMoreRuleText.text = $"Kill an enemy, one more appears";
                     spawnMoreRuleText.color = textCol[0];
                     spawnMoreRuleToggle.enabled = true;
                     spawnMoreRuleToggle.graphic.gameObject.SetActive(true);
@@ -284,7 +284,7 @@ public class GameManagerEditor : MonoBehaviour
                 killEnemiesGoalToggle.enabled = true;
                 killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
                 
-                spawnMoreRuleText.text = $"Kill an enemy, 1 extra respawns";
+                spawnMoreRuleText.text = $"Kill an enemy, one more appears";
                 spawnMoreRuleText.color = textCol[0];
                 spawnMoreRuleToggle.enabled = true;
                 spawnMoreRuleToggle.graphic.gameObject.SetActive(true);
@@ -520,7 +520,7 @@ public class GameManagerEditor : MonoBehaviour
                 killEnemiesGoalToggle.enabled = true;
                 killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
                 
-                spawnMoreRuleText.text = $"Kill an enemy, 1 extra respawns";
+                spawnMoreRuleText.text = $"Kill an enemy, one more appears";
                 spawnMoreRuleText.color = textCol[0];
                 spawnMoreRuleToggle.enabled = true;
                 spawnMoreRuleToggle.graphic.gameObject.SetActive(true);

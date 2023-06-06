@@ -18,6 +18,7 @@ public class EnemyHome : EnemyBehaviour
         if(gameObject.activeSelf)
             StartCoroutine(ExitHouse());
         enemy.scatter.Enable();
+        enemy.chase.Disable();
     }
 
     private void OnCollisionEnter2D(Collision2D col)
@@ -61,13 +62,19 @@ public class EnemyHome : EnemyBehaviour
             yield return null;
         }
 
-        enemy.movement.SetDirection(new Vector2(Random.value < 0.5f ? -1.0f : 1.0f, 0), true);
-        enemy.movement.rb.isKinematic = false;
-        enemy.movement.enabled = true;
-        enemy.freightened.body.enabled = true;
-        enemy.freightened.deadBody.enabled = false;
-        enemy.freightened.canExit = false;
-        enemy.freightened.dead = false;
-
+        if (enemy.managerOnRun.sceneEnabled)
+        {
+            enemy.movement.direction = Vector2.zero;
+        }
+        else
+        {
+            enemy.movement.SetDirection(new Vector2(Random.value < 0.5f ? -1.0f : 1.0f, 0), true);
+            enemy.movement.rb.isKinematic = false;
+            enemy.movement.enabled = true;
+            enemy.freightened.body.enabled = true;
+            enemy.freightened.deadBody.enabled = false;
+            enemy.freightened.canExit = false;
+            enemy.freightened.dead = false;
+        }
     }
 }

@@ -1,8 +1,11 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class EnemyFreightened : EnemyBehaviour
 {
+    private float durationLeft;
     [SerializeField] private int index;
     public SpriteRenderer body;
     public SpriteRenderer deadBody;
@@ -22,6 +25,7 @@ public class EnemyFreightened : EnemyBehaviour
         this.duration = duration;
         EnemyScared(duration);
         base.Enable(duration);
+        StartCoroutine(CountdownDuration(duration));
     }
 
     public override void Disable()
@@ -32,6 +36,19 @@ public class EnemyFreightened : EnemyBehaviour
         body.color = originalBodyCol;
         enemy.managerOnRun.enemiesFreightened = false;
         enemy.managerOnRun.enemyPointMultiplier = 1;
+    }
+
+    private IEnumerator CountdownDuration(float duration)
+    {
+        durationLeft = duration;
+        while (durationLeft > 0)
+        {
+            durationLeft--;
+            yield return new WaitForSeconds(1);
+        }
+        
+        yield return new WaitUntil((() => durationLeft<=0));
+        durationLeft = 0;
     }
 
     public void EnemyScared(float duration)
@@ -51,26 +68,35 @@ public class EnemyFreightened : EnemyBehaviour
         yield return new WaitForSeconds(duration - 2.5f);
         
         body.color = freightenedBodyCol;
+        deadBody.color = freightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
         GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         body.color = flashFreightenedBodyCol;
+        deadBody.color = flashFreightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
         body.color = freightenedBodyCol;
+        deadBody.color = freightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
         GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         body.color = flashFreightenedBodyCol;
+        deadBody.color = flashFreightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
         body.color = freightenedBodyCol;
+        deadBody.color = freightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
         GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         body.color = flashFreightenedBodyCol;
+        deadBody.color = flashFreightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
         body.color = freightenedBodyCol;
+        deadBody.color = freightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
         GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         body.color = flashFreightenedBodyCol;
+        deadBody.color = flashFreightenedBodyCol;
         yield return new WaitForSeconds(0.3f);
         body.color = originalBodyCol;
+        deadBody.color = originalBodyCol;
         enemy.managerOnRun.enemiesFreightened = false;
     }
 
@@ -87,7 +113,7 @@ public class EnemyFreightened : EnemyBehaviour
         body.enabled = false;
         deadBody.enabled = true;
 
-        enemy.home.Enable(duration);
+        enemy.home.Enable(durationLeft);
 
         #region Elements
 
@@ -126,7 +152,7 @@ public class EnemyFreightened : EnemyBehaviour
         }
 
         //Goal Element
-        if (GameManagerEditor.instance.killAllEnemies && AreAllEnemiesDead())
+        if (GameManagerEditor.instance.killAllEnemies && AreAllEnemiesDead() && GameModeManager.gameMode == GameModeManager.GameMode.Classic)
         {
             enemy.managerOnRun.ShowScene(true);
         }
@@ -144,7 +170,6 @@ public class EnemyFreightened : EnemyBehaviour
         #endregion
 
     }
-
 
     private void OnEnable()
     {

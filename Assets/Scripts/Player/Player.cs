@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
     public virtual void Update()
     {
         
-        if (GameManagerEditor.instance.onRunManager.gameOverMenu.activeSelf || GameManagerEditor.instance.onRunManager.roundWonMenu.activeSelf || GameManagerEditor.instance.onRunManager.sceneEnabled || enemy != null && !enemy.canMove || GameManagerEditor.instance.writing)
+        if (GameManagerEditor.instance.onRunManager.gameOverMenu.activeSelf || GameManagerEditor.instance.onRunManager.roundWonMenu.activeSelf || GameManagerEditor.instance.onRunManager.sceneEnabled || enemy != null && !enemy.canMove || ConsoleDebug.instance.showDebug)
             return;
         
         if (ButtonPressed(Up))
@@ -207,7 +207,7 @@ public class Player : MonoBehaviour
         movement.speedMultiplier = GameManagerEditor.instance.changedSpeedMultiplier;;
     }
 
-    public int typeEnemyGizmos = 0;
+    /*public int typeEnemyGizmos = 0;
     public Vector3 targetGizmos = Vector3.zero;
     public GameObject inkyDependant;
     public GameObject OrangeEnemy;
@@ -308,5 +308,5 @@ public class Player : MonoBehaviour
         }
         
         Gizmos.DrawSphere(targetGizmos, 0.2f);
-    }
+    }*/
 }

@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -26,9 +29,10 @@ public class ConsoleDebug : MonoBehaviour
     //UI
 
     public TMP_InputField field;
-    public GameObject helpFieldMain;
     public TextMeshProUGUI helpField;
-
+    public Animator consoleAnim;
+    public GameObject consoleUI;
+    public GameObject indicatorsUI;
 
     public static ConsoleDebug instance;
     
@@ -39,10 +43,9 @@ public class ConsoleDebug : MonoBehaviour
             instance = this;
         }
         
-        field.gameObject.SetActive(showDebug);
-        helpFieldMain.SetActive(showHelp);
+        consoleUI.SetActive(false);
+        indicatorsUI.SetActive(false);
 
-        
         KILL_ENEMIES = new DebugCommand("kill_enemies", "Kills all enemies", "kill_enemies",
             () => GameManagerEditor.instance.onSetUpMap.DeleteEnemiesDebug(false,true));
         
@@ -102,32 +105,61 @@ public class ConsoleDebug : MonoBehaviour
         HandleInput();
         input = "";
         field.text = input;
-        
+        field.Select();
+        field.ActivateInputField();
     }
 
-    void Update()
+    public IEnumerator DisplayConsole()
     {
-        if (!GameManagerEditor.instance.commandLine || GameModeManager.gameMode == GameModeManager.GameMode.Editor || UIManager.instance.timeStart.transform.parent.gameObject.activeSelf || UIManager.instance.goalDescription.activeSelf || GameManagerEditor.instance.onRunManager.sceneEnabled)
-            return;
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            showDebug = !showDebug;
+        yield return new WaitUntil((() =>
+            GameManagerEditor.instance.commandLine && GameModeManager.gameMode == GameModeManager.GameMode.Classic &&
+            !UIManager.instance.timeStart.transform.parent.gameObject.activeSelf &&
+            !UIManager.instance.goalDescription.activeSelf && !GameManagerEditor.instance.onRunManager.sceneEnabled));
+        consoleUI.SetActive(true);
+        indicatorsUI.SetActive(true);
+    }
 
-            field.gameObject.SetActive(showDebug);
-            Time.timeScale = showDebug ? 0 : 1;
-            if(!showDebug)
-                helpFieldMain.gameObject.SetActive(showDebug);
-            else
-            {
-                field.Select();
-            }
-        }
+    public void ConsoleButton(bool showUp)
+    {
+        showDebug = showUp ? false : true;
+        bool animBool = showUp ? true : false;
+        consoleAnim.SetBool("Up", animBool);
+        Time.timeScale = showDebug ? 0 : 1;
+        
+        if(showDebug)
+            field.Select();
+        
     }
 
     private void HandleInput()
     {
+        if (InputSuccessful())
+        {
+            Transform parent = helpField.transform.parent;
+            Vector2 delta = parent.GetComponent<RectTransform>().sizeDelta;
+            parent.GetComponent<RectTransform>().sizeDelta = new Vector2(
+                delta.x, delta.y + 40);
+            helpField.text += $"Command {input} is successful\n\n";
+        }
+        else
+        {
+            if (input != "") //make sure input is not empty
+            {
+                Transform parent = helpField.transform.parent;
+                Vector2 delta = parent.GetComponent<RectTransform>().sizeDelta;
+                parent.GetComponent<RectTransform>().sizeDelta = new Vector2(
+                    delta.x, delta.y + 40);
+                helpField.text += $"Command {input} is unknown\n\n";
+            }
+
+        }
+        field.Select();
+        field.ActivateInputField();
+    }
+
+    private bool InputSuccessful()
+    {
         string[] properties = input.Split(' ');
-        
         for (int i = 0; i < commandList.Count; i++)
         {
             DebugCommandBase commandBase = commandList[i] as DebugCommandBase;
@@ -137,25 +169,32 @@ public class ConsoleDebug : MonoBehaviour
                 if (commandList[i] as DebugCommand != null)
                 {
                     (commandList[i] as DebugCommand).Invoke();
+                    return true;
+
                 }else if (commandList[i] as DebugCommand<int> != null)
                 {
+                    if (properties.Length < 2 || properties.Length > 2 || properties[1] != null && !int.TryParse(properties[1], out int n))
+                    {
+                        return false;
+                    }
+                    
                     (commandList[i] as DebugCommand<int>).Invoke(int.Parse(properties[1]));
+                        
+                    return true;
                 }
             }
         }
+        return false;
     }
-
     private void Display()
     {
         showHelp = true;
-        helpFieldMain.SetActive(showHelp);
-        helpField.text = "";
 
         Transform parent = helpField.transform.parent;
         Vector2 delta = parent.GetComponent<RectTransform>().sizeDelta;
 
         parent.GetComponent<RectTransform>().sizeDelta = new Vector2(
-            delta.x, delta.y + 50 * commandList.Count);
+            delta.x, delta.y + 40 * commandList.Count);
 
         for (int i = 0; i < commandList.Count; i++)
         {
@@ -163,10 +202,5 @@ public class ConsoleDebug : MonoBehaviour
 
             helpField.text += $"{command.commandFormat} - {command.commandDescription}\n\n";
         }
-    }
-
-    public void SetWriting(bool write)
-    {
-        GameManagerEditor.instance.writing = write;
     }
 }

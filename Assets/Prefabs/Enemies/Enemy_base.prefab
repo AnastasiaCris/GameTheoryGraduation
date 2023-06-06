@@ -198,7 +198,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridMovement: 0
   playerDead: 0
-  speed: 8
+  speed: 5.5
   speedMultiplier: 1
   targetPosition: {x: 0, y: 0, z: 0}
   startDir: {x: 0, y: 0}
@@ -296,6 +296,7 @@ MonoBehaviour:
   flashFreightenedBodyCol: {r: 1, g: 1, b: 1, a: 1}
   dead: 0
   canExit: 0
+  player: 0
 --- !u!1 &5777195527234678478
 GameObject:
   m_ObjectHideFlags: 0

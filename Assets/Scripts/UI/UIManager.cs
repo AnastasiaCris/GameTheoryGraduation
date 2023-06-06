@@ -22,6 +22,7 @@ public class UIManager : MonoBehaviour
     public Sprite[] sound_sprites;
 
     public GameObject goalDescription;
+    public GameObject[] goalDescriptionImg;
     
     static public UIManager instance;
 

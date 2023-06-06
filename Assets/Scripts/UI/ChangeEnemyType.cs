@@ -35,5 +35,49 @@ public class ChangeEnemyType : MonoBehaviour
 
         enemySprite.color = enemyColors[enemyType];
         
+        Hover();
+        
+    }
+
+    public void Hover()
+    {
+        GameManagerEditor.instance.videos[0].SetActive(false);
+        switch (enemyType)
+        {
+            case 0:
+                
+                GameManagerEditor.instance.videos[1].SetActive(true);
+                GameManagerEditor.instance.videos[2].SetActive(false);
+                GameManagerEditor.instance.videos[3].SetActive(false);
+                GameManagerEditor.instance.videos[4].SetActive(false);
+                break;
+            case 1:
+                GameManagerEditor.instance.videos[1].SetActive(false);
+                GameManagerEditor.instance.videos[2].SetActive(true);
+                GameManagerEditor.instance.videos[3].SetActive(false);
+                GameManagerEditor.instance.videos[4].SetActive(false);
+                break;
+            case 2:
+                GameManagerEditor.instance.videos[1].SetActive(false);
+                GameManagerEditor.instance.videos[2].SetActive(false);
+                GameManagerEditor.instance.videos[3].SetActive(true);
+                GameManagerEditor.instance.videos[4].SetActive(false);
+                break;
+            case 3:
+                GameManagerEditor.instance.videos[1].SetActive(false);
+                GameManagerEditor.instance.videos[2].SetActive(false);
+                GameManagerEditor.instance.videos[3].SetActive(false);
+                GameManagerEditor.instance.videos[4].SetActive(true);
+                break;
+        }
+    }
+
+    public void All()
+    {
+        GameManagerEditor.instance.videos[0].SetActive(true);
+        GameManagerEditor.instance.videos[1].SetActive(false);
+        GameManagerEditor.instance.videos[2].SetActive(false);
+        GameManagerEditor.instance.videos[3].SetActive(false);
+        GameManagerEditor.instance.videos[4].SetActive(false);
     }
 }

@@ -22,6 +22,8 @@ public class GameManagerEditor : MonoBehaviour
     [Space][Header("Timer Element")] [Space]
     public bool timerOn;
     public TextMeshProUGUI timerText;
+    public Animator timerAnim;
+    public TMP_InputField timerField;
     public int timer { get; private set; }
     [HideInInspector]public int remainingTimer;
     public Slider gameSpeedTimer;
@@ -47,29 +49,29 @@ public class GameManagerEditor : MonoBehaviour
     [HideInInspector]public List<GameObject> enemyTypeUIPrefabList = new List<GameObject>();
     [SerializeField] RectTransform rectTransformParentUI;
     private Vector2 rectTransformParentUISize;
+
+    public List<GameObject> videos;//0-all; 1-red; 2-pink; 3-teal; 4-orange
     
     [Space][Header("Objects")][Space]
     public bool normalPowerUp = true;
     public bool invincible;
     public bool speed;
-    
+    public TextMeshProUGUI effectDurationText;
+    public Slider effectDurationTimer;
+    public Sprite[] powerupEffectSprite;
+    public GameObject powerupPrefab;
+    public Image powerupImg;
+        
     [Space][Header("Goals Element")] [Space]
     public bool killAllEnemies;
-    public TextMeshProUGUI killEnemiesGoalText;
-    public Toggle killEnemiesGoalToggle;
-    public Color[] textCol;
-    
+
     [Space][Header("Rules Element")] [Space]
     public bool spawnMoreEnemiesOnKill;
     public int maxLives = 3;
     [HideInInspector]public List<GameObject> extraEnemies = new List<GameObject>();
-    public TextMeshProUGUI spawnMoreRuleText;
-    public Toggle spawnMoreRuleToggle;
 
     [Space] [Header("Implicit Rules Element")] [Space]
     public bool commandLine;
-    public bool writing;
-    public ConsoleDebug consoleDebug;
 
     public static GameManagerEditor instance;
 
@@ -85,6 +87,13 @@ public class GameManagerEditor : MonoBehaviour
             elementsUI.SetActive(false);
         }
         Time.timeScale = 0;
+        
+        //reset powerups
+        powerupPrefab.GetComponentInChildren<SpriteRenderer>().sprite = powerupEffectSprite[0];
+        foreach (PowerUp powerups in onRunManager.powerups)
+        {
+            powerups.GetComponentInChildren<SpriteRenderer>().sprite = powerupEffectSprite[0];
+        }
     }
 
     private void Start()
@@ -117,8 +126,13 @@ public class GameManagerEditor : MonoBehaviour
                     SetUpCamera(false);
                     _bigger = false;
                 }
-                
+
                 onRunManager.StartNewGame();
+                
+                if (commandLine)
+                {
+                    StartCoroutine(ConsoleDebug.instance.DisplayConsole());
+                }
         }
             else if (mode == "editor" || mode == "" && GameModeManager.gameMode == GameModeManager.GameMode.Classic)
             {
@@ -137,9 +151,11 @@ public class GameManagerEditor : MonoBehaviour
 
                 if (commandLine)
                 {
-                    consoleDebug.showDebug = false;
-                    consoleDebug.field.gameObject.SetActive(false);
-                    consoleDebug.helpFieldMain.SetActive(false);
+                    ConsoleDebug.instance.showDebug = false;
+                    
+                    
+                    ConsoleDebug.instance.consoleUI.SetActive(false);
+                    ConsoleDebug.instance.indicatorsUI.SetActive(false);
                 }
 
 
@@ -157,6 +173,7 @@ public class GameManagerEditor : MonoBehaviour
             {
                 case 0:
                     timerOn = !timerOn;
+                    timerAnim.SetBool("Normal", !timerOn);
                     break;
                 case 1:
                     spawnMoreEnemiesOnKill = !spawnMoreEnemiesOnKill;
@@ -166,6 +183,15 @@ public class GameManagerEditor : MonoBehaviour
                     break;
                 case 3:
                     normalPowerUp = !normalPowerUp;
+                    if (normalPowerUp)
+                    {
+                        powerupPrefab.GetComponentInChildren<SpriteRenderer>().sprite = powerupEffectSprite[0];
+                        foreach (PowerUp powerups in onRunManager.powerups)
+                        {
+                            powerups.GetComponentInChildren<SpriteRenderer>().sprite = powerupEffectSprite[0];
+                        }
+                        powerupImg.sprite = powerupEffectSprite[0];
+                    }
                     break;
                 case 4:
                     invincible = !invincible;
@@ -173,6 +199,12 @@ public class GameManagerEditor : MonoBehaviour
                     {
                         normalPowerUp = false;
                         speed = false;
+                        powerupPrefab.GetComponentInChildren<SpriteRenderer>().sprite = powerupEffectSprite[1];
+                        foreach (PowerUp powerups in onRunManager.powerups)
+                        {
+                            powerups.GetComponentInChildren<SpriteRenderer>().sprite = powerupEffectSprite[1];
+                        }
+                        powerupImg.sprite = powerupEffectSprite[1];
                     }
                     break;
                 case 5:
@@ -181,6 +213,12 @@ public class GameManagerEditor : MonoBehaviour
                     {
                         normalPowerUp = false;
                         invincible = false;
+                        powerupPrefab.GetComponentInChildren<SpriteRenderer>().sprite = powerupEffectSprite[2];
+                        foreach (PowerUp powerups in onRunManager.powerups)
+                        {
+                            powerups.GetComponentInChildren<SpriteRenderer>().sprite = powerupEffectSprite[2];
+                        }
+                        powerupImg.sprite = powerupEffectSprite[2];
                     }
                     break;
                 case 6:
@@ -210,85 +248,31 @@ public class GameManagerEditor : MonoBehaviour
                     commandLine = !commandLine;
                     break;
             }
+
+            if (!normalPowerUp && !invincible && !speed)
+            {
+                powerupPrefab.GetComponentInChildren<SpriteRenderer>().sprite = powerupEffectSprite[3];
+                foreach (PowerUp powerups in onRunManager.powerups)
+                {
+                    powerups.GetComponentInChildren<SpriteRenderer>().sprite = powerupEffectSprite[3];
+                }
+                powerupImg.sprite = powerupEffectSprite[3];
+            }
             
             if (maxEnemies != 0 && normalPowerUp)
             {
                 invincible = false;
                 speed = false;
-                killEnemiesGoalText.text = $"Kill all enemies";
-                killEnemiesGoalText.color = textCol[0];
-                killEnemiesGoalToggle.enabled = true;
-                killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
+            }
+        }
 
-                spawnMoreRuleText.text = $"Kill an enemy, one more appears";
-                spawnMoreRuleText.color = textCol[0];
-                spawnMoreRuleToggle.enabled = true;
-                spawnMoreRuleToggle.graphic.gameObject.SetActive(true);
-            }
-            else if(!normalPowerUp)
-            {
-                //disable the goal canKillEnemies
-                if(killAllEnemies)
-                    killAllEnemies = false;
-                killEnemiesGoalText.text = $"Enable 'Can kill enemies' Object";
-                killEnemiesGoalText.color = textCol[1];
-                killEnemiesGoalToggle.isOn = false;
-                killEnemiesGoalToggle.enabled = false;
-                killEnemiesGoalToggle.graphic.gameObject.SetActive(false);
-                
-                spawnMoreRuleText.text = $"Enable 'Can kill enemies' Object";
-                spawnMoreRuleText.color = textCol[1];
-                spawnMoreRuleToggle.isOn = false;
-                spawnMoreRuleToggle.enabled = false;
-                spawnMoreRuleToggle.graphic.gameObject.SetActive(false);
-            }
-
-            if (multiplayer)
-            {
-                if (normalPowerUp)
-                {
-                    killEnemiesGoalText.text = $"Kill all enemies";
-                    killEnemiesGoalText.color = textCol[0];
-                    killEnemiesGoalToggle.enabled = true;
-                    killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
-                
-                    spawnMoreRuleText.text = $"Kill an enemy, one more appears";
-                    spawnMoreRuleText.color = textCol[0];
-                    spawnMoreRuleToggle.enabled = true;
-                    spawnMoreRuleToggle.graphic.gameObject.SetActive(true);
-                }
-                return;
-            }
-                
-            if (maxEnemies == 0)
-            {
-                //disable the goal canKillEnemies
-                if(killAllEnemies)
-                    killAllEnemies = false;
-                killEnemiesGoalText.text = $"Add enemies in 'System Agents'";
-                killEnemiesGoalText.color = textCol[1];
-                killEnemiesGoalToggle.isOn = false;
-                killEnemiesGoalToggle.enabled = false;
-                killEnemiesGoalToggle.graphic.gameObject.SetActive(false);
-                
-                spawnMoreRuleText.text = $"Add enemies in 'System Agents'";
-                spawnMoreRuleText.color = textCol[1];
-                spawnMoreRuleToggle.isOn = false;
-                spawnMoreRuleToggle.enabled = false;
-                spawnMoreRuleToggle.graphic.gameObject.SetActive(false);
-            }
-            else if (maxEnemies != 0 && normalPowerUp)
-            {
-                killEnemiesGoalText.text = $"Kill all enemies";
-                killEnemiesGoalText.color = textCol[0];
-                killEnemiesGoalToggle.enabled = true;
-                killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
-                
-                spawnMoreRuleText.text = $"Kill an enemy, one more appears";
-                spawnMoreRuleText.color = textCol[0];
-                spawnMoreRuleToggle.enabled = true;
-                spawnMoreRuleToggle.graphic.gameObject.SetActive(true);
-            }
+        public void goalKillBool(Toggle toggle)
+        {
+            killAllEnemies = toggle.isOn ? true : false;
+        }
+        public void goalCollectBool(Toggle toggle)
+        {
+            killAllEnemies = toggle.isOn ? false : true;
         }
 
         public void Sound()
@@ -323,7 +307,7 @@ public class GameManagerEditor : MonoBehaviour
 
         private void ResetAll()
         {
-            writing = false;
+            ConsoleDebug.instance.showDebug = false;
             onRunManager.player.alwaysInvincible = false;
             onSetUpMap.DeleteEnemiesDebug(false);
         }
@@ -387,11 +371,11 @@ public class GameManagerEditor : MonoBehaviour
 
         changedSpeedMultiplier = gameSpeedTimer.value;
 
-        changedSpeedMultiplierForTimers = 2 - changedSpeedMultiplier;
+        /*changedSpeedMultiplierForTimers = 2 - changedSpeedMultiplier;
         if (changedSpeedMultiplierForTimers < 0.3f)
         {
             changedSpeedMultiplierForTimers = 0.3f;
-        }
+        }*/
     }
 
     #endregion
@@ -491,62 +475,18 @@ public class GameManagerEditor : MonoBehaviour
                 changeEnemyType.arrowRight.onClick.AddListener(() =>
                     onSetUpMap.SetUpIndividualEnemies(changeEnemyType.enemyType, enemyTypeUIPrefabList.IndexOf(enemyTypeUIBox)));
             }
-
-            
-
-            if (multiplayer)
-                return;
-            if (nrOfEnemies == 0)
-            {
-                //disable the goal canKillEnemies
-                if(killAllEnemies)
-                    killAllEnemies = false;
-                killEnemiesGoalText.text = $"Add enemies in 'System Agents'";
-                killEnemiesGoalText.color = textCol[1];
-                killEnemiesGoalToggle.isOn = false;
-                killEnemiesGoalToggle.enabled = false;
-                killEnemiesGoalToggle.graphic.gameObject.SetActive(false);
-                
-                spawnMoreRuleText.text = $"Add enemies in 'System Agents'";
-                spawnMoreRuleText.color = textCol[1];
-                spawnMoreRuleToggle.isOn = false;
-                spawnMoreRuleToggle.enabled = false;
-                spawnMoreRuleToggle.graphic.gameObject.SetActive(false);
-            }
-            else if (nrOfEnemies != 0 && normalPowerUp)
-            {
-                killEnemiesGoalText.text = $"Kill all enemies";
-                killEnemiesGoalText.color = textCol[0];
-                killEnemiesGoalToggle.enabled = true;
-                killEnemiesGoalToggle.graphic.gameObject.SetActive(true);
-                
-                spawnMoreRuleText.text = $"Kill an enemy, one more appears";
-                spawnMoreRuleText.color = textCol[0];
-                spawnMoreRuleToggle.enabled = true;
-                spawnMoreRuleToggle.graphic.gameObject.SetActive(true);
-            }else if (nrOfEnemies != 0 && !normalPowerUp)
-            {
-                if(killAllEnemies)
-                    killAllEnemies = false;
-                killEnemiesGoalText.text = $"Enable 'Can kill enemies' Object";
-                killEnemiesGoalText.color = textCol[1];
-                killEnemiesGoalToggle.isOn = false;
-                killEnemiesGoalToggle.enabled = false;
-                killEnemiesGoalToggle.graphic.gameObject.SetActive(false);
-                
-                spawnMoreRuleText.text = $"Enable 'Can kill enemies' Object";
-                spawnMoreRuleText.color = textCol[1];
-                spawnMoreRuleToggle.isOn = false;
-                spawnMoreRuleToggle.enabled = false;
-                spawnMoreRuleToggle.graphic.gameObject.SetActive(false);
-            }
         }
 
     #endregion
 
     #region Objects
 
-    
+    public void PotionSpeed()
+    {
+        effectDurationText.text = "x" + effectDurationTimer.value.ToString("0.00");
+
+        changedSpeedMultiplierForTimers = effectDurationTimer.value;
+    }
 
     #endregion
     

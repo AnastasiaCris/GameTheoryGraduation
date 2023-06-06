@@ -222,6 +222,7 @@ GameObject:
   - component: {fileID: 5064133435615272103}
   - component: {fileID: 2111569980938271654}
   - component: {fileID: 3489192565837173027}
+  - component: {fileID: 7387034736071997886}
   m_Layer: 5
   m_Name: Value TypeOfEnemy
   m_TagString: Untagged
@@ -311,6 +312,48 @@ MonoBehaviour:
   - {r: 0.09803922, g: 0.87058824, b: 1, a: 1}
   - {r: 1, g: 0.5137255, b: 0.1254902, a: 1}
   enemyType: 0
+--- !u!114 &7387034736071997886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176327701166457868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac7ab85d24f015f4c8ffef9d4dfd8dcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnHover:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3489192565837173027}
+        m_TargetAssemblyTypeName: ChangeEnemyType, Assembly-CSharp
+        m_MethodName: Hover
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnHoverExit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3489192565837173027}
+        m_TargetAssemblyTypeName: ChangeEnemyType, Assembly-CSharp
+        m_MethodName: All
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2619499050409523195
 GameObject:
   m_ObjectHideFlags: 0

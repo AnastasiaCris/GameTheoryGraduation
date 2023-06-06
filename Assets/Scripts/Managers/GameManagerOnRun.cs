@@ -12,6 +12,7 @@ public class GameManagerOnRun : MonoBehaviour
     public Player player;
     public Player player2;
     public Transform points;
+    public PowerUp[] powerups;
     
     public int score { get; private set; }
     [HideInInspector]public int enemyPointMultiplier = 1;
@@ -58,6 +59,7 @@ public class GameManagerOnRun : MonoBehaviour
 
     void Start()
     {
+        powerups = FindObjectsOfType<PowerUp>();
         gameOverMenu.SetActive(false);
         roundWonMenu.SetActive(false);
         sceneEnabled = false;
@@ -75,7 +77,7 @@ public class GameManagerOnRun : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !GameManagerEditor.instance.writing)
+        if (Input.GetKeyDown(KeyCode.Space) && !ConsoleDebug.instance.showDebug)
         {
             SwitchMode();
         }
@@ -119,18 +121,24 @@ public class GameManagerOnRun : MonoBehaviour
         sceneEnabled = false;
         
         
-
+        //Show what the goal of the game is
         if (!GameManagerEditor.instance.killAllEnemies)
         {
-            UIManager.instance.goalDescription.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"Goal: Collect all coins";
+            UIManager.instance.goalDescription.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"Goal: Collect all coins and potions";
+            UIManager.instance.goalDescriptionImg[0].SetActive(true);
+            UIManager.instance.goalDescriptionImg[1].SetActive(false);
         }
         else
         {
             UIManager.instance.goalDescription.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"Goal: Kill all enemies";
+            UIManager.instance.goalDescriptionImg[0].SetActive(false);
+            UIManager.instance.goalDescriptionImg[1].SetActive(true);
+            
         }
         UIManager.instance.goalDescription.SetActive(true);
         UIManager.instance.goalDescription.GetComponent<Animator>().Play("GoalDescription");
         
+        //If any button pressed while goal is showing then move on
         float timePassed = 0;
         while (timePassed < 5)
         {
@@ -141,6 +149,7 @@ public class GameManagerOnRun : MonoBehaviour
 
         UIManager.instance.goalDescription.SetActive(false);
 
+        //Start countdown timer
         UIManager.instance.timeStart.transform.parent.gameObject.SetActive(true);
         UIManager.instance.timeStart.GetComponent<TextMeshProUGUI>().text = $"3";
         PlayAudioClip(audio_timerDown, 0);
@@ -157,8 +166,9 @@ public class GameManagerOnRun : MonoBehaviour
         UIManager.instance.timeStart.transform.parent.gameObject.SetActive(false);
         
         Time.timeScale = 1;
-        GameManagerEditor.instance.writing = false;
-
+        
+        //Start the game
+        ConsoleDebug.instance.showDebug = false;
         audioSourceMusic.Play();
         
         if (GameManagerEditor.instance.extraEnemies.Count > 0) //if there are any extra enemies, delete them
@@ -175,14 +185,11 @@ public class GameManagerOnRun : MonoBehaviour
             GameManagerEditor.instance.extraEnemies.Clear();
         }
         
-        //Reset everything
-        foreach (Transform points in this.points)
-        {
-            points.gameObject.SetActive(true);
-        }
-
+        //Reset everything again
         ResetState();
         
+        
+        //Set up any new changes from the edit mode
         if (GameManagerEditor.instance.timerOn)
         {
             GameManagerEditor.instance.remainingTimer = GameManagerEditor.instance.timer;
@@ -200,6 +207,9 @@ public class GameManagerOnRun : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Stop enemies and player from moving
+    /// </summary>
     private void StopEverything()
     {
         for (int i = 0; i < enemies.Count; i++)
@@ -208,7 +218,7 @@ public class GameManagerOnRun : MonoBehaviour
         }
         
         player.movement.direction = Vector2.zero;
-        GameManagerEditor.instance.writing = true;
+        ConsoleDebug.instance.showDebug = true;
 
     }
 
@@ -226,6 +236,10 @@ public class GameManagerOnRun : MonoBehaviour
         player.ResetState();
     }
 
+    /// <summary>
+    /// Sets the score of the game and updates the UI
+    /// </summary>
+    /// <param name="score">current score</param>
     public void SetScore(int score)
     {
         this.score = score;
@@ -238,6 +252,11 @@ public class GameManagerOnRun : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the amount of lives the player has and the UI for it
+    /// </summary>
+    /// <param name="currentLife"> current lives the player has</param>
+    /// <param name="startOfGame">Check if this is the start of the game</param>
     public void SetLives(int currentLife, bool startOfGame = false)
     {
         lives = currentLife;
@@ -298,7 +317,10 @@ public class GameManagerOnRun : MonoBehaviour
         ShowScene(false);
     }
     
-
+    /// <summary>
+    /// Called when an enemy is killed by the player
+    /// </summary>
+    /// <param name="enemy">which enemy is killed</param>
     public void EnemyDamaged(Enemy enemy)
     {
         PlayAudioClip(audio_enemyDies, 3);
@@ -348,6 +370,10 @@ public class GameManagerOnRun : MonoBehaviour
 
     #region GoalElement
 
+    /// <summary>
+    /// If no more enemies are freightened, while kill all enemies goal is enabled(and all potions drunk), then it's game over
+    /// </summary>
+    /// <returns></returns>
     IEnumerator EnableGameOver()
     {
         yield return new WaitUntil(() => !enemiesFreightened);//wait until enemies are not freightened
@@ -358,6 +384,10 @@ public class GameManagerOnRun : MonoBehaviour
 
     #region Points
 
+    /// <summary>
+    /// Called when point is being collected and it's added to the score of the player
+    /// </summary>
+    /// <param name="point">which point</param>
         public void PointCollected(Points point)
         {
             point.gameObject.SetActive(false);
@@ -373,7 +403,10 @@ public class GameManagerOnRun : MonoBehaviour
                 StartCoroutine(EnableGameOver());
             }
         }
-        
+        /// <summary>
+        /// Called when powerup is being collected and it's added to the score of the player, then activates its effect
+        /// </summary>
+        /// <param name="point">which powerup</param>
         public void PowerUpCollected(PowerUp point)
         {
             if (GameManagerEditor.instance.normalPowerUp)
@@ -394,6 +427,10 @@ public class GameManagerOnRun : MonoBehaviour
             PointCollected(point);
         }
         
+        /// <summary>
+        /// Called in the console, when wanting to activate the powerup indefinetly
+        /// </summary>
+        /// <param name="duration"></param>
         public void PowerUpCollectedDebug(float duration)
         {
             if (GameManagerEditor.instance.normalPowerUp)
@@ -425,10 +462,13 @@ public class GameManagerOnRun : MonoBehaviour
             return false;
         }
 
+        /// <summary>
+        /// ///Check if all powerups have been collected
+        /// </summary>
+        /// <returns></returns>
         private bool AllPowerUpsCollected()
         {
-            PowerUp[] powerUps = FindObjectsOfType<PowerUp>();
-            foreach (PowerUp point in  powerUps)
+            foreach (PowerUp point in  powerups)
             {
                 if (point.gameObject.activeSelf)
                 {
@@ -441,7 +481,9 @@ public class GameManagerOnRun : MonoBehaviour
         #endregion
     
     #region UIButtons
-
+        /// <summary>
+        /// Switches between Edit And Run mode
+        /// </summary>
         public void SwitchMode()
         {
             gameOverMenu.SetActive(false);
@@ -450,16 +492,27 @@ public class GameManagerOnRun : MonoBehaviour
             GameManagerEditor.instance.ChangeSpecificMode();
         }
 
-
+        /// <summary>
+        /// Enable either a scene when the player wins or loses a round
+        /// </summary>
+        /// <param name="won">did the player win or lose?</param>
         public void ShowScene(bool won)
         {
+            if(GameModeManager.gameMode == GameModeManager.GameMode.Editor)
+                return;
             audioSourceMusic.Stop();
             Time.timeScale = 1;
             ConsoleDebug.instance.showDebug = false;
-            ConsoleDebug.instance.field.gameObject.SetActive(false);
-            ConsoleDebug.instance.helpFieldMain.gameObject.SetActive(false);
+            ConsoleDebug.instance.consoleUI.SetActive(false);
             StartCoroutine(LevelOverScenes(won));
+            player.alwaysInvincible = true;
         }
+        
+        /// <summary>
+        /// Displays the end scenes if the player lost or won
+        /// </summary>
+        /// <param name="won">did the player lose or win?</param>
+        /// <returns></returns>
         IEnumerator LevelOverScenes(bool won)
         {
             for (int i = 0; i < enemies.Count; i++)
@@ -552,15 +605,15 @@ public class GameManagerOnRun : MonoBehaviour
                     Time.timeScale = 0;
                 }
             }
-            
+            player.alwaysInvincible = false;
             yield return null;
         }
 
-        public void ResetTime()
-        {
-            Time.timeScale = 1;
-        }
-
+        /// <summary>
+        /// plays an audio clip from a specified audio source
+        /// </summary>
+        /// <param name="clip">Which clip is played</param>
+        /// <param name="whichSource">Which audio source it is?</param>
         public void PlayAudioClip(AudioClip clip, int whichSource)
         {
             audio[whichSource].clip = clip;

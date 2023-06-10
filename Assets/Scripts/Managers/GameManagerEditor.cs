@@ -10,6 +10,8 @@ public class GameManagerEditor : MonoBehaviour
 {
     [HideInInspector]public ManagerSetUpMap onSetUpMap;
     [HideInInspector]public GameManagerOnRun onRunManager;
+
+    public bool firstTime;
     
     [Header("Editor UI")] [Space]
     public GameObject editorUI;
@@ -94,6 +96,8 @@ public class GameManagerEditor : MonoBehaviour
         {
             powerups.GetComponentInChildren<SpriteRenderer>().sprite = powerupEffectSprite[0];
         }
+        
+        firstTime = true;
     }
 
     private void Start()

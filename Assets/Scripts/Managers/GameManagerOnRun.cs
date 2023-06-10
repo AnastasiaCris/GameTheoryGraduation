@@ -414,6 +414,7 @@ public class GameManagerOnRun : MonoBehaviour
                 for (int i = 0; i < enemies.Count; i++)
                 {
                     enemies[i].freightened.Enable(point.duration);
+                    player.CanKillEnemies(point.duration);
                 }
             }else if (GameManagerEditor.instance.invincible)
             {
@@ -506,6 +507,7 @@ public class GameManagerOnRun : MonoBehaviour
             ConsoleDebug.instance.consoleUI.SetActive(false);
             StartCoroutine(LevelOverScenes(won));
             player.alwaysInvincible = true;
+            GameManagerEditor.instance.firstTime = false;
         }
         
         /// <summary>

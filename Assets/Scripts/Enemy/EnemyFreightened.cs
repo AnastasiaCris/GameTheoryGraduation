@@ -17,12 +17,14 @@ public class EnemyFreightened : EnemyBehaviour
     [HideInInspector]public bool canExit;
     private bool reachedHouse;
     public bool player;
+    public GameObject arrow;
     
     public override void Enable(float duration)
     {
         originalDuration = duration;
         duration = originalDuration * GameManagerEditor.instance.changedSpeedMultiplierForTimers;
         this.duration = duration;
+        arrow.SetActive(true);
         EnemyScared(duration);
         base.Enable(duration);
         StartCoroutine(CountdownDuration(duration));
@@ -31,7 +33,7 @@ public class EnemyFreightened : EnemyBehaviour
     public override void Disable()
     {
         base.Disable();
-        
+        arrow.SetActive(false);
         StopAllCoroutines();
         body.color = originalBodyCol;
         enemy.managerOnRun.enemiesFreightened = false;
@@ -69,35 +71,44 @@ public class EnemyFreightened : EnemyBehaviour
         
         body.color = freightenedBodyCol;
         deadBody.color = freightenedBodyCol;
+        arrow.SetActive(false);
         yield return new WaitForSeconds(0.3f);
         GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         body.color = flashFreightenedBodyCol;
         deadBody.color = flashFreightenedBodyCol;
+        arrow.SetActive(true);
         yield return new WaitForSeconds(0.3f);
         body.color = freightenedBodyCol;
         deadBody.color = freightenedBodyCol;
+        arrow.SetActive(false);
         yield return new WaitForSeconds(0.3f);
         GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         body.color = flashFreightenedBodyCol;
         deadBody.color = flashFreightenedBodyCol;
+        arrow.SetActive(true);
         yield return new WaitForSeconds(0.3f);
         body.color = freightenedBodyCol;
         deadBody.color = freightenedBodyCol;
+        arrow.SetActive(false);
         yield return new WaitForSeconds(0.3f);
         GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         body.color = flashFreightenedBodyCol;
         deadBody.color = flashFreightenedBodyCol;
+        arrow.SetActive(true);
         yield return new WaitForSeconds(0.3f);
         body.color = freightenedBodyCol;
         deadBody.color = freightenedBodyCol;
+        arrow.SetActive(false);
         yield return new WaitForSeconds(0.3f);
         GameManagerOnRun.instance.PlayAudioClip(GameManagerOnRun.instance.audio_powerupExpiring, 2);
         body.color = flashFreightenedBodyCol;
         deadBody.color = flashFreightenedBodyCol;
+        arrow.SetActive(true);
         yield return new WaitForSeconds(0.3f);
         body.color = originalBodyCol;
         deadBody.color = originalBodyCol;
         enemy.managerOnRun.enemiesFreightened = false;
+        arrow.SetActive(false);
     }
 
     public void Damaged()

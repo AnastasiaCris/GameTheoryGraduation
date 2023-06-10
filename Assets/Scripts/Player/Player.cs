@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
 {
@@ -14,7 +12,10 @@ public class Player : MonoBehaviour
 
     public AnimationClip animDeath;
     public GameObject indicationKeys;
+    public GameObject body;
+    public float bigSize = 1.7f;
 
+    public GameObject potionIndicator;
     
     //Formal elements
     public bool currentlyInvincible;
@@ -88,6 +89,81 @@ public class Player : MonoBehaviour
         {
             StopSpeeding();
         }
+    }
+
+    /// <summary>
+    /// Changes the size of the player during the effect
+    /// </summary>
+    /// <param name="duration">How long the effect lasts</param>
+    public void CanKillEnemies(float duration)
+    {
+        duration *= GameManagerEditor.instance.changedSpeedMultiplierForTimers;
+        StopCoroutine(CanKillEnemiesExpiring(duration));
+        StartCoroutine(CanKillEnemiesExpiring(duration));
+    }
+
+    /// <summary>
+    /// Changes the size of the player to show that the effect is running out
+    /// </summary>
+    /// <param name="duration">How long the effect lasts</param>
+    /// <returns></returns>
+    public IEnumerator CanKillEnemiesExpiring(float duration)
+    {
+        SpriteRenderer spriteRend = body.GetComponent<SpriteRenderer>();
+        float normalSize = 1.4f;
+
+        if(GameManagerEditor.instance.firstTime)
+            potionIndicator.SetActive(true);
+        
+        body.transform.localScale = new Vector3(bigSize,bigSize,bigSize);
+        spriteRend.color = shieldColors[2];
+        
+        yield return new WaitForSeconds(duration - 2.5f);
+        
+        body.transform.localScale = new Vector3(normalSize,normalSize,normalSize);
+        spriteRend.color = Color.white;
+        
+        yield return new WaitForSeconds(0.3f);
+        
+        body.transform.localScale = new Vector3(bigSize,bigSize,bigSize);
+        spriteRend.color = shieldColors[2];
+        
+        yield return new WaitForSeconds(0.3f);
+        
+        body.transform.localScale = new Vector3(normalSize,normalSize,normalSize);
+        spriteRend.color = Color.white;
+        
+        yield return new WaitForSeconds(0.3f);
+        
+        body.transform.localScale = new Vector3(bigSize,bigSize,bigSize);
+        spriteRend.color = shieldColors[2];
+        
+        yield return new WaitForSeconds(0.3f);
+        
+        body.transform.localScale = new Vector3(normalSize,normalSize,normalSize);
+        spriteRend.color = Color.white;
+        
+        yield return new WaitForSeconds(0.3f);
+        
+        body.transform.localScale = new Vector3(bigSize,bigSize,bigSize);
+        spriteRend.color = shieldColors[2];
+        
+        yield return new WaitForSeconds(0.3f);
+        
+        body.transform.localScale = new Vector3(normalSize,normalSize,normalSize);
+        spriteRend.color = Color.white;
+        
+        yield return new WaitForSeconds(0.3f);
+        
+        body.transform.localScale = new Vector3(bigSize,bigSize,bigSize);
+        spriteRend.color = shieldColors[2];
+        
+        yield return new WaitForSeconds(0.3f);
+        
+        body.transform.localScale = new Vector3(normalSize,normalSize,normalSize);
+        spriteRend.color = Color.white;
+        if(GameManagerEditor.instance.firstTime)
+            potionIndicator.SetActive(false);
     }
 
     public void InvincibilityDebug(bool inv)
